@@ -1,0 +1,76 @@
+########################################################-*-mode:Makefile-*-
+##                                                                       ##
+##  Festival: local configuration file                                   ##
+##                                                                       ##
+###########################################################################
+##
+##  Specific config file for local installation
+##
+
+###########################################################################
+## Which speech tools to use
+
+EST=$(TOP)/../speech_tools
+
+###########################################################################
+## Where the festival tree will be installed.
+## 
+## The default is that festival will remain where it is compiled.
+##
+## You may need to set this explicitly if automounter or NFS
+## side effects cause problems
+
+FESTIVAL_HOME := $(shell (cd $(TOP); pwd))
+
+###########################################################################
+## Feature selection.
+##
+## Select modules to include.
+
+## Non Free PSOLA synthesis.  This isn't distributed with festival because
+## of a patent, if you have src/modules/diphone/di_psolaTM.cc you can
+## include this feature.
+# INCLUDE_PSOLA_TM=1
+
+##  Support for TCL. So that festival may eval TCL commands and TCL may eval
+## festival commands.  This was added to support the CSLU toolkit but
+## others may want it too.
+# INCLUDE_TCL=1
+
+###########################################################################
+## Take most settings from speech tools.
+
+include $(EST)/config/config
+
+###########################################################################
+## Add any extra modules you wish to include
+
+## These sub modules are *optional* and unless you know what they are
+## you probabaly don't want them or need them.  They are typically
+## new code that isn't yet stable yet and being used for research or
+## old code left in for compatibility for some users  
+
+## Experimental UniSyn, metrical tree, phonological structure matching
+## code
+# ALSO_INCLUDE += UniSyn_phonology UniSyn_selection
+## Cluster unit selection code as described in "Building Voices in
+## Festival", again experimental and suitable for research purposes only.
+ALSO_INCLUDE += clunits clustergen MultiSyn
+
+## NITECH and Tokyo Institute of Technologies HTS support
+ALSO_INCLUDE += hts_engine
+
+## Old diphone code that will be delete, left in only for some
+## compatibility
+# ALSO_INCLUDE += diphone
+
+## Other (non-Edinburgh) modules may also be specified here (e.g. OGI code),
+
+ALSO_INCLUDE +=
+
+###########################################################################
+##
+## Describe your local system below by redefining things defined
+## in config/configs/default.mak.
+
+

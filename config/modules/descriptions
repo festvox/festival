@@ -1,0 +1,14 @@
+
+ ###########################################################################
+ ##                                                                       ##
+ ## Descriptions of uninteresting modules.                                ##
+ ##                                                                       ##
+ ###########################################################################
+
+desc_asr="(From EST) Speech recognition code"
+desc_native_audio="(from EST) Native audio module for your system"
+desc_ols="(from EST) Ordinary Least Squares support"
+desc_scfg="(from EST) Stochastic context free grammars"
+desc_siod="(from EST) Scheme In One Defun"
+desc_wagon="(from EST) Wagon CART tree system"
+desc_wfst="(from EST) Weighted Finite State Automata"

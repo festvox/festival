@@ -1,0 +1,25 @@
+.SH BUGS
+More than you can imagine.  
+
+A manual with much detail (though not complete) is available
+in distributed as part of the system and is also accessible at
+.br
+http://www.cstr.ed.ac.uk/projects/festival/manual/
+
+Although we cannot guarantee the time required to fix bugs, we
+would appreciated it if they were reported to 
+.br
+festival-bug@cstr.ed.ac.uk
+
+.SH AUTHOR
+Alan W Black, Richard Caley and Paul Taylor
+.br
+(C) Centre for Speech Technology Research, 1996-1998
+.br
+University of Edinburgh
+.br
+80 South Bridge
+.br
+Edinburgh EH1 1HN
+.br
+http://www.cstr.ed.ac.uk/projects/festival.html

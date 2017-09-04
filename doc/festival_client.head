@@ -1,0 +1,23 @@
+.TH  FESTIVAL 1 "1st Aug 1997"
+.SH NAME
+festival_client \- client access to festiva; text-to-speech server mode
+.SH SYNOPSIS
+.B festival_client
+.I [options]
+.I [file0]
+.I [file1]
+.I ...
+
+
+.SH DESCRIPTION
+Allows sending commands and/or test to a festival test-to-speech
+server.  Festival may be started in server mode using the
+option 
+.BI --server
+
+festival-clinet allows waveforms ot be generated faster as not
+time is required for start up.  See the festival manual for
+more details on recommended use.
+
+.SH OPTIONS
+

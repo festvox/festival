@@ -1,0 +1,86 @@
+#!/bin/sh
+
+default_libdir="/projects/festival/lib"
+
+while true
+	do
+	case "$1" in
+	-f ) festival="${2}"
+		shift 2
+		;;
+	-l ) libdir="$2"
+		shift 2
+		;;
+	* ) break;;
+	esac
+done
+
+text=${1-"$HOME/projects/festival/examples/benchmark.text"}
+
+for i in . src/main ../src/main $HOME/projects/festival/src/main /cstr/bin
+	do
+	if [ -n "$festival" ]
+		then
+		break;
+	fi
+	if [ -x "$i/festival" ]
+		then
+		festival="$i/festival"
+	fi
+done
+
+[ -n "$festival" ] ||
+	{
+	echo "Can't find festival"
+	exit 1
+	}
+
+if [ -z "$libdir" ]
+	then
+	case $festival in 
+	*main/festival )	libdir=`dirname $festival`/../../lib;;
+	* ) libdir=$default_libdir;;
+	esac
+fi
+
+echo Using $festival
+
+start_flag_file="/tmp/fest_start_$$"
+end_flag_file="/tmp/fest_end_$$"
+script="/tmp/fest_script_$$"
+
+echo -n > $flag_file;
+
+cat > $script <<__END__
+
+(set! libdir "$libdir/")
+(set! lexdir "$default_libdir/dicts/")
+(set! voiced_dir "$default_libdir/voices/")
+
+(load (string-append libdir "init.scm"))
+(if (probe_file (format nil "%s/.festivalrc" (getenv "HOME")))
+    (load (format nil "%s/.festivalrc" (getenv "HOME"))))
+
+
+(audio_mode 'async)
+(set! tts_hooks (list utt.synth))
+
+(puts "start...\n" nil)
+(fclose (fopen "$start_flag_file" "w"))
+
+(tts_file "$text" (quote text))
+
+(fclose (fopen "$end_flag_file" "w"))
+(puts "...end\n" nil)
+(audio_mode 'close)
+
+(quit)
+
+__END__
+
+eval $festival --script $script
+
+perl -e 'print "running time = ", (stat($ARGV[1]))[8]-(stat($ARGV[0]))[8], " seconds\n";' $start_flag_file $end_flag_file
+
+/bin/rm -f $start_flag_file $end_flag_file $script
+	

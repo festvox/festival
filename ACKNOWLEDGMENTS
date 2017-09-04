@@ -1,0 +1,83 @@
+Festival is currently actively developed by:
+
+	Alan W Black      (Carnegie Mellon University)
+	Rob Clark         (Edinburgh University)
+        Junichi Yamagishi (Edinburgh University)
+	Keiichiro Oura    (Nagoya Institute of Technology)
+
+The following people and organisations have contributed to the
+development of Festival in various ways.  It is their work that makes
+it all possible.
+
+Alan W Black    Overall design, most of the front end and software control
+Paul Taylor     Overall design, most of the back end
+Richard Caley   for doing lots of difficult and boring bits
+Rob Clark       Intonation, multisyn voice building, general developement and
+                maintenance.
+Keiichiro Oura  Updated HTS engine and API
+Junichi Yamagishi
+                HTS voices
+Korin Richmond  Multisyn engine, swig wrappers and general developement.
+Heiga Zen       HTS engine
+Brian Foley     Mac OSX support
+Kevin Lenzo     for speaking a bunch of different nonsense words,
+                design and improvements to the clunits module,
+                and co-author of the whole festvox project
+Alistair Conkie various low level code points and some design work
+                Spanish synthesis, recording Roger
+Steve Isard     design of diphone schema, LPC diphone code, and
+                  directorship
+EPSRC           who funded awb and pault
+Carnegie Mellon University 
+                who fund awb
+David Huggins Daines (Cepstral, LLC)
+                configure, and lots of Linux associated bugs
+Sun Microsystems Laboratories
+                For believing in us and their generosity.
+AT&T Research Labs
+                For providing funding and using our work
+Paradigm Assoc. and George Carrett
+                For Scheme In One Defun
+CNET, France Telecom
+                for use of Donovan diphones and some code in
+                modules/donovan (used with permission)
+The beta testers
+                Thanks for wanting to use the system, you make it 
+                worth doing. (And thanks for helping me debug my code.)
+                You all responded to my requests fast and accurately
+                thanks, even when I dumped last minute changes on you
+Andy Donovan    for speaking a bunch of nonsense words
+Roger Burroughes for speaking another bunch of nonsense words
+Kurt Dusterhoff for speaking another bunch of nonsense words
+Amy Isard       for her SSML project and related synthesizer
+Mike Macon      for signal processing advice
+Richard Tobin   for answering all those difficult questions,
+                and the socket code, and rxp the XML parser
+Simmule Turner and Rich Salz
+                command line editor: editline
+Borja Etxebarria
+                For Spanish synthesis and answer signal processing
+                questions
+Briony Williams Welsh synthesis
+Jacques H. de Villiers
+                from CSLU at OGI, for the TCL interface.
+ATR and Nick Campbell  
+                for first allowing Paul and Alan to work together
+Oxford Text Archive 
+                For the computer users version of Oxford Advanced
+                Learners' Dictionary redistributed with permission
+Reading University
+                for access to MARSEC from which the phrase break
+                model was trained.
+Mari Ostendorf  For giving access to the FM Radio Corpus from which
+                some models were trained.
+LDC & Penn Tree Bank 
+                from which the POS tagger was trained, redistribution
+                of the models is with permission from the LDC.
+Grady Ward      for the MOBY pronunciation lexicon
+FSF             for G++, make, .... 
+
+and others too.
+
+
+

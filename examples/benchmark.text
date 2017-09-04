@@ -1,0 +1,132 @@
+
+
+
+FESTIVAL(1)		  User Commands		      FESTIVAL(1)
+
+
+
+NAME
+     festival -	a text-to-speech system.
+
+SYNOPSIS
+     festival [options]	[file0]	[file1]	...
+
+
+
+DESCRIPTION
+     Festival is a general  purpose  text-to-speech  system.   As
+     well as simply rendering text as speech it	can be used in an
+     interactive command mode for testing and developing  various
+     aspects of	speech synthesis technology.
+
+     Festival has two major  modes,  command  and  tts	(text-to-
+     speech).	When in	command	mode input (from file or interac-
+     tively) is	interpreted by the command interpreter.	 When  in
+     tts mode input is rendered	as speech.
+
+
+OPTIONS
+     -h	print help information
+
+     -q	      Start without loading any	initialization files.
+
+     --libdir PATH
+	     Specify alternate to default library directory (used
+	     in	 initializing  the  variable  load-path,  and for
+	     loading most intinialisation files)
+
+     -b	or --batch
+	     Run in batch mode.	 In batch mode no input	 is  read
+	     from standard input
+
+     -i	or --interactive
+	     Run in interactive	mode.  In intteractive mode input
+	     (commands	or  text)  is  read  from standard input.
+	     When in command mode (the default)	a readline  based
+	     Lisp    read-eval-print   command	 interpreter   is
+	     presented.
+
+     --server
+	     Run in server mode.  Any file arguments  are  loaded
+	     9and interpreted, before going into server	mode.  In
+	     server mode Festival waits	for clients on port  1314
+	     (by  default).   Note server mode can give	unauthor-
+	     ised access to your machine, please read the section
+	     in	 the  manual  entitled	Server/client  API before
+	     using this	mode.
+
+     --tts     Run in tts mode.	 All files argument  are  treated
+	     as	 text  files to	be said.  Unless interactive mode
+
+
+
+SunOS 5.5.1	    Last change: 4th Feb 1996			1
+
+
+
+
+
+
+FESTIVAL(1)		  User Commands		      FESTIVAL(1)
+
+
+
+	     is	explicitly specified no	input is read from  stan-
+	     dard input, unless	no files are specified.
+
+     --language	LANG
+	     Where LANG	is one of english  (default)  spanish  or
+	     welsh.  Select  that  language  for basic operation,
+	     command or	tts.  This may be change during	a session
+	     with the command select_language.
+
+     -v	      Display version number and exit.
+
+
+BUGS
+     More than you can imagine.
+
+     A manual with much	detail (though not complete) is	available
+     in	info (or html) format.
+
+
+AUTHOR
+     Alan W Black and Paul Taylor
+     (C) Centre	for Speech Technology Research
+     University	of Edinburgh
+     80	South Bridge
+     Edinburgh EH1 1HN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.5.1	    Last change: 4th Feb 1996			2
+
+
+

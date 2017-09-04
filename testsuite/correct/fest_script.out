@@ -1,0 +1,123 @@
+
+#
+0.3557 100 On
+0.5594 100 May
+1.0018 100 fifth
+1.4512 100 nineteen
+1.7458 100 eighty
+2.1355 100 five
+2.6985 100 around
+3.0873 100 nineteen
+3.3696 100 eighty
+3.6559 100 five
+4.1902 100 people
+4.7505 100 joined
+5.0889 100 Mr
+5.5076 100 Black
+0.0000 100 's
+6.2561 100 project
+(("On" "On" "syl") ("May" "May" "syl") ("fifth" "5" "syl") ("nineteen" "1985" "syl") ("eighty" "1985" "syl") ("five" "1985" "syl") ("around" "around" "syl") ("nineteen" "1985" "syl") ("eighty" "1985" "syl") ("five" "1985" "syl") ("people" "people" "syl") ("joined" "joined" "syl") ("Mr" "Mr" "syl") ("Black" "Black's" "syl") ("'s" "Black's" 0) ("project" "project" "syl"))
+#
+0.2100 100 #
+0.3003 100 o
+0.3557 100 n
+0.4170 100 m
+0.5594 100 ei
+0.6965 100 f
+0.8121 100 i
+0.9129 100 f
+1.0018 100 th
+1.0717 100 n
+1.1847 100 ai
+1.2470 100 n
+1.3192 100 t
+1.4005 100 ii
+1.4512 100 n
+1.5869 100 ei
+1.6648 100 t
+1.7458 100 ii
+1.8676 100 f
+2.0689 100 ai
+2.1355 100 v
+2.3455 100 #
+2.3945 100 @
+2.4588 100 r
+2.6183 100 au
+2.6730 100 n
+2.6985 100 d
+2.7561 100 n
+2.8594 100 ai
+2.9039 100 n
+2.9655 100 t
+3.0359 100 ii
+3.0873 100 n
+3.2023 100 ei
+3.2887 100 t
+3.3696 100 ii
+3.4757 100 f
+3.6081 100 ai
+3.6559 100 v
+3.7813 100 p
+3.8705 100 ii
+4.0170 100 p
+4.0970 100 @
+4.1902 100 l
+4.4002 100 #
+4.4947 100 jh
+4.6593 100 oi
+4.7115 100 n
+4.7505 100 d
+4.8165 100 m
+4.8785 100 i
+4.9613 100 s
+5.0367 100 t
+5.0889 100 @
+5.1635 100 b
+5.2019 100 l
+5.3340 100 a
+5.4238 100 k
+5.5076 100 s
+5.6497 100 p
+5.6830 100 r
+5.7822 100 o
+5.8880 100 jh
+5.9953 100 e
+6.1471 100 k
+6.2561 100 t
+6.6761 100 #
+num syllables: 9
+"syls match: ok"
+"syls don't match: ok"
+("syl" "ou" "dh" "h" "hello" "l" "" ",")
+Usage: festival Usage:
+festival  <options> <file0> <file1> ...
+In evaluation mode "filenames" starting with ( are evaluated inline
+Festival Speech Synthesis System: 2.4:beta December 2014
+-q            Load no default setup files
+--libdir <string>
+              Set library directory pathname
+-b            Run in batch mode (no interaction)
+--batch       Run in batch mode (no interaction)
+--tts         Synthesize text in files as speech
+              no files means read from stdin
+              (implies no interaction by default)
+-i            Run in interactive mode (default)
+--interactive
+              Run in interactive mode (default)
+--pipe        Run in pipe mode, reading commands from
+              stdin, but no prompt or return values
+              are printed (default if stdin not a tty)
+--language <string>
+              Run in named language, default is
+              english, spanish and welsh are available
+--server      Run in server mode waiting for clients
+              of server_port (1314)
+--script <ifile>
+              Used in #! scripts, runs in batch mode on
+              file and passes all other args to Scheme
+--heap <int> {10000000}
+              Set size of Lisp heap, should not normally need
+              to be changed from its default
+-v            Display version number and exit
+--version     Display version number and exit
+

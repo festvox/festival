@@ -1,0 +1,20 @@
+
+# festival shared setup 
+
+extend() {
+	var="$1"
+	extra="$2"
+	eval "val=\$$var"
+	
+	if [ -n "$val" ]
+		then
+		val="$extra:$val"
+	else
+		val="$extra"
+	fi
+	eval "$var='$val'"
+	eval "export $var"
+	}
+
+extend LD_LIBRARY_PATH "__EST__/lib:__LDPATH__"
+

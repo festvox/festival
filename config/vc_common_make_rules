@@ -1,0 +1,71 @@
+
+######################################################################
+#                                                                    #
+# Make rules for MicroCruft Visual C++                               #
+#                                                                    #
+######################################################################
+
+!include $(TOP)\config\vc_config_make_rules
+!include $(TOP)\config\project.mak
+
+.SUFFIXES: .cc .obj
+CPP=cl /nologo /DSYSTEM_IS_WIN32=1 /DINSTANTIATE_TEMPLATES=1 $(MODULEFLAGS)
+CC=cl /nologo /DSYSTEM_IS_WIN32=1  $(MODULEFLAGS)
+
+default_target: $(DIRS) all
+	@echo done $(DIRNAME)
+
+all: $(ALL)
+
+$(DIRS) x1 : FORCE
+	@echo building in $(DIRNAME)\$@
+	@cd $@
+	@nmake /nologo /fVCMakefile
+	@cd ..
+
+FORCE: 
+
+.vcbuildlib: $(OBJS)
+	@echo add to $(INLIB) $(OBJS)
+	@if EXIST $(INLIB) lib/nologo $(INLIB) $(OBJS)
+	@if NOT EXIST $(INLIB) lib/nologo /out:$(INLIB) $(OBJS)
+	@echo built > .vcbuildlib
+
+.vc_add_to_lib: $(TOADD)
+	lib/nologo $(ADDLIB) $(TOADD)
+	@echo built > .vc_add_to_lib
+
+.libraries:
+	@echo Libraries not touched for VC++
+
+relink: 
+	@echo Links not made for Visual C++
+
+.vc_build_scripts:
+	@echo Scripts not built for Visual C++
+
+.vc_build_manpages:
+	@echo manual pages not built for Visual C++
+
+.config_error::
+	@echo Config OK
+
+.sub_directories: $(BUILD_DIRS)
+	
+.remove_links:
+	@echo Links not made for Visual C++
+.process_scripts:
+	@echo Scripts not created for VC
+.process_docs:
+	@echo Documentation not created for VC
+.link_main:
+	@echo Links not made for Visual C++
+
+.cc.obj:
+	$(CPP) $(CFLAGS) /c /Tp$*.cc /Fo$*.obj
+.c.obj:
+	$(CC) $(CFLAGS) /c /Tc$*.c /Fo$*.obj
+
+# this dummy rule stops the comment in make.depend getting
+# interpreted as a command... YEUCH
+hack_dummy_target:

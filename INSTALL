@@ -1,0 +1,454 @@
+Installation
+************
+
+   This section describes how to install Festival from source in a new
+location and customize that installation.
+
+* Menu:
+
+* Requirements::        Software/Hardware requirements for Festival
+* Configuration::       Setting up compilation
+* Site initialization:: Settings for your particular site
+* Checking an installation::  But does it work ...
+
+Requirements
+============
+
+   In order to compile Festival you first need the following source
+packages
+
+`festival-2.4-release.tar.gz'
+     Festival Speech Synthesis System source
+
+`speech_tools-2.4-release.tar.gz'
+     The Edinburgh Speech Tools Library
+
+`festlex_NAME.tar.gz'
+     The lexicon distribution, where possible, includes the lexicon
+     input file as well as the compiled form, for your convenience.
+     The lexicons have varying distribution policies, but are all free
+     except OALD, which is only free for non-commercial use (we are
+     working on a free replacement).  In some cases only a pointer to
+     an ftp'able file plus a program to convert that file to the
+     Festival format is included.
+
+`festvox_NAME.tar.gz'
+     You'll need a speech database.  A number are available (with
+     varying distribution policies).  Each voice may have other
+     dependencies such as requiring particular lexicons
+
+`festdoc_2.0.tar.gz'
+     Full postscript, info and html documentation for Festival and the
+     Speech Tools.  The source of the documentation is available in the
+     standard distributions but for your conveniences it has been
+     pre-generated.
+
+   In addition to Festival specific sources you will also need
+
+_A UNIX machine_
+     Currently we have compiled and tested the system under Solaris
+     (2.5(.1), 2.6, 2.7, 2.8 and 2.9), SunOS (4.1.3), FreeBSD 3.x, 4.x Linux
+     (Redhat 4.1, 5.0, 5.1, 5.2, 6.[012], 7.[01], 8.0, 9, FC1 and other Linux
+     distributions), and it should work under OSF (Dec Alphas) SGI
+     (Irix), HPs (HPUX).  But any standard UNIX machine should be
+     acceptable.  We have now successfully ported this version to
+     Windows XP, Windows NT and Windows 95 (using the Cygnus GNU win32
+     environment).  This is still a young port but seems to work.
+
+_A C++ compiler_
+     Note that C++ is not very portable even between different versions
+     of the compiler from the same vendor.  Although we've tried very
+     hard to make the system portable, we know it is very unlikely to
+     compile without change except with compilers that have already
+     been tested.  The currently tested systems are
+        * Sun Sparc Solaris 2.5, 2.5.1, 2.6, 2.7, 2.9: GCC 2.95.1, GCC
+          3.2
+
+        * FreeBSD for Intel 3.x and 4.x GCC 2.95.1, GCC 3.0
+
+        * Linux for Intel (RedHat 4.1/5.0/5.1/5.2/6.0/7.x/8.0): GCC
+          2.7.2, GCC 2.7.2/egcs-1.0.2, egcs 1.1.1, egcs-1.1.2, GCC
+          2.95.[123], GCC "2.96", GCC 3.0, GCC 3.0.1, GCC 3.2, GCC 3.2.1
+          GCC 3.2.3, GCC 3.3.2
+
+        * Windows NT 4.0: GCC 2.7.2 plus egcs (from Cygnus GNU win32
+          b19), Visual C++ PRO v5.0, Visual C++ v6.0
+     Note if GCC works on one version of Unix it usually works on
+     others.
+
+     We have compiled both the speech tools and Festival under Windows
+     NT 4.0 and Windows 95 using the GNU tools available from Cygnus.
+     http://www.cygwin.com/
+
+_GNU make_
+     Due to there being too many different `make' programs out there we
+     have tested the system using GNU make on all systems we use.
+     Others may work but we know GNU make does.
+
+_Audio hardware_
+     You can use Festival without audio output hardware but it doesn't
+     sound very good (though admittedly you can hear less problems with
+     it).  A number of audio systems are supported (directly inherited
+     from the audio support in the Edinburgh Speech Tools Library):
+     NCD's NAS (formerly called netaudio) a network transparent audio
+     system (which can be found at
+     `ftp://ftp.x.org/contrib/audio/nas/'); `/dev/audio' (at 8k ulaw
+     and 8/16bit linear), found on Suns, Linux machines and FreeBSD;
+     and a method allowing arbitrary UNIX commands. *Note Audio
+     output::.
+
+   Earlier versions of Festival mistakenly offered a command line editor
+interface to the GNU package readline, but due to conflicts with the GNU
+Public Licence and Festival's licence this interface was removed in
+version 1.3.1.  Even Festival's new free licence would cause problems as
+readline support would restrict Festival linking with non-free code.  A
+new command line interface based on editline was provided that offers
+similar functionality.  Editline remains a compilation option as it is
+probably not yet as portable as we would like it to be.
+
+   In addition to the above, in order to process the documentation you
+will need `TeX', `dvips' (or similar), GNU's `makeinfo' (part of the
+texinfo package) and `texi2html' which is available from
+`http://wwwcn.cern.ch/dci/texi2html/'.
+
+   However the document files are also available pre-processed into,
+postscript, DVI, info and html as part of the distribution in
+`festdoc-1.4.X.tar.gz'.
+
+   Ensure you have a fully installed and working version of your C++
+compiler.  Most of the problems people have had in installing Festival
+have been due to incomplete or bad compiler installation.   It might be
+worth checking if the following program works if you don't know if
+anyone has used your C++ installation before.
+     #include <iostream.h>
+     int main (int argc, char **argv)
+     {
+        cout << "Hello world\n";
+     }
+
+   Unpack all the source files in a new directory.  The directory will
+then contain two subdirectories
+     speech_tools/
+     festival/
+
+Configuration
+=============
+
+   First ensure you have a compiled version of the Edinburgh Speech
+Tools Library.  See `speech_tools/INSTALL' for instructions.
+
+   The system now supports the standard GNU `configure' method for set
+up.  In most cases this will automatically configure festival for your
+particular system.  In most cases you need only type
+     gmake
+   and the system will configure itself and compile, (note you need to
+have compiled the Edinburgh Speech Tools `speech_tools-1.2.4' first.
+
+   In some case hand configure is require.  All of the configuration
+choice are held in the file `config/config'
+
+   For the most part Festival configuration inherits the configuration
+from your speech tools config file (`../speech_tools/config/config').
+Additional optional modules may be added by adding them to the end of
+your config file e.g.
+     ALSO_INCLUDE += clunits
+   Adding and new module here will treat is as a new directory in the
+`src/modules/' and compile it into the system in the same way the
+`OTHER_DIRS' feature was used in previous versions.
+
+   If the compilation directory being accessed by NFS or if you use an
+automounter (e.g. amd) it is recommend to explicitly set the variable
+`FESTIVAL_HOME' in `config/config'. The command `pwd' is not reliable
+when a directory may have multiple names.
+
+   There is a simple test suite with Festival but it requires the three
+basic voices and their respective lexicons install before it will work.
+Thus you need to install
+     festlex_CMU.tar.gz
+     festlex_OALD.tar.gz
+     festlex_POSLEX.tar.gz
+     festvox_don.tar.gz
+     festvox_kedlpc16k.tar.gz
+     festvox_rablpc16k.tar.gz
+   If these are installed you can test the installation with
+     gmake test
+
+   To simply make it run with a male US English voiuce it is sufficient
+to install just
+     festlex_CMU.tar.gz
+     festlex_POSLEX.tar.gz
+     festvox_kallpc16k.tar.gz
+
+   Note that the single most common reason for problems in compilation
+and linking found amongst the beta testers was a bad installation of GNU
+C++.  If you get many strange errors in G++ library header files or link
+errors it is worth checking that your system has the compiler, header
+files and runtime libraries properly installed.  This may be checked by
+compiling a simple program under C++ and also finding out if anyone at
+your site has ever used the installation.  Most of these installation
+problems are caused by upgrading to a newer version of libg++ without
+removing the older version so a mixed version of the `.h' files exist.
+
+   Although we have tried very hard to ensure that Festival compiles
+with no warnings this is not possible under some systems.
+
+   Under SunOS the system include files do not declare a number of
+system provided functions.  This a bug in Sun's include files.  This
+will causes warnings like "implicit definition of fprintf".  These are
+harmless.
+
+   Under Linux a warning at link time about reducing the size of some
+symbols often is produced.  This is harmless.  There is often
+occasional warnings about some socket system function having an
+incorrect argument type, this is also harmless.
+
+   The speech tools and festival compile under Windows95 or Windows NT
+with Visual C++ v5.0 using the Microsoft `nmake' make program.  We've
+only done this with the Professional  edition, but have no reason to
+believe that it relies on anything not in the standard edition.
+
+   In accordance to VC++ conventions, object files are created with
+extension .obj, executables with extension .exe and libraries with
+extension .lib. This may mean that both unix and Win32 versions can be
+built in the same directory tree, but I wouldn't rely on it.
+
+   To do this you require nmake Makefiles for the system. These can be
+generated from the gnumake Makefiles, using the command
+     gnumake VCMakefile
+   in the speech_tools and festival directories. I have only done this
+under unix, it's possible it would work under the cygnus gnuwin32
+system.
+
+   If `make.depend' files exist (i.e. if you have done `gnumake depend'
+in unix) equivalent `vc_make.depend' files will be created, if not the
+VCMakefiles will not contain dependency information for the `.cc'
+files. The result will be that you can compile the system once, but
+changes will not cause the correct things to be rebuilt.
+
+   In order to compile from the DOS command line using Visual C++ you
+need to have a collection of environment variables set. In Windows NT
+there is an installation option for Visual C++ which sets these
+globally. Under Windows95 or if you don't ask for them to be set
+globally under NT you need to run
+     vcvars32.bat
+   See the VC++ documentation for more details.
+
+   Once you have the source trees with VCMakefiles somewhere visible
+from Windows, you need to copy `peech_tools\config\vc_config-dist' to
+`speech_tools\config\vc_config' and edit it to suit your local
+situation. Then do the same with `festival\config\vc_config-dist'.
+
+   The thing most likely to need changing is the definition of
+`FESTIVAL_HOME' in `festival\config\vc_config_make_rules' which needs
+to point to where you have put festival.
+
+   Now you can compile. cd to the speech_tools directory and do
+     nmake /nologo /fVCMakefile
+and the library, the programs in main and the test programs should be
+   compiled.
+
+   The tests can't be run automatically under Windows. A simple test to
+check that things are probably OK is:
+     main\na_play testsuite\data\ch_wave.wav
+which reads and plays a waveform.
+   Next go into the festival directory and do
+     nmake /nologo /fVCMakefile
+to build festival. When it's finished, and assuming you have the
+   voices and lexicons unpacked in the right place, festival should run
+just as under unix.
+
+   We should remind you that the NT/95 ports are still young and there
+may yet be problems that we've not found yet.  We only recommend the
+use the speech tools and Festival under Windows if you have significant
+experience in C++ under those platforms.
+
+   Most of the modules `src/modules' are actually optional and the
+system could be compiled without them.  The basic set could be reduced
+further if certain facilities are not desired.  Particularly: `donovan'
+which is only required if the donovan voice is used; `rxp' if no XML
+parsing is required (e.g. Sable); and `parser' if no stochastic paring
+is required (this parser isn't used for any of our currently released
+voices).  Actually even `UniSyn' and `UniSyn_diphone' could be removed
+if some external waveform synthesizer is being used (e.g. MBROLA) or
+some alternative one like `OGIresLPC'.  Removing unused modules will
+make the festival binary smaller and (potentially) start up faster but
+don't expect too much.  You can delete these by changing the
+`BASE_DIRS' variable in `src/modules/Makefile'.
+
+Site initialization
+===================
+
+   Once compiled Festival may be further customized for particular
+sites.  At start up time Festival loads the file `init.scm' from its
+library directory.  This file further loads other necessary files such
+as phoneset descriptions, duration parameters, intonation parameters,
+definitions of voices etc.  It will also load the files `sitevars.scm'
+and `siteinit.scm' if they exist.  `sitevars.scm' is loaded after the
+basic Scheme library functions are loaded but before any of the
+festival related functions are loaded.  This file is intended to set
+various path names before various subsystems are loaded.  Typically
+variables such as `lexdir' (the directory where the lexicons are held),
+and `voices_dir' (pointing to voice directories) should be reset here
+if necessary.
+
+   The default installation will try to find its lexicons and voices
+automatically based on the value of `load-path' (this is derived from
+`FESTIVAL_HOME' at compilation time or by using the `--libdir' at
+run-time).  If the voices and lexicons have been unpacked into
+subdirectories of the library directory (the default) then no site
+specific initialization of the above pathnames will be necessary.
+
+   The second site specific file is `siteinit.scm'.  Typical examples
+of local initialization are as follows.  The default audio output method
+is NCD's NAS system if that is supported as that's what we use normally
+in CSTR.  If it is not supported, any hardware specific mode is the
+default (e.g. sun16audio, freebas16audio, linux16audio or mplayeraudio).
+But that default is just a setting in `init.scm'.  If for example in
+your environment you may wish the default audio output method to be 8k
+mulaw through `/dev/audio' you should add the following line to your
+`siteinit.scm' file
+     (Parameter.set 'Audio_Method 'sunaudio)
+   Note the use of `Parameter.set' rather than `Parameter.def' the
+second function will not reset the value if it is already set.
+Remember that you may use the audio methods `sun16audio'.
+`linux16audio' or `freebsd16audio' only if `NATIVE_AUDIO' was selected
+in `speech_tools/config/config' and your are on such machines.  The
+Festival variable `*modules*' contains a list of all supported
+functions/modules in a particular installation including audio support.
+Check the value of that variable if things aren't what you expect.
+
+   If you are installing on a machine whose audio is not directly
+supported by the speech tools library, an external command may be
+executed to play a waveform.  The following example is for an imaginary
+machine that can play audio files through a program called `adplay'
+with arguments for sample rate and file type.  When playing waveforms,
+Festival, by default, outputs as unheadered waveform in native byte
+order.  In this example you would set up the default audio playing
+mechanism in `siteinit.scm' as follows
+     (Parameter.set 'Audio_Method 'Audio_Command)
+     (Parameter.set 'Audio_Command "adplay -raw -r $SR $FILE")
+   For `Audio_Command' method of playing waveforms Festival supports
+two additional audio parameters. `Audio_Required_Rate' allows you to
+use Festivals internal sample rate conversion function to any desired
+rate.  Note this may not be as good as playing the waveform at the
+sample rate it is originally created in, but as some hardware devices
+are restrictive in what sample rates they support, or have naive
+resample functions this could be optimal.  The second addition audio
+parameter is `Audio_Required_Format' which can be used to specify the
+desired output forms of the file.  The default is unheadered raw, but
+this may be any of the values supported by the speech tools (including
+nist, esps, snd, riff, aiff, audlab, raw and, if you really want it,
+ascii).
+
+   For example suppose you run Festival on a remote machine and are not
+running any network audio system and want Festival to copy files back to
+your local machine and simply cat them to `/dev/audio'.  The following
+would do that (assuming permissions for rsh are allowed).
+     (Parameter.set 'Audio_Method 'Audio_Command)
+     ;; Make output file ulaw 8k (format ulaw implies 8k)
+     (Parameter.set 'Audio_Required_Format 'ulaw)
+     (Parameter.set 'Audio_Command
+      "userhost=`echo $DISPLAY | sed 's/:.*$//'`; rcp $FILE $userhost:$FILE; \
+       rsh $userhost \"cat $FILE >/dev/audio\" ; rsh $userhost \"rm $FILE\"")
+   Note there are limits on how complex a command you want to put in the
+`Audio_Command' string directly.  It can get very confusing with respect
+to quoting.  It is therefore recommended that once you get past a
+certain complexity consider writing a simple shell script and calling
+it from the `Audio_Command' string.
+
+   A second typical customization is setting the default speaker.
+Speakers depend on many things but due to various licence (and resource)
+restrictions you may only have some diphone/nphone databases available
+in your installation.  The function name that is the value of
+`voice_default' is called immediately after `siteinit.scm' is loaded
+offering the opportunity for you to change it.  In the standard
+distribution no change should be required.  If you download all the
+distributed voices `voice_rab_diphone' is the default voice.  You may
+change this for a site by adding the following to `siteinit.scm' or per
+person by changing your `.festivalrc'.  For example if you wish to
+change the default voice to the American one `voice_ked_diphone'
+     (set! voice_default 'voice_ked_diphone)
+   Note the single quote, and note that unlike in early versions
+`voice_default' is not a function you can call directly.
+
+   A second level of customization is on a per user basis.  After
+loading `init.scm', which includes `sitevars.scm' and `siteinit.scm'
+for local installation, Festival loads the file `.festivalrc' from the
+user's home directory (if it exists).  This file may contain arbitrary
+Festival commands.
+
+Checking an installation
+========================
+
+   Once compiled and site initialization is set up you should test to
+see if Festival can speak or not.
+
+   Start the system
+     $ bin/festival
+     Festival Speech Synthesis System 2.0:release July 2004
+     Copyright (C) University of Edinburgh, 1996-2004. All rights reserved.
+     For details type `(festival_warranty)'
+     festival> ^D
+   If errors occur at this stage they are most likely to do with
+pathname problems.  If any error messages are printed about
+non-existent files check that those pathnames point to where you
+intended them to be.  Most of the (default) pathnames are dependent on
+the basic library path.  Ensure that is correct.  To find out what it
+has been set to, start the system without loading the init files.
+     $ bin/festival -q
+     Festival Speech Synthesis System 1.4.3:release Jan 2003
+     Copyright (C) University of Edinburgh, 1996-2003. All rights reserved.
+     For details type `(festival_warranty)'
+     festival> libdir
+     "/projects/festival/lib/"
+     festival> ^D
+   This should show the pathname you set in your `config/config'.
+
+   If the system starts with no errors try to synthesize something
+     festival> (SayText "hello world")
+   Some files are only accessed at synthesis time so this may show up
+other problem pathnames.  If it talks, you're in business, if it
+doesn't, here are some possible problems.
+
+   If you get the error message
+     Can't access NAS server
+   You have selected NAS as the audio output but have no server running
+on that machine or your `DISPLAY' or `AUDIOSERVER' environment variable
+is not set properly for your output device.  Either set these properly
+or change the audio output device in `lib/siteinit.scm' as described
+above.
+
+   Ensure your audio device actually works the way you think it does.
+On Suns, the audio output device can be switched into a number of
+different output modes, speaker, jack, headphones.  If this is set to
+the wrong one you may not hear the output.  Use one of Sun's tools to
+change this (try `/usr/demo/SOUND/bin/soundtool').  Try to find an audio
+file independent of Festival and get it to play on your audio.  Once
+you have done that ensure that the audio output method set in Festival
+matches that.
+
+   Once you have got it talking, test the audio spooling device.
+     festival> (intro)
+   This plays a short introduction of two sentences, spooling the audio
+output.
+
+   Finally exit from Festival (by end of file or `(quit)') and test the
+script mode with.
+     $ examples/saytime
+
+   A test suite is included with Festival but it makes certain
+assumptions about which voices are installed.  It assumes that
+`voice_rab_diphone' (`festvox_rabxxxx.tar.gz') is the default voice and
+that `voice_ked_diphone' and `voice_don_diphone'
+(`festvox_kedxxxx.tar.gz' and `festvox_don.tar.gz') are installed.
+Also local settings in your `festival/lib/siteinit.scm' may affect
+these tests.  However, after installation it may be worth trying
+     gnumake test
+   from the `festival/' directory.  This will do various tests
+including basic utterance tests and tokenization tests.  It also checks
+that voices are installed and that they don't interfere with each other.
+These tests are primarily regression tests for the developers of
+Festival, to ensure new enhancements don't mess up existing supported
+features.  They are not designed to test an installation is successful,
+though if they run correctly it is most probable the installation has
+worked.

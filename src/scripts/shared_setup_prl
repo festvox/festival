@@ -1,0 +1,10 @@
+
+if (defined($ENV{LD_LIBRARY_PATH}))
+	{
+	$ENV{LD_LIBRARY_PATH} = "__TOP__/lib:__LDPATH__:$ENV{LD_LIBRARY_PATH}";
+	}
+else
+	{
+	$ENV{LD_LIBRARY_PATH} = "__TOP__/lib";
+	} 
+

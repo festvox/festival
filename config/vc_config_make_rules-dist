@@ -1,0 +1,37 @@
+
+ ######################################################################
+ #                                                                    #
+ # Configuration variable make settings for MicroCruft Visual C++     #
+ #                                                                    #
+ ######################################################################
+
+EST=$(TOP)\..\speech_tools
+
+SYSTEM_LIB=c:\\festival\\lib
+
+MODULEFLAGS=/DSUPPORT_EDITLINE=1
+AUDIOFLAGS=
+
+DEBUGFLAGS= /Zi
+LINKDEBUGFLAGS = /debug
+
+OPTFLAGS= /EHsc /wd4675 /GR
+
+DEFINES=/DFTLIBDIRC=$(SYSTEM_LIB) "/DFTOSTYPEC=win32_vc" "/DFTNAME=$(PROJECT_NAME)" "/DFTVERSION=$(PROJECT_VERSION)" "/DFTSTATE=$(PROJECT_STATE)" "/DFTDATE=$(PROJECT_DATE)"
+
+INCLUDEFLAGS= /I$(TOP)/src/include /I$(EST)\include $(LOCAL_INCLUDES) /DNO_READLINE=1 /DNO_SPOOLER=1 $(DEFINES)
+
+LINKFLAGS=$(LINKDEBUGFLAGS)
+
+LIB_DIR=src\lib
+
+FESTLIBS = $(TOP)\src\lib\libfestival.lib
+
+ESTLIBS = $(EST)\lib\libestools.lib $(EST)\lib\libestbase.lib $(EST)\lib\libeststring.lib 
+
+WINLIBS = wsock32.lib winmm.lib 
+
+!ifndef VCLIBS
+VCLIBS = $(FESTLIBS) $(ESTLIBS)
+!endif
+

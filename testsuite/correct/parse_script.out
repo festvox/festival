@@ -1,0 +1,21 @@
+
+(("NT00"
+  ("NT14"
+   ("NT06" ("NT01" ("jj" "Probabilistic")) ("NT07" ("nns" "grammars")))
+   ("NT17"
+    ("NT04" ("vbp" "are"))
+    ("NT08"
+     ("NT16" ("jj" "easy"))
+     ("NT09"
+      ("NT15" ("to" "to"))
+      ("NT08"
+       ("NT04" ("vb" "use"))
+       ("NT08"
+        ("NT04" ("punc" ","))
+        ("NT09"
+         ("NT15" ("cc" "but"))
+         ("NT08"
+          ("NT16" ("jj" "difficult"))
+          ("NT09" ("NT15" ("to" "to")) ("NT08" ("vb" "train")))))))))))
+  ("NT13" ("punc" "."))))
+

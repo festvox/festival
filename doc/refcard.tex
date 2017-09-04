@@ -1,0 +1,321 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                       %%
+%%                Centre for Speech Technology Research                  %%
+%%                     University of Edinburgh, UK                       %%
+%%                       Copyright (c) 1996,1997                         %%
+%%                        All Rights Reserved.                           %%
+%%                                                                       %%
+%%  Permission is hereby granted, free of charge, to use and distribute  %%
+%%  this software and its documentation without restriction, including   %%
+%%  without limitation the rights to use, copy, modify, merge, publish,  %%
+%%  distribute, sublicense, and/or sell copies of this work, and to      %%
+%%  permit persons to whom this work is furnished to do so, subject to   %%
+%%  the following conditions:                                            %%
+%%   1. The code must retain the above copyright notice, this list of    %%
+%%      conditions and the following disclaimer.                         %%
+%%   2. Any modifications must be clearly marked as such.                %%
+%%   3. Original authors' names are not deleted.                         %%
+%%   4. The authors' names are not used to endorse or promote products   %%
+%%      derived from this software without specific prior written        %%
+%%      permission.                                                      %%
+%%                                                                       %%
+%%  THE UNIVERSITY OF EDINBURGH AND THE CONTRIBUTORS TO THIS WORK        %%
+%%  DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING      %%
+%%  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT   %%
+%%  SHALL THE UNIVERSITY OF EDINBURGH NOR THE CONTRIBUTORS BE LIABLE     %%
+%%  FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    %%
+%%  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   %%
+%%  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          %%
+%%  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       %%
+%%  THIS SOFTWARE.                                                       %%
+%%                                                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  A reference card for Festival with the standard commands
+%%
+\documentstyle{article}
+
+%\setlength{\textwidth}{9in}
+\setlength{\textwidth}{380pt}
+\setlength{\textheight}{7.0in}
+\setlength{\topmargin}{-1.0in}
+\setlength{\oddsidemargin}{-0.9in}
+
+%% Thanks to lso8219@cs.rit.edu (Loren S Osborn) for the sizes
+% For A4 
+% 3.6in
+% For letter sized 242pt
+
+\def\excode#1{\mbox{\hspace{0.25in}{\small #1}}\\ }
+\def\excodett#1{\mbox{\hspace{0.25in}{\small \tt #1}}\\ }
+\def\explain#1{\mbox{\hspace{0.1in}{\it #1 }}\\}
+\def\maintitle#1{{\bf #1} \\}
+\def\weebreak{\hspace{1in}\\}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{tabular}{ccc}
+\begin{minipage}{3.6in}
+% page 1 col 1
+\begin{center}
+{\bf The Festival Speech Synthesis System 1.4}
+{\bf Reference Card}
+\end{center}
+
+\maintitle{Festival on-line manual:}
+{\small \tt http://www.cstr.ed.ac.uk/projects/festival/manual/}
+\explain{If Netscape is running, in command interpreter}
+\excodett{(manual nil)}
+\hspace{1in}\\
+\maintitle{Making it talk:}
+\excodett{festival --tts file.text}
+\excodett{echo "hello" | festival --tts}
+\hspace{1in}\\
+\maintitle{Command line interpreter}
+\explain{If editline interface is supported, {\tt C-} denotes}
+\explain{control  key, {\tt M-} denotes meta key (diamond}
+\mbox{\hspace{0.1in}{\it  or maybe alt)}}
+\begin{tabbing}
+abc \= C-xxxx \= explain \kill
+    \> {\tt \small C-c} \> {\small \it stop and return to top-level}\\
+    \> {\tt \small C-d} {\small \it or \tt (quit)} \\
+    \>                  \> {\small \it Exit Festival}\\
+    \> {\tt \small TAB} \> {\small \it symbol, function or file completion}\\
+    \> {\tt \small C-p} {\small \it or up-arrow} \\
+    \>           \> {\small \it previous command}\\
+    \> {\tt \small C-r} \> {\small \it backwards search command}\\
+    \> {\tt \small M-h} \> {\small \it print help on current symbol}\\
+    \> {\tt \small M-s} \> {\small \it say help on current symbol}\\
+    \> {\tt \small M-m} \> {\small goto appropriate manual page}\\
+    \>           \> {\small \it (requires Netscape to be running)}
+\end{tabbing}
+\explain{Emacs keys may be used for editing command line}
+\weebreak
+\maintitle{Scheme commands: speech}
+\explain{Say some string of text}
+\excode{{\tt (SayText "}{\it text ...}{\tt ")}}
+\explain{Say the contents of {\tt file.text}}
+\excodett{(tts "file.text" nil)}
+\maintitle{Voices}
+\explain{Select voice through {\tt voice\_*} functions e.g.}
+\excodett{(voice\_rab\_diphone)}
+\excodett{(voice\_don\_diphone)}
+\excodett{(voice\_ked\_diphone)}
+
+\end{minipage} &
+\begin{minipage}{3.6in}
+% page 1 col 2
+\maintitle{Scheme commands: general}
+\explain{Setting a variable}
+\excodett{(set! a 'fred) ; comment}
+\excodett{(set! b '(b c d)}
+\excodett{(set! sum (+ 2 3 4)}
+\explain{Lists}
+\excodett{festival> (set! x '(a b c))}
+\excodett{(a b c)}
+\excodett{festival> (set! y '(d e f))}
+\excodett{(d e f)}
+\excodett{festival> (append x y)}
+\excodett{(a b c d e f)}
+\excodett{festival> (car x)}
+\excodett{a}
+\excodett{festival> (cdr x)}
+\excodett{(b c)}
+\excodett{festival> (cons 'm x)}
+\excodett{(m a b c)}
+\explain{Functions}
+\excodett{(define plus (a b) (+ a b))}
+\excodett{festival> (plus 3 4)}
+\excodett{7}
+\excodett{festival> (plus 3 (plus 2 4))}
+\excodett{9}
+\explain{Printing}
+\excodett{(pprint '(a b c))}
+\excode{$\rightarrow$ {\tt (a b c)}}
+\excode{{\tt (format t "Total \%2.3f} \% {\tt n" 3.12345)}}
+\excode{$\rightarrow$ 3.123}
+\explain{Others}
+\excodett{(load "fred.scm")}
+\excodett{(if (string-equal name "fred")}
+\excode{\mbox{\hspace{0.1in}{\tt (pprint "is fred")}}}
+\excode{\mbox{\hspace{0.1in}{\tt (pprint "is not fred"))}}}
+
+\end{minipage} &
+\begin{minipage}{3.6in}
+% page 1 col 3
+\maintitle{Text modes}
+\explain{Second argument to {\tt tts} is {\it MODE}}
+\explain{{\it MODE} may be {\tt nil}, {\tt email}, {\tt sable} e.g.}
+\excodett{ (tts "file.sable" stml)}
+\explain{If {\it MODE} is {\tt nil} use auto-mode}
+\explain{To set all files ending in {\tt .ogi} to be}
+\explain{synthesized in {\tt ogi} mode}
+\excodett{(set! auto-text-mode-alist}
+\excode{\mbox{\hspace{0.1in}{\tt (cons (cons "\\.ogi\$" 'ogi)}}}
+\excode{\mbox{\hspace{0.2in}{\tt auto-text-mode-alist))}}}
+\maintitle{Lexicon}
+\explain{Adding new lexical entry}
+\excodett{(lex.add\_entry "email"}
+\excode{\mbox{\hspace{0.1in}{\tt ("email" n (((ii) 1) ((m ei l) 0))))}}}
+\explain{Check similar words for pronunciation}
+\excodett{(lex.lookup "mail")}
+\explain{Add new personal entries in {\tt .festivalrc}}
+\explain{first select the voice then call {\tt lex.add\_entry}}
+\maintitle{Audio}
+\explain{Audio should be setup at installation}
+\explain{NAS (network audio server) multi-platform}
+\excodett{(Parameter.set 'Audio\_Method 'netaudio)}
+\explain{8bit ulaw {\tt /dev/audio} (Sun, FreeBSD, Linux)}
+\excodett{(Parameter.set 'Audio\_Method 'sunaudio)}
+\explain{Sun/FreeBSD/Linux 16 linear (compile-time options)}
+\excodett{(Parameter.set 'Audio\_Method 'sun16audio)}
+\excodett{(Parameter.set 'Audio\_Method 'freebsd16audio)}
+\excodett{(Parameter.set 'Audio\_Method 'linux16audio)}
+\explain{Arbitrary command, will execute given command}
+\explain{on waveform. {\tt \$FILE} and {\tt \$SR} will be set}
+\excodett{(Parameter.set 'Audio\_Method 'Audio\_Command)}
+\excodett{(Parameter.set 'Audio\_Command}
+\excode{\mbox{\hspace{0.3in}{\tt "adplay -raw -rate \$SR \$FILE")}}}
+\explain{Default for command is unheadered, shorts (native)}
+\explain{You can change format and sample rate with}
+\excodett{(Parameter.set 'Audio\_Required\_Rate 8000)}
+\excodett{(Parameter.set 'Audio\_Required\_Fromat 'riff)}
+\explain{formats include: {\tt riff, aiff, nist, snd, esps}}
+
+\end{minipage}
+\end{tabular}
+
+\begin{tabular}{ccc}
+\begin{minipage}{3.6in}
+% page 2 col 1
+\maintitle{Utterances}
+\explain{Making utterances}
+\excode{{\tt (Utterance }{\it TYPE} {\it DATA}{\tt)}}
+\explain{{\it TYPE}s include: {\tt Text} {\tt Phones} {\tt Wave} e.g.}
+\excodett{(Utterance Text "Hello world.")}
+\excodett{(Utterance Phones (h @ l ou))}
+\excodett{(Utterance Wave "sc001.wav")}
+\explain{Synthesize (modules based on TYPE)}
+\excode{{\tt (utt.synth }{\it UTT}{\tt)}}
+\explain{Send waveform to audio device}
+\excode{{\tt (utt.play }{\it UTT}{\tt)}}
+\explain{An example}
+\excodett{(set! utt1 (Utterance "Hello world."))}
+\excodett{(utt.play (utt.synth utt1))}
+\maintitle{Accessing items and features}
+\explain{returns list of ITEMs}
+\excode{{\tt (utt.relation.items }{\it UTT RELATIONNAME}{\tt )}}
+\explain{Item feature access functions}
+\excode{{\tt (item.feat }{\it ITEM FEATNAME}{\tt )}}
+\excode{{\tt (item.name }{\it ITEM}{\tt )}}
+\excode{{\tt (item.next }{\it ITEM}{\tt )}}
+\excode{{\tt (item.prev }{\it ITEM}{\tt )}}
+\excode{{\tt (item.set\_feat }{\it ITEM FEATNAME VAL}{\tt )}}
+\excode{{\tt (item.relation }{\it ITEM RELATIONNAME}{\tt )}}
+\maintitle{Item features}
+\explain{Assume {\tt utt} is utterance, {\tt item} is item}
+\explain{returns item's name}
+\excodett{(item.feat item "name")}
+\explain{returns item's next's name}
+\excodett{(item.feat item "n.name")}
+\explain{returns item's previous's name}
+\excodett{(item.feat item "p.name")}
+\explain{name of word related to Syllable item}
+\excodett{(item.feat item "R:SylStructure.parent.name")}
+\explain{name of next word of word related to syllable}
+\excodett{(item.feat item "R:SylStructure.parent.R:Word.n.name")}
+\explain{name of word related to next syllable}
+\excodett{(item.feat item "n.R:SylStructure.parent.name")}
+\maintitle{Multi-features}
+\explain{Return all features of items in relation}
+\excodett{(utt.features utt 'Syllable }
+\excode{\mbox{\hspace{0.1in}{\tt '(duration stress n.name))}}}
+\explain{See manual for builtin feature names}
+
+\end{minipage} &
+\begin{minipage}{3.6in}
+% page 2 col 2
+
+\maintitle{Regex matching}
+\begin{tabbing}
+C-xxxx \= explain \kill
+{\tt \small .} \> {\small \it matches any character}\\
+{\tt \small {\it X}*} \> {\small \it zero or more Xs}\\
+{\tt \small {\it X}+} \> {\small \it one or more Xs}\\
+{\tt \small {\it X}?} \> {\small \it zero or one Xs}\\
+{\tt \small [abc]} \> {\small \it range, matching a,b or c}\\
+{\tt \small [A-Z]} \> {\small \it range, matching all caps}\\
+{\tt \small \verb+[^A-Z]+} \> {\small \it range, matching all but caps}\\
+{\tt \small \verb+\\(XY\\)+} \\
+                           \> {\small \it group X and Y}\\
+{\tt \small \verb+X\\|Y+} \> {\small \it match X or Y}
+\end{tabbing}
+\explain{For example}
+\begin{tabbing}
+C-xxxx \= explain \kill
+{\tt \small ".*a.*"} \> {\small \it matches all strings containing a}\\
+{\tt \small "a.*"} \> {\small \it all strings starting with a}\\
+{\tt \small "[A-Z].*"} \> {\small \it all strings starting with a capital}\\
+{\tt \small "[0-9]+"} \> {\small \it all strings of digits}\\
+{\tt \small "\verb.-?[0-9]+\\(\\..\verb.[0-9]+\\)?."} \\
+           \> {\small \it any real number}\\
+{\tt \small  "\verb.[^aeiouAEIOU]+."} \> \\
+           \> {\small \it any string with no vowels}\\
+{\tt \small "\verb.\\(Saturday\\)\\|\\(Sunday\\)."} \\
+           \> {\small \it Saturday or Sunday}
+\end{tabbing}
+\maintitle{String functions}
+\explain{returns suffix of STR1 after STR2}
+\excode{{\tt (string-after }{\it STR1 STR2}{\tt )}}
+\explain{returns prefix of STR1 before STR2}
+\excode{{\tt (string-before }{\it STR1 STR2}{\tt )}}
+\explain{returns t if STR matches REGEX or nil}
+\excode{{\tt (string-matches }{\it STR REGEX}{\tt )}}
+\explain{returns t if STR1 equals STR2}
+\excode{{\tt (string-equal }{\it STR1 STR2}{\tt )}}
+\explain{returns non-nil if STR is in LIST}
+\excode{{\tt (member\_string }{\it STR LIST}{\tt )}}
+
+\end{minipage} &
+\begin{minipage}{3.6in}
+% page 2 col 3
+\maintitle{Miscellaneous}
+\explain{List all (potentional) voices}
+\excodett{(voice.list)}
+\explain{Return description of voice NAME}
+\excode{{\tt (voice.description }{\it NAME}{\tt )}}
+\explain{Speak description of voice NAME}
+\excode{{\tt (voice.describe }{\it NAME}{\tt )}}
+\explain{List all defined lexicons}
+\excode{{\tt (lex.list)}}
+\explain{List all defined phonesets}
+\excode{{\tt (PhoneSet.list)}}
+\explain{Describe current PhoneSet}
+\excode{{\tt (PhoneSet.description)}}
+\maintitle{More information}
+\explain{More information of Festival is available from}
+\excodett{http://www.cstr.ed.ac.uk/projects/festival.html}
+\explain{Or by mailing}
+\excodett{festival-help@cstr.ed.ac.uk}
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\hspace{1in}\\
+\maintitle{Copyright}
+\explain{(C) University of Edinburgh 1996-1999.}
+\explain{All rights reserved}
+\hspace{1in}\\
+\explain{{\small Festival is free software and may be}}
+\explain{{\small used commercially or otherwise without}}
+\explain{{\small further permission.}}
+\end{minipage}
+\end{tabular}
+
+\end{document}
+

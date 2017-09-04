@@ -1,0 +1,17 @@
+.SH BUGS
+This still isn't as general as it should be.  It seems to
+require lots of special little options which suggests the
+general options aren't right.
+
+.SH AUTHOR
+Alan W Black and Paul Taylor
+.br
+(C) Centre for Speech Technology Research
+.br
+University of Edinburgh
+.br
+80 South Bridge
+.br
+Edinburgh EH1 1HN
+.br
+http://www.cstr.ed.ac.uk/projects/festival.html

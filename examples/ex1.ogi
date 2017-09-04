@@ -1,0 +1,17 @@
+
+This is an example. 
+<FT (voice_cmu_us_rms_cg)>
+<slow> This is a slow example.
+<Male>
+<SLOW> This is a very slow example.
+<normal> a normal one <fast> and a fast talking example.
+<FAST> Maybe this one is too fast.
+
+<normal>
+<Male> My name is Mike, <spell mike>.
+My telephone number is <phone 650-2787>
+
+<Male> Mike here. <female> Chris here. <male> This is Gordon. <MALE>
+I'm most terribly sorry to interrupt at this time, but my name
+is Roger.  A good day to you.
+

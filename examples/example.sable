@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" 
+	"Sable.v0_2.dtd"
+[]>
+<SABLE>
+
+<!-- A basic set of examples from SABLE -->
+
+My telephone number is 
+<AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.2.au"/>
+<AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/>
+<AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.8.au"/>
+<AUDIO SRC="http://www.cstr.ed.ac.uk/~awb/sounds/touchtone.7.au"/>.
+
+Without style, <BREAK LEVEL="Large"/> Grace and I are in trouble.
+
+<DIV TYPE="paragraph">
+<DIV TYPE="sentence" >
+Yesterday, Denmark and India announced an agreement of cultural 
+exchange. </DIV> <DIV TYPE="sentence"> Further talks will take place 
+next month.
+</DIV>
+</DIV>
+
+The leaders of <EMPH>Denmark</EMPH> and <EMPH>India</EMPH> meet on
+Friday.
+ 
+An example is <ENGINE ID="festival" DATA="our own festival speech
+synthesizer"> the festival speech synthesizer</ENGINE> or
+the Bell Labs speech synthesizer.
+
+Some English first and then some Spanish.
+<LANGUAGE ID="SPANISH">Hola amigos.</LANGUAGE>
+<LANGUAGE ID="NEPALI">Namaste</LANGUAGE>
+
+Move the <MARKER MARK="mouse" /> mouse to the top.
+
+Without his penguin, <PITCH BASE="-20%"> which he left at home, </PITCH> he
+       could not enter the restaurant.
+
+I say <PRON SUB="toe maa toe">tomato</PRON> and you say 
+<PRON SUB="toe may toe">tomato</PRON>.
+
+The address is <RATE SPEED="-40%"> 10 Main Street </RATE>.
+
+As a test of marked-up numbers. Here we have 
+a year <SAYAS MODE="date">1998</SAYAS>, 
+an ordinal <SAYAS MODE="ordinal">1998</SAYAS>, 
+a cardinal <SAYAS MODE="cardinal">1998</SAYAS>, 
+a literal <SAYAS MODE="literal">1998</SAYAS>, 
+and phone number <SAYAS MODE="phone">1998</SAYAS>.
+
+Changes of speaker may appear in the text.
+<SPEAKER NAME="male3">Using one speaker, <SPEAKER NAME="male2">with
+an aside from another</SPEAKER> and returning to the first </SPEAKER>
+Eventually returning to the original default speaker.
+
+Please speak more <VOLUME LEVEL="loud">loudly</VOLUME>, except
+when I ask you to speak <VOLUME LEVEL="quiet">in a quiet voice</VOLUME>.
+
+</SABLE>
+
+

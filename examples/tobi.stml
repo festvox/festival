@@ -1,0 +1,28 @@
+<!doctype stml system "STML.dtd"
+[]>
+<stml>
+
+<!-- This is an example of using STML for testing ToBI examples
+     you could also do this in the LISP domain too -->
+
+<speaker name=male1>
+<call engid="festival" command="(require 'tobi_rules)">
+<call engid="festival" command="(setup_tobi_f0_method)">
+<!-- Lets slow things down a bit. -->
+<rate speed="1.2" scheme="native">
+
+<!-- Only words explicitly marked will have accents and tones -->
+
+I <word name="wanted" accent="H*"> to go on a 
+<word name="barge" accent="H*"> <word name="trip" tone="L-L%">.
+
+<word name="I" accent="H*"> wanted to go on a 
+<word name="barge" accent="L*"> <word name="trip" tone="L-H%">,
+but <word name="they" accent="H*"> wanted to go 
+<word name="home" tone="L-L%">
+
+</rate>
+
+</stml>
+
+

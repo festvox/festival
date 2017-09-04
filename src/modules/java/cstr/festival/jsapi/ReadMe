@@ -1,0 +1,226 @@
+
+		Festival Java Speech API (jsapi) Support
+		========================================
+			     (preliminary)
+
+Contents
+--------
+	1 Overview
+	2 Requirements
+	3 Limitations
+	4 Building
+	5 Use
+	6 Issues
+
+			--o--oOo--o--
+
+1 Overview
+----------
+
+This is a preliminary implementation of the Java speech API using
+festival. It is built on top of the Java festival client code, meaning
+that it talks to an instance of festival running as a server, possibly
+on another machine. See the festival documentation for instructions on
+running such a server.
+
+Some parts of JSAPI are not implemented. See section 3 for details.
+
+The code is almost pure Java. Since Java 1.1 doesn't support audio in
+any real sense, the speech tools program `na_play' is used to play
+audio. In the near future a version of the speech tools java code
+which uses the Java media interface will be created (as part of the
+move of all of our Java code to Java 1.2) allowing a pure-Java client
+and JSAPI implementation.
+
+The basic structure chosen for this implementation was to use festival
+purely as a text-to-waveform engine (as opposed to, for instance,
+having festival play the waveforms). text to waveform conversion is
+requested as soon as a Speakable is placed on the Synthesizer's
+queue. This has the advantage that the waveform will be available as
+soon as possible, but the disadvantage that cancelling a request on
+the queue may not stop festival from working on it (in fact at the
+moment jobs on festival's job queue are never cancelled).
+
+			--o--oOo--o--
+
+2 Requirements
+--------------
+
+In order to use this JSAPI synthesizer you will need some things in
+addition to the normal requirements for compiling speech tools and
+festival:
+
+	A Java compiler. The latest version of the Sun Java
+	Development Kit for Java version 1.1 (currently we use jdk-1.1.7)
+
+	An implementation of the JSAPI framework (jsapi.jar).
+
+	We currently use a few classes from the Java Speech API
+	Utilities from the Speech Group at Sun Microsystems.
+
+Unfortunately the third dependency makes this implementation useful
+only to those who have access to the JSAPI utilities, which are not
+generally distributed. We plan to remove this problem as soon as
+possible. 
+
+
+			--o--oOo--o--
+
+3 Limitations
+-------------
+
+Some areas of the JSAPI have not been implemented, for limits of time,
+lack of support within festival or just because we are unsure about
+the correct mapping of JSAPI to festival functionality. We are working
+on reducing this list.
+
+* The SynthesizerProperties mechanism is not implemented. This should be
+done by talking to festival, the infrastructure of this
+exists. Temporarily the non-standard setVoice() method of
+FestivalSynthesizer can be used to do what is most likely to be
+needed.
+
+* The festival EngineCentral class has two modes hard wired into
+it. This should be replaced by code to query festival. There is an
+issue of when the system should commit to which server to connect to. 
+
+* The SynthesizerListener mechanism is not implemented. 
+
+* The Pause and Resume methods are not implemented. 
+
+* WORD_STARTED and MARKER_REACHED Speakable events are not produced. 
+
+This code has not been only lightly exercised and so there are no
+doubt other bugs and limitations. Please let us know of any you spot.
+
+			--o--oOo--o--
+
+4 Building
+----------
+
+First you should build the speech tools library with (at least) JAVA
+support. JAVA_CPP support is not necessary, but won't hurt. To do this
+you will need to define JAVA_HOME in either your environment or the
+speech_tools config file as you would do for any java application.
+
+Copy festival/config/config-dist to festival/config/config (if you
+haven't done this already) and edit config. Add JSAPI to the
+ALSO_INCLUDE line, as follows:
+
+	ALSO_INCLUDE += JSAPI
+
+Either in the config file or in your shell environment define
+JSAPI_HOME and JSUTILS_HOME. For example
+
+	JSAPI_HOME=/local/install/place/jsutils-1.0/jsapi
+	JSUTILS_HOME=/local/install/place/jsutils-1.0
+
+now go to the top level festival directory and do
+
+	gnumake info
+
+to check that JSAPI is included in the list of selected modules and
+that JSAPI_HOME is as you would expect.
+
+Now you should be able to compile festival with 
+
+	gnumake
+
+as normal.
+
+			--o--oOo--o--
+
+5 Use
+-----
+
+Before writing JSAPI code you should probably run the simple example JSAPI
+application we have included, bin/jsapi_example. The following steps
+are necessary for any use of festival via JSAPI.
+
+In order to use JSAPI and festival you need to register the festival
+synthesizer. See the JSAPI documentation for details, but basically
+there are two methods:
+
+	One is to put a file listing available synthesizers in either
+	your home directory or JAVA_HOME. The file is called
+	`speech.properties' and an example containing just festival
+	can be found in festival/lib/speech.properties.  
+
+	The second method is to have your code register the
+	synthesizers it will use. The name of the festival
+	`EngineCentral' class is `cstr.festival.jsapi.EngineCentral'.
+	The jsapi_example program has a -r <CLASSNAME> argument you
+	can 
+ 
+
+Next you must run a festival in server mode and let the JSAPI code
+know where it is. See the festival documentation for instruction on
+how to run it, when you have done that you need to set the following
+java system properties (eg with -D on the java command line)
+
+	festival.server=myhost.yoyodyne.com
+	festival.port=1314
+
+The jsapi_example program has a `--server host:port' argument and also
+looks in the FESTIVAL_SERVER environment variable for information in
+the same format.
+
+You can now run the jsapi_example program. This program simply passes
+each command line argument to the synthesizer. For instance
+
+	$ FESTIVAL_SERVER=myhost.yoyodyne.com:1314
+
+	$ export FESTIVAL_SERVER
+
+	$ bin/jsapi_example "Say this.  Then say this." "Wasn't that fun!"
+
+This gives two strings to the synthesizer, resulting in 3 waveforms
+being played (because the first contains two sentences).
+
+Give jsapi_example the -v argument to get more details of what is
+happening.
+
+	$ bin/jsapi_example -v "Say this.  Then say this." "Wasn't that fun!"
+	engine=Festival [myhost.yoyodyne.com:1314]
+	        locale  = en_GB
+	        mode    = myhost.yoyodyne.com:1314
+	        running = true
+	        voices  = Roger Burroughs
+	Text is 'Say this.  Then say this.'
+	SpeakableEvent 'Say this.  Then say this.' speakableStarted
+	SpeakableEvent 'Say this.  Then say this.' topOfQueue
+	Text is 'Wasn't that fun!'
+	SpeakableEvent 'Say this.  Then say this.' speakableEnded
+	SpeakableEvent 'Wasn't that fun!' speakableStarted
+	SpeakableEvent 'Wasn't that fun!' topOfQueue
+	SpeakableEvent 'Wasn't that fun!' speakableEnded
+	finishing
+
+The code for this program is in
+
+	src/modules/java/cstr/testPrograms/SayHelloWorld.java
+
+6 Issues
+--------
+
+Some issues remain as to the mapping between festival and JSAPI. 
+
+JSAPI defines a three level hierarchy Engine/Mode/Voice where an
+Engine/Mode pair defines a unique, single locale synthesizer. Festival
+Has a flat space of voices, which could of course be partitioned into
+locales, but introduces the additional question of which server we are
+connecting to. Is the Engine `Festival' or is it `the Festival running
+on myhost.yoyodyne.com at port 1314'? This means the engine doesn't
+identify the class of all festival synthesizers. Perhaps the host and
+port number should be the mode, but then it doesn't map to a unique
+locale (since one server could have, say, English and Spanish voices).
+
+Related to this, how should the location of the server be passed to
+the JSAPI code. The current method of using the two system properties
+limits us to one server. 
+
+Some work needs to be done on making the JSAPI interface query the
+server, to get a list of modes and voices, and also to get and set
+properties. 
+
+

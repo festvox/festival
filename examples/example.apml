@@ -1,0 +1,114 @@
+<?xml version='1.0'?>
+<!DOCTYPE apml SYSTEM "apml.dtd" []>
+
+<apml>
+
+<turnallocation type="take"> 
+<performative type="greet"> 
+<rheme>Good <emphasis x-pitchaccent="Hstar">morning </emphasis> 
+       Mr Smith<boundary type="LL"/>
+</rheme> 
+</performative> 
+</turnallocation>
+
+
+<performative type="inform">
+<theme belief-relation="gen-spec"
+               affect="sorry-for"> 
+       I'm sorry to <emphasis x-pitchaccent="LplusHstar">tell</emphasis> you 
+<boundary type="LH"/>
+</theme>
+<rheme>that you have been <emphasis x-pitchaccent="Hstar"> diagnosed </emphasis> 
+       as <emphasis x-pitchaccent="Hstar">suffering</emphasis> 
+       from a <emphasis x-pitchaccent="Hstar"
+                        adjectival="small">mild</emphasis> 
+       <emphasis x-pitchaccent="Hstar">form</emphasis> 
+       of what we call <emphasis x-pitchaccent="Hstar">angina</emphasis>
+                       <emphasis x-pitchaccent="Hstar">pectoris</emphasis>.
+       <boundary type="LL"/>
+</rheme>
+</performative> 
+
+<performative type="inform">
+<theme belief-relation="gen-spec">
+       This is 
+</theme>
+<rheme>
+        a <emphasis x-pitchaccent="Hstar"> spasm </emphasis>
+        of the <emphasis x-pitchaccent="Hstar"
+                         deictic="0 30 0"> chest </emphasis>
+       <boundary type="LL"/>,
+</rheme>
+<theme belief-relation="gen-spec">
+       resulting from
+</theme>
+<rheme belief-relation="cause-effect">
+       overexertion when the <emphasis x-pitchaccent="Hstar"> heart </emphasis> 
+       is diseased
+       <boundary type="LL"/>
+</rheme>
+</performative>
+
+<performative type="suggest">
+<theme belief-relation="solutionhood">
+       To <emphasis x-pitchaccent="LplusHstar">solve </emphasis>
+       this problem
+       <boundary type="LH"/>, 
+</theme>
+<rheme belief-relation="suggestion">
+       there are two 
+       <emphasis x-pitchaccent="Hstar">drugs </emphasis>I would like you to take. 
+       <boundary type="LL"/>
+</rheme>
+</performative> 
+
+<performative type="inform">
+<theme> The <emphasis x-pitchaccent="LplusHstar">first</emphasis> 
+        one 
+        <boundary type="LH"/>
+</theme> 
+<rheme>is <emphasis>Aspirin,</emphasis> <boundary type="LL"/></rheme>
+ 
+
+<theme belief-relation="modifier">
+       which is 
+</theme>
+<rheme>an <emphasis>analgesic.</emphasis><boundary type="LL"/></rheme>	
+</performative> 
+
+<performative type="paraphrase">
+<theme belief-relation="gen-spec"
+              affect="relief">
+       that is,
+</theme>
+<rheme>it <emphasis x-pitchaccent="Hstar">relieves</emphasis>
+       the <emphasis x-pitchaccent="Hstar">pain.</emphasis> 
+       <boundary type="LL"/>
+</rheme>
+</performative>
+
+<performative type="inform">	
+<theme> I have <emphasis x-pitchaccent="LplusHstar">prescribed</emphasis> it 
+        <boundary type="LH"/>
+</theme>
+<rheme belief-relation="justification">
+       to cure your <emphasis x-pitchaccent="Hstar">angina </emphasis> 
+       <boundary type="LL"/>
+</rheme>
+</performative>
+
+<performative type="inform">
+<theme affect="sorry-for"> The <emphasis x-pitchaccent="LplusHstar"
+                      adjectival="tiny">only 
+	    </emphasis> 
+            <emphasis x-pitchaccent="LplusHstar"
+                      adjectival="tiny">problem 
+            </emphasis> 
+        <boundary type="LH"/>
+</theme> 
+<rheme>is that this drug can be associated with 
+	some <emphasis x-pitchaccent="Hstar">sideeffects</emphasis> 
+       <boundary type="LL"/>.
+</rheme>
+</performative>
+</apml>

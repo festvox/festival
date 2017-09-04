@@ -1,0 +1,90 @@
+
+Word test: e.g. 12,000 pounds
+  e g twelve thousand pounds 
+Word test: It costs $12 million
+  It costs twelve million dollars 
+Word test: Prussia's influence (1864-87) will be discussed at a conference
+             May 2-10.  Call (203) 450-3343, ($1.43 a minute) for details.
+  Prussia 's influence eighteen sixty four to eighty seven will be discussed at a conference May second to tenth Call two zero three four five zero three three four three one dollar forty three a minute for details 
+Word test: 23/06/97 at 03:45
+  twenty three zero six ninety seven at three forty five 
+Word test: During the 1950's and 60s, 1.45% took AB123.
+  During the nineteen fifty 's and sixty 's one point four five percent took A B one two three 
+Word test: $10, $10,000, $1.00, $1.23, $1.03, $2.56.
+  ten dollars ten thousand dollars one dollar one dollar twenty three one dollar three two dollars fifty six 
+Word test: HK$100 million, \10,000, Y1.2345, £1.23, M$1.03, C$2.56.
+  one hundred million Hong Kong dollars ten thousand yen one point two three four five yen one pound twenty three one M dollar three two Canadian dollars fifty six 
+Word test: A$1.25, £650.00, C$1.23 billion, Y10,000, #1.23.
+  one Australian dollar twenty five six hundred and fifty pounds one point two three billion Canadian dollars ten thousand yen one pound twenty three 
+Word test: I think that is No 123.
+  I think that is number one hundred and twenty three 
+Word test: It was exactly 12:45:23.
+  It was exactly twelve hours forty five minutes and twenty three seconds 
+Word test: The date will be 3/3/04.
+  The date will be three three o four 
+Word test: Its on the 1st, and 2nd on 185th and Cornell.
+  Its on the first and second on one hundred and eighty fifth and Cornell 
+Word test: About 2/3 of the stocks increased by more than 1/16%, while the other 1/2 didn't.
+  About two third 's of the stocks increased by more than one sixteenth percent while the other half didn't 
+Word test: The U.S. government, EU and NASA are involved.
+  The U S government E U and NASA are involved 
+Word test: Henry V: Part I Act II Scene XI: Mr X is I believe, V I Lenin, 
+             and not Charles I.
+  Henry the fifth Part one Act two Scene eleven Mr X is I believe V I Lenin and not Charles the first 
+Word test: Dr Taylor is at 12 High St. Edinburgh.
+  doctor Taylor is at twelve High street Edinburgh 
+Word test: Dr Taylor is at St Andrew's St, Edinburgh.
+  doctor Taylor is at saint Andrew 's street Edinburgh 
+Word test: Dr Taylor is at St Andrew's, St Albans.
+  doctor Taylor is at saint Andrew 's saint Albans 
+Word test: Dr Taylor is at Dr Johnson Dr, West Linton.
+  doctor Taylor is at doctor Johnson drive West Linton 
+Word test: Dr Taylor is with Dr Black Dr Caley and St Erasmus.
+  doctor Taylor is with doctor Black doctor Caley and saint Erasmus 
+Word test: Dr Taylor is at Dr Black Dr near the bus station.
+  doctor Taylor is at doctor Black drive near the bus station 
+Phrase test: The man wanted to go for a drive in. 
+  The man wanted to go B
+  for a drive in BB
+  
+Phrase test: The man wanted to go for a drive in the country. 
+  The man wanted to go for a drive B
+  in the country BB
+  
+Phrase test: The man wanted to go for a drive-in the country. 
+  The man wanted to go B
+  for a drive-in the country BB
+  
+Phrase test: The man wanted to go for a drive--in the country. 
+  The man wanted to go for a drive B
+  in the country BB
+  
+Phrase test: He gave the big boys' lunch in the park. 
+  He gave the big boys lunch B
+  in the park BB
+  
+Phrase test: He gave the `big boys' lunch in the park. 
+  He gave the big boys B
+  lunch in the park BB
+  
+Phrase test: That is it---unless you want more. 
+  That is it B
+  unless you want more BB
+  
+Phrase test: That is it -- unless you want more. 
+  That is it B
+  unless you want more BB
+  
+Segment test: They called him Mr. Black though he preferred Alan.
+  # dh ei k oo l d h i m m i s t @ b l a k # dh ou h ii p r i f @@ d a l @ n # 
+Segment test: They called him Mr.  Black was the colour of his beard.
+  # dh ei k oo l d h i m m i s t @ # b l a k w o z dh @ k uh l @ r o v h i z b i@ d # 
+Segment test: (They called him Mr.) Black was the colour of his beard.
+  # dh ei k oo l d h i m m i s t @ # b l a k w o z dh @ k uh l @ r o v h i z b i@ d # 
+Segment test: The U.S. Secretary didn't arrive in time.
+  # dh @ y uu e s s e k r @ t r ii d i d @ n t # @ r ai v i n t ai m # 
+Segment test: My cat who lives in Edinburgh has nine lives.
+  # m ai k a t # h uu l i v z i n e d i n b r @ h a z n ai n l ai v z # 
+Segment test: Prussia's influence (1864-87) will be discussed at a conference
+                May 2-10.  Call (203) 450-3343, ($1.43 a minute) for details.
+  # p r uh s i@ z i n f l u@ n s # ei t ii n s i k s t ii f oo t uu ei t ii s e v @ n # w i l b ii d i s k uh s t a t @ k o n f @ r @ n s # m ei s e k @ n d t uu t e n th # k oo l t uu z i@ r ou th r ii # f oo f ai v z i@ r ou # th r ii th r ii f oo th r ii # w uh n d o l @ f oo t ii th r ii @ m i n i t # f oo d ii t ei l z # 

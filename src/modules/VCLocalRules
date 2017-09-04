@@ -1,0 +1,6 @@
+# Special extra rules for this directory
+
+subtypes.cc : . utilities\find_subtypes.exe
+	@echo "Making subtypes.cc"
+	utilities\find_subtypes $(DIRS) - $(ABSTRACT_TYPES) >subtypes.cc
+

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" 
+	"Sable.v0_2.dtd"
+[]>
+<SABLE>
+
+<SPEAKER NAME="male1">
+
+<!-- Words may be spefied inline with a number of different 
+     features -->
+Homographs are words that are written the same but have different
+pronunciations, such as <PRON SUB="lyves">lives</PRON> and
+<PRON SUB="lives">lives</PRON>.
+
+<!-- Words can even have their pronunciation specified inline -->
+You say <PRON SUB="e thur">either</PRON>, while I 
+say <PRON SUB="i thur">either</PRON>.
+
+</SPEAKER>
+<SPEAKER NAME="male2">
+
+<RATE SPEED="+100%">
+We can say things fast.
+</RATE>
+
+<RATE SPEED="-50%">
+and slowly.
+</RATE>
+
+</SPEAKER>
+<SPEAKER NAME="male1">
+
+And then at normal speed.
+
+</SPEAKER>
+</SABLE>
+
+
