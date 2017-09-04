@@ -58,6 +58,9 @@ system_dummy := $(shell $(MAKE) -C $(TOP)/config -f make_system.mak TOP=.. syste
 
 include $(TOP)/config/common_make_rules
 
+default_voices:
+	./src/scripts/default_voices.sh
+
 backup:  time-stamp
 	 @ $(RM) -f $(TOP)/FileList
 	 @ $(MAKE) file-list

@@ -39,7 +39,7 @@
 
 TOP=../..
 DIRNAME=src/scripts
-SCRIPTS= festival_server.sh festival_server_control.sh
+SCRIPTS= festival_server.sh festival_server_control.sh default_voices.sh
 EXTRA_SCRIPTS =  jsapi_example.sh festival_client_java.sh
 FILES = Makefile shared_setup_sh shared_setup_prl shared_script $(SCRIPTS) $(EXTRA_SCRIPTS)
 INSTALL = 
