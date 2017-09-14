@@ -37,6 +37,15 @@
 ##                                                                       ##
 ###########################################################################
 
+if [ ! ../festival/src/include/festival.h ]
+then
+    echo Not in the right directory: cannot install Festival default voice
+    echo You should be in the festival source top level directory
+    echo Where ls -l src/include/festival.h is found
+
+    exit -1
+fi
+
 if [ ! -d packed ]
 then
    mkdir packed
