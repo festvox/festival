@@ -341,7 +341,7 @@ void lex_to_phones(const EST_String &name, const EST_String &pos,
     else
 	siod_list_to_strlist(car(lpos), lex_def);
     
-    for (EST_Litem *sl = lex_def.head(); sl; sl = inext(sl))
+    for (EST_Litem *sl = lex_def.head(); sl; sl = sl->n)
     {
 	p = phone.append();
 	lex_phone = lex_def(sl);
