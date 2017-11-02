@@ -617,7 +617,7 @@ void festival_UniSyn_phonology_init(void)
      load data.");
 
     init_subr_4("intonation_diagnostics", FT_intonation_diagnostics, 
-    "(intonation_diagnostics UTT
+    "(intonation_diagnostics UTT))\n\
      Foot nth item in relation.");
 
     // semi redundant

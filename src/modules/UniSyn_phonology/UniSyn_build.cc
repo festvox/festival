@@ -163,7 +163,7 @@ void add_trans_intonation(EST_Utterance &utt, const EST_String &i_name,
     if (add_words)
 	utt.create_relation("IntonationWord");
 
-    for (t = utt.relation(i_name, 1)->head(); t; t = unext(t))
+    for (t = utt.relation(i_name, 1)->head(); t; t = inext(t))
 	{
 	    t->f_remove("end");
 	    if (!t->f_present("word_ref"))
