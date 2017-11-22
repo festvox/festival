@@ -788,7 +788,7 @@ static DVECTOR xget_detvec_diamat2inv(DMATRIX covmat)	// [num class][dim]
 	    } else {
                 zero_determinant_flag = XTRUE;
                 covmat->data[i][j] = 1.0 / magic_covariance;
-                det = pow(magic_covariance, j+1); 
+                det = pow(magic_covariance, (int)j+1); 
                 // should actually be magic_covariance^2
 	    }
 	}
