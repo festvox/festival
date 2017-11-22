@@ -37,7 +37,7 @@
 ##                                                                       ##
 ###########################################################################
 
-if [ ! ../festival/src/include/festival.h ]
+if [ ! -f ../festival/src/include/festival.h ]
 then
     echo Not in the right directory: cannot install Festival default voice
     echo You should be in the festival source top level directory
