@@ -41,8 +41,8 @@
 PROJECT_NAME = Festival Speech Synthesis System
 PROJECT_PREFIX = FESTIVAL
 PROJECT_VERSION = 2.5.0
-PROJECT_DATE = February 2017
-PROJECT_STATE = current
+PROJECT_DATE = December 2017
+PROJECT_STATE = release
 
 # config files of projects we depend on
 

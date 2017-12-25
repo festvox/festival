@@ -17,10 +17,10 @@ Requirements
    In order to compile Festival you first need the following source
 packages
 
-`festival-2.4-release.tar.gz'
+`festival-2.5-release.tar.gz'
      Festival Speech Synthesis System source
 
-`speech_tools-2.4-release.tar.gz'
+`speech_tools-2.5-release.tar.gz'
      The Edinburgh Speech Tools Library
 
 `festlex_NAME.tar.gz'
@@ -142,7 +142,7 @@ up.  In most cases this will automatically configure festival for your
 particular system.  In most cases you need only type
      gmake
    and the system will configure itself and compile, (note you need to
-have compiled the Edinburgh Speech Tools `speech_tools-1.2.4' first.
+have compiled the Edinburgh Speech Tools `speech_tools-1.2.5' first.
 
    In some case hand configure is require.  All of the configuration
 choice are held in the file `config/config'
@@ -178,6 +178,10 @@ to install just
      festlex_CMU.tar.gz
      festlex_POSLEX.tar.gz
      festvox_kallpc16k.tar.gz
+
+On install the base voice (onely one really old one and only US English)
+
+     make default_voices
 
    Note that the single most common reason for problems in compilation
 and linking found amongst the beta testers was a bad installation of GNU

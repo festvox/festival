@@ -34,7 +34,7 @@
 ##                The Festival Speech Synthesis System                   ##
 ##                                                                       ##
 ##       Authors:  Alan W Black, Paul Taylor, Richard Caley and others   ##
-##          Date:  January 2003                                          ##
+##          Date:  December 2017                                         ##
 ##                                                                       ## 
 ###########################################################################
 TOP=.

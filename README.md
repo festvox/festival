@@ -1,7 +1,9 @@
 
               The Festival Speech Synthesis System
-                   version 2.5 February 2017
- 
+                   version 2.5 December 2017
+
+https://github.com/festvox/festival/
+
 This directory contains the Festival Speech Synthesis System,
 developed at CSTR, University of Edinburgh. The project was originally
 started by Alan W Black and Paul Taylor but many others have been
@@ -47,6 +49,8 @@ Keep abreast of Festival News by regularly checking the Festival homepage
    http://www.cstr.ed.ac.uk/projects/festival/
 or the US site
    http://festvox.org/festival/
+otr on github
+   https://github.com/festvox/festival/
 
 New in Festival 2.5
    Support for gcc6 (which is a somewhat different dialect of C++)
