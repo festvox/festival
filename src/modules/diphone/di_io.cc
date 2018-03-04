@@ -1068,7 +1068,7 @@ void di_save_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db)
 			sh[k] = (short)(db->lpc[i]->f[j][k]*32766.0);
 		    fwrite(sh,sizeof(short),db->lpc_order,fd);
 		}
-		delete sh;
+		delete [] sh;
 	    }
 	    else
 	    {
