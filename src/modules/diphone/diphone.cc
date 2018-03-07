@@ -587,7 +587,7 @@ static DIPHONE_SPN *make_spn(EST_Utterance &u)
     ps->abs_targ = walloc(int,ps->t_max);
     
     // Ensure there is a target at the start
-    if ((targ->length() == 0) || (targ->first_leaf()->F("pos") != 0))
+    if ((targ->length() == 0) || (first_leaf(targ->first())->F("pos") != 0))
     {
 	ps->targ_phon[0] = 0;
 	if (targ->length() == 0)
@@ -630,13 +630,13 @@ static DIPHONE_SPN *make_spn(EST_Utterance &u)
     }
     // Ensure there is a target at the end 
     if ((targ->length() == 0) ||
-	(targ->last_leaf()->F("pos") != seg->last_leaf()->F("end")))
+	(last_leaf(targ->first())->F("pos") != last_leaf(seg->first())->F("end")))
     {
 	ps->targ_phon[ps->t_sz] = i-1;
 	if (targ->length() == 0)
 	    ps->targ_freq[ps->t_sz] = di_db->def_f0;
 	else
-	    ps->targ_freq[ps->t_sz] = targ->last_leaf()->I("f0");
+	    ps->targ_freq[ps->t_sz] = last_leaf(targ->first())->I("f0");
 	ps->pc_targs[ps->t_sz] = 100;
 	ps->t_sz++;
     }

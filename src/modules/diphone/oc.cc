@@ -204,8 +204,8 @@ static float find_best_left(LISP d,LISP ds,LISP weights)
     // Change frame number back to ms offset
     best_pos = frametoms(mstoframe(get_c_float(START(d)),a.shift())
 			 + best,a.shift());
-    delete counts;
-    delete w;
+    delete [] counts;
+    delete [] w;
     return best_pos;
 }
 
@@ -266,8 +266,8 @@ static float find_best_right(LISP d,LISP ds,LISP weights)
     // Change frame number back to ms offset
     best_pos = frametoms(mstoframe(get_c_float(MID(d)),a.shift())
 			 + best,a.shift());
-    delete counts;
-    delete w;
+    delete [] counts;
+    delete [] w;
     return best_pos;
 }
 
