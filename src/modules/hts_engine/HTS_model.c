@@ -1156,7 +1156,7 @@ HTS_Boolean HTS_ModelSet_load(HTS_ModelSet * ms, char **voices, size_t num_voice
             if (vector_length[j] != temp_vector_length[j])
                error = TRUE;
          for (j = 0; j < ms->num_streams; j++)
-            if (is_msd[j] != is_msd[j])
+            if (is_msd[j] != temp_is_msd[j])   // Making it temp. SaiKrishna Rallabandi 20 June 2018. Based on https://github.com/festvox/festival/issues/10. 
                error = TRUE;
          for (j = 0; j < ms->num_streams; j++)
             if (num_windows[j] != temp_num_windows[j])
