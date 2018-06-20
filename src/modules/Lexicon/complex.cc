@@ -124,7 +124,7 @@ LISP lexicon_compile(LISP finname, LISP foutname)
     {
 	cerr << "Lexicon compile: unable to open " << get_c_string(foutname) 
 	    << " for writing\n";
-	fclose(fin);
+	// fclose(fin); ---> The file is already closed. SaiKrishna Rallabandi 20 June 2018. Based on https://github.com/festvox/festival/issues/9
 	festival_error();
     }
     fprintf(fout,"MNCL\n");
@@ -135,7 +135,8 @@ LISP lexicon_compile(LISP finname, LISP foutname)
 	wfree(ent_list[i]->entry);
 	delete ent_list[i];
     }
-    delete ent_list;
+    // Making it vector operator. SaiKrishna Rallabandi 20 June 2018. Based on https://github.com/festvox/festival/issues/8
+    delete [] ent_list;
     fclose(fout);
 
     cwarn << "Compiled lexicon \"" << get_c_string(finname) <<
