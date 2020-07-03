@@ -37,7 +37,8 @@ ALL_DIRS=$(BUILD_DIRS)
 
 SONGS = america1.xml america2.xml america3.xml america4.xml \
         daisy.xml doremi.xml lochlomond.xml \
-        spice1.xml spice2.xml spice3.xml spice4.xml
+        spice1.xml spice2.xml spice3.xml spice4.xml \
+        baabaablacksheep.xml
 FILES=Makefile $(SONGS)
 
 include $(TOP)/config/common_make_rules
