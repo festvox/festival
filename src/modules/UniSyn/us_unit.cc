@@ -93,14 +93,14 @@ static void window_frame(EST_Wave &frame, EST_Wave &whole, float scale,
     send = whole.num_samples();
 
   
-  int print_centre;
+  // int print_centre;
   if ( centre_index < 0 ){
     window_function( window_length, window, -1 );
-    print_centre = (window_length-1)/2+start;
+    // print_centre = (window_length-1)/2+start;
   }
   else{
     window_function( window_length, window, (centre_index-start));
-    print_centre = centre_index;
+    // print_centre = centre_index;
   }
 
 
@@ -379,13 +379,13 @@ void us_unit_raw_concat(EST_Utterance &utt)
 {
     EST_Wave *sig, *unit_sig;
     EST_Track *unit_coefs=0;
-    float window_factor;
+    //    float window_factor;
     int i, j, k;
     int first_pm, last_pm, last_length;
     float first_pos, last_pos;
 
-    window_factor = get_c_float(siod_get_lval("window_factor",
-					      "UniSyn: no window_factor"));
+    //    window_factor = get_c_float(siod_get_lval("window_factor",
+    //					      "UniSyn: no window_factor"));
     sig = new EST_Wave;
 
     sig->resize(1000000);
@@ -436,7 +436,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
     int num_source_frames   = 0;
     int num_source_channels = 0;;
     float prev_time, abs_offset, rel_offset, period, offset;
-    int i, j, k, l;
+    int i, j, k;
     EST_Track *coefs;
 
     EST_Item *u = unit_stream.head();
@@ -460,7 +460,7 @@ void concatenate_unit_coefs(EST_Relation &unit_stream, EST_Track &source_lpc)
       
       prev_time = 0.0;
       // copy basic information
-      for (i = 0, l = 0, u = unit_stream.head(); u; u = inext(u))
+      for (i = 0, u = unit_stream.head(); u; u = inext(u))
 	{
 	  coefs = track(u->f("coefs"));
 	  

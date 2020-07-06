@@ -247,7 +247,8 @@ static void tidy_up(void)
 	while (kids > 0)
 	{
 	    pid = waitpid(0,&statusp,0);
-	    kids--;
+            if (pid != 0)
+                kids--;
 	}
 	fprintf(stdout,"OK\n");   // give an acknowledgement
 	fflush(stdout);

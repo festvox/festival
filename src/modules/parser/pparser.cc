@@ -145,13 +145,14 @@ void MultiParse(EST_Utterance &u)
     // traditional sentences this tries to split the utterance into
     // sentences and parse them individualls and add them to
     // a single Syntax release as a list of trees.
-    LISP rules, eos_tree;
+    LISP rules;
+    // LISP eos_tree;
     EST_Item *s, *w;
 
     rules = siod_get_lval("scfg_grammar", NULL);
     if (rules == NULL)
 	EST_error("Couldn't find grammar rules\n");
-    eos_tree = siod_get_lval("scfg_eos_tree",NULL);
+    //    eos_tree = siod_get_lval("scfg_eos_tree",NULL);
     u.create_relation("Syntax");
     EST_SCFG_Chart chart;
     chart.set_grammar_rules(rules);

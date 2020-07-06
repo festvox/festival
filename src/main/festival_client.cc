@@ -438,7 +438,9 @@ static void client_accept_waveform(SERVER_FD fd)
 	char *command = walloc(char,1024+tmpfile2.length()+aucommand.length());
 	sprintf(command,"FILE=\"%s\"; %s",(const char *)tmpfile2,
 		(const char *)aucommand);
-	system(command);
+	if (system(command) != 0)
+            cerr << "festival_client: aucommand failed"
+	    << endl;
 	unlink(tmpfile2);
     }
     else if (output_filename == "")

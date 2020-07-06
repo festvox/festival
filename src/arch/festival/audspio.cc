@@ -86,9 +86,24 @@ static void audsp_send(const char *c)
 	festival_error();
     }
 	
-    write(audfds[0],c,strlen(c));
-    write(audfds[0],"\n",1);
-    read(audfds[1],reply,3);  /* confirmation */
+    if (write(audfds[0],c,strlen(c)) != (unsigned int)strlen(c))
+    {
+	cerr << "Audio spooler has died unexpectedly" << endl;
+	audsp_mode = FALSE;
+	festival_error();
+    }
+    if (write(audfds[0],"\n",1) != 1)
+    {
+	cerr << "Audio spooler has died unexpectedly" << endl;
+	audsp_mode = FALSE;
+	festival_error();
+    }
+    if (read(audfds[1],reply,3) != 3)  /* confirmation */
+    {
+	cerr << "Audio spooler has died unexpectedly" << endl;
+	audsp_mode = FALSE;
+	festival_error();
+    }
 }
 
 LISP l_audio_mode(LISP mode)

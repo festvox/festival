@@ -271,7 +271,12 @@ void Lexicon::binlex_init(void)
 		"\" not found or unreadble " << endl;
 	    festival_error();
 	}
-	fread(magic_number,sizeof(char),4,binlexfp);
+	if (fread(magic_number,sizeof(char),4,binlexfp) != 4)
+	{
+	    cerr << "Lexicon: no magic number in \"" << bl_filename << 
+		"\" " << endl;
+	    festival_error();
+	}
 	magic_number[4] = '\0';
 	if ((EST_String)"MNCM" == (EST_String)magic_number)
 	{   // A compiled lexicon plus features

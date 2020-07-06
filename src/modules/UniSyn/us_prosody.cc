@@ -190,13 +190,11 @@ void linear_pitchmarks(EST_Track &source_pm, EST_Track &target_pm,
 		       float start_f0, float end_f0)
 {
     int i;
-    float m, length, pitch;
+    float pitch;
+    
     target_pm.resize(source_pm.num_frames(), source_pm.num_channels());
 
-    length = (float)source_pm.num_frames() / (end_f0 - start_f0);
-
     target_pm.t(0) = 0.0;
-    m = (end_f0 - start_f0) / length;
 
     for(i = 1; i < target_pm.num_frames(); ++i)
     {

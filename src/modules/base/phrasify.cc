@@ -275,8 +275,6 @@ static void phrasing_by_probmodels(EST_Utterance *u)
 static void phrasing_by_cart_viterbi(EST_Utterance *u)
 {
   EST_Item *w, *phr = 0;
-  LISP tree;
-  LISP answer;
   int num_states;
   EST_String pbreak;
 

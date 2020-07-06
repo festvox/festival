@@ -193,8 +193,6 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
     double xnoise;
     double fxpulse;
     double fxnoise;
-    double e1, e2;
-
 
     /* Copy in str's and build pulse and noise shaping filter for this frame */
     for (i = 0; i < v_me->filter_order; i++)
@@ -252,7 +250,7 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
     }
 
 
-    for (j = 0, i = (IPERIOD + 1) / 2; j < v->fprd; j++)
+    for (j = 0, i = (IPERIOD + 1) / 2; (unsigned int)j < v->fprd; j++)
     {
         if (v->stage == 0) {      /* for MCP */
             if (v->p1 == 0.0)

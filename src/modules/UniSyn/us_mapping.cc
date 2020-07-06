@@ -608,7 +608,7 @@ void make_join_interpolate_mapping2( const EST_Track &source_pm,
 
 void us_mapping(EST_Utterance &utt, const EST_String &method)
 {
-    EST_Relation *source_lab, *target_lab;
+    EST_Relation /* *source_lab, */ *target_lab;
     EST_IVector *map;
     EST_Track *source_coef=0, *target_coef=0;
 
@@ -618,8 +618,8 @@ void us_mapping(EST_Utterance &utt, const EST_String &method)
     map = new EST_IVector;
     
 //    cout << "mapping method: " << method << endl;
-    if (method != "segment_single")
-	source_lab = utt.relation("SourceSegments");
+/*    if (method != "segment_single")
+      source_lab = utt.relation("SourceSegments"); */
     target_lab = utt.relation("Segment", 1);
 
 /*    if (method == "segment")

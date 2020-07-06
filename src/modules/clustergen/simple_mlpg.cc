@@ -109,10 +109,12 @@
 
 static MLPGPARA xmlpgpara_init(int dim, int dim2, int dnum, int clsnum);
 static void xmlpgparafree(MLPGPARA param);
+#if 0
 static double get_like_pdfseq_vit(int dim, int dim2, int dnum, int clsnum,
                                   MLPGPARA param, 
                                   EST_Track *model, 
                                   XBOOL dia_flag);
+#endif
 static void get_dltmat(DMATRIX mat, MLPG_DWin *dw, int dno, DMATRIX dmat);
 
 static double *dcalloc(int x, int xoff);
@@ -131,6 +133,7 @@ static void calc_R_and_r(PStreamChol *pst, const int m);
 static void Choleski(PStreamChol *pst);
 static void Choleski_forward(PStreamChol *pst);
 static void Choleski_backward(PStreamChol *pst, const int m);
+#if 0
 static double get_gauss_full(long clsidx,
 		      DVECTOR vec,		// [dim]
 		      DVECTOR detvec,		// [clsnum]
@@ -147,6 +150,7 @@ static double cal_xmcxmc(long clsidx,
 		  DVECTOR x,
 		  DMATRIX mm,	// [num class][dim]
 		  DMATRIX cm);	// [num class * dim][dim]
+#endif
 
 const float mlpg_dynwin[] = { -0.5, 0.0, 0.5 };
 #define mlpg_dynwinsize 3
@@ -208,6 +212,7 @@ static void xmlpgparafree(MLPGPARA param)
     return;
 }
 
+#if 0
 static double get_like_pdfseq_vit(int dim, int dim2, int dnum, int clsnum,
                                   MLPGPARA param, 
                                   EST_Track *model, 
@@ -277,7 +282,7 @@ static double get_like_pdfseq_vit(int dim, int dim2, int dnum, int clsnum,
 
     return like;
 }
-
+#endif
 #if 0
 static double get_like_gv(long dim2, long dnum, MLPGPARA param)
 {
@@ -810,6 +815,7 @@ static DVECTOR xget_detvec_diamat2inv(DMATRIX covmat)	// [num class][dim]
     return detvec;
 }
 
+#if 0
 static double get_gauss_full(long clsidx,
 		      DVECTOR vec,		// [dim]
 		      DVECTOR detvec,		// [clsnum]
@@ -860,6 +866,7 @@ static double cal_xmcxmc(long clsidx,
 
     return d;
 }
+#endif
 
 #if 0
 // diagonal covariance
@@ -888,7 +895,7 @@ static double get_gauss_dia5(double det,
     return gauss;
 }
 #endif
-
+#if 0
 static double get_gauss_dia(long clsidx,
 		     DVECTOR vec,		// [dim]
 		     DVECTOR detvec,		// [clsnum]
@@ -915,6 +922,7 @@ static double get_gauss_dia(long clsidx,
 
     return gauss;
 }
+#endif
 
 static void pst_free(PStreamChol *pst)
 {
@@ -952,7 +960,7 @@ LISP mlpg(LISP ltrack)
     MLPGPARA param = NODATA;
     EST_Track *param_track, *out;
     int dim, dim_st;
-    float like;
+    /* float like; */
     int i,j;
     int nframes;
     PStreamChol pst;
@@ -1009,8 +1017,8 @@ LISP mlpg(LISP ltrack)
     {
         get_dltmat(param->stm, &pst.dw, 1, param->dltm);
 
-        like = get_like_pdfseq_vit(dim, dim_st, nframes, nframes, param,
-                                   param_track, XTRUE);
+        /* like = get_like_pdfseq_vit(dim, dim_st, nframes, nframes, param,
+           param_track, XTRUE); */
 
         /* vlike = get_like_gv(dim2, dnum, param); */
 

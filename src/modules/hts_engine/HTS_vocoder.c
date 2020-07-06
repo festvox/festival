@@ -263,7 +263,7 @@ static void HTS_freqt(HTS_Vocoder * v, const double *c1, const int m1, double *c
    const double b = 1 - a * a;
    double *g;
 
-   if (m2 > v->freqt_size) {
+   if ((unsigned int)m2 > v->freqt_size) {
       if (v->freqt_buff != NULL)
          HTS_free(v->freqt_buff);
       v->freqt_buff = (double *) HTS_calloc(m2 + m2 + 2, sizeof(double));
@@ -310,7 +310,7 @@ static double HTS_b2en(HTS_Vocoder * v, const double *b, const int m, const doub
    double *cep;
    double *ir;
 
-   if (v->spectrum2en_size < m) {
+   if (v->spectrum2en_size < (unsigned int)m) {
       if (v->spectrum2en_buff != NULL)
          HTS_free(v->spectrum2en_buff);
       v->spectrum2en_buff = (double *) HTS_calloc((m + 1) + 2 * IRLENG, sizeof(double));
@@ -376,7 +376,7 @@ static void HTS_lsp2lpc(HTS_Vocoder * v, double *lsp, double *a, const int m)
       flag_odd = 1;
    }
 
-   if (m > v->lsp2lpc_size) {
+   if ((unsigned int)m > v->lsp2lpc_size) {
       if (v->lsp2lpc_buff != NULL)
          HTS_free(v->lsp2lpc_buff);
       v->lsp2lpc_buff = (double *) HTS_calloc(5 * m + 6, sizeof(double));
@@ -456,7 +456,7 @@ static void HTS_gc2gc(HTS_Vocoder * v, double *c1, const int m1, const double g1
    int i, min, k, mk;
    double ss1, ss2, cc;
 
-   if (m1 > v->gc2gc_size) {
+   if ((unsigned int)m1 > v->gc2gc_size) {
       if (v->gc2gc_buff != NULL)
          HTS_free(v->gc2gc_buff);
       v->gc2gc_buff = (double *) HTS_calloc(m1 + 1, sizeof(double));
@@ -647,7 +647,7 @@ static void HTS_ping_pulse(HTS_Vocoder * v, const int ping_place, const double p
    const double power = sqrt(p);
 
    for (i = ping_place - nlpf, j = 0; i <= ping_place + nlpf; i++, j++)
-      if (0 <= i && i < v->pulse_size)
+       if (0 <= i && (unsigned int)i < v->pulse_size)
          v->pulse_buff[i] += power * lpf[j];
 }
 
@@ -658,7 +658,7 @@ static void HTS_ping_noise(HTS_Vocoder * v, const int ping_place, const int nlpf
    const double power = HTS_white_noise(v);
 
    for (i = ping_place - nlpf, j = 0; i <= ping_place + nlpf; i++, j++)
-      if (0 <= i && i < v->pulse_size) {
+       if (0 <= i && (unsigned int)i < v->pulse_size) {
          if (j == nlpf)
             v->pulse_buff[i] += power * (1.0 - lpf[j]);
          else
@@ -707,17 +707,17 @@ static double HTS_Vocoder_get_excitation(HTS_Vocoder * v, const int fprd_index, 
    if (nlpf > 0) {
       if (fprd_index == 0) {
          if (v->p1 == 0.0) {
-            for (i = 0; i < v->fprd; i++)
+             for (i = 0; (unsigned int)i < v->fprd; i++)
                v->pulse_buff[i] += HTS_white_noise(v);
             if (v->p != 0.0) {
                HTS_ping_pulse(v, v->fprd + nlpf, v->p, nlpf, lpf);
                v->pc = v->fprd + nlpf;
             }
          } else if (v->p == 0.0) {
-            for (i = nlpf; i < v->fprd; i++)
+             for (i = nlpf; (unsigned int)i < v->fprd; i++)
                v->pulse_buff[i] += HTS_white_noise(v);
          } else {
-            for (i = 0, j = (IPERIOD + 1) / 2; i < v->fprd; i++) {
+             for (i = 0, j = (IPERIOD + 1) / 2; (unsigned int)i < v->fprd; i++) {
                if ((v->pc + v->p1) <= i) {
                   HTS_ping_pulse(v, i, v->p1, nlpf, lpf);
                   v->pc += v->p1;
@@ -727,13 +727,13 @@ static double HTS_Vocoder_get_excitation(HTS_Vocoder * v, const int fprd_index, 
                   j = IPERIOD;
                }
             }
-            for (i = v->fprd; i < v->fprd + nlpf; i++) {
+             for (i = v->fprd; (unsigned int)i < v->fprd + nlpf; i++) {
                if ((v->pc + v->p) <= i) {
                   HTS_ping_pulse(v, i, v->p, nlpf, lpf);
                   v->pc += v->p;
                }
             }
-            for (i = nlpf; i < v->fprd + nlpf; i++)
+             for (i = nlpf; (unsigned int)i < v->fprd + nlpf; i++)
                HTS_ping_noise(v, i, nlpf, lpf);
          }
       }
@@ -761,8 +761,8 @@ static void HTS_Vocoder_end_excitation(HTS_Vocoder * v, const int nlpf)
 
    if (nlpf > 0) {
       v->pc -= v->fprd;
-      for (i = 0; i < v->pulse_size; i++)
-         if (i < v->pulse_size - v->fprd)
+      for (i = 0; (unsigned int)i < v->pulse_size; i++)
+          if ((unsigned int)i < v->pulse_size - v->fprd)
             v->pulse_buff[i] = v->pulse_buff[i + v->fprd];
          else
             v->pulse_buff[i] = 0.0;
@@ -777,7 +777,7 @@ static void HTS_Vocoder_postfilter_mcp(HTS_Vocoder * v, double *mcp, const int m
    int k;
 
    if (beta > 0.0 && m > 1) {
-      if (v->postfilter_size < m) {
+       if (v->postfilter_size < (unsigned int) m) {
          if (v->postfilter_buff != NULL)
             HTS_free(v->postfilter_buff);
          v->postfilter_buff = (double *) HTS_calloc(m + 1, sizeof(double));
@@ -883,7 +883,7 @@ void HTS_Vocoder_initialize(HTS_Vocoder * v, size_t m, size_t stage, HTS_Boolean
 void HTS_Vocoder_synthesize(HTS_Vocoder * v, size_t m, double lf0, double *spectrum, size_t nlpf, double *lpf, double alpha, double beta, double volume, double *rawdata, HTS_Audio * audio)
 {
    double x;
-   int i, j;
+   unsigned int i, j;
    short xs;
    int rawidx = 0;
    double p;
