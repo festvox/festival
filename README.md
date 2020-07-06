@@ -1,6 +1,6 @@
 
               The Festival Speech Synthesis System
-                   version 2.5 December 2017
+                   version 2.5.1 July 2020
 
 https://github.com/festvox/festival/
 
@@ -49,7 +49,7 @@ Keep abreast of Festival News by regularly checking the Festival homepage
    http://www.cstr.ed.ac.uk/projects/festival/
 or the US site
    http://festvox.org/festival/
-otr on github
+or on github
    https://github.com/festvox/festival/
 
 New in Festival 2.5
