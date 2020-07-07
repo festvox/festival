@@ -153,7 +153,12 @@ void um_apply_filter(const EST_String &filtername,
     else
     {
 	command = filtername + " '" + infile + "' > " + outfile;
-	system(command);  // should test if this is successful or not
+	if (system(command) != 0);
+	{
+	    cerr << "TTS user mode: \"" << outfile << "\" cannot be written to"
+		<< endl;
+	    festival_error();
+	}
     }
 }
 
