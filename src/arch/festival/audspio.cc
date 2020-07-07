@@ -86,7 +86,8 @@ static void audsp_send(const char *c)
 	festival_error();
     }
 	
-    if (write(audfds[0],c,strlen(c)) != (unsigned int)strlen(c))
+    if ((unsigned int)write(audfds[0],c,strlen(c)) !=
+        (unsigned int)strlen(c))
     {
 	cerr << "Audio spooler has died unexpectedly" << endl;
 	audsp_mode = FALSE;
