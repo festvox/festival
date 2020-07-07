@@ -240,7 +240,7 @@ void load_full_diphone(int unit)
     // someone else may clear them.  Note the full file is loaded
     // each time which isn't optimal if there are multiple diphones
     // is the same file
-    int pm_start, pm_end, pm_middle;
+    // int pm_start, pm_end, pm_middle;
     EST_Track *full_coefs;
 
     full_coefs = new EST_Track;
@@ -256,9 +256,9 @@ void load_full_diphone(int unit)
 	EST_error("");
     }
     
-    pm_start = full_coefs->index(diph_index->diphone[unit].f("start"));
-    pm_middle = full_coefs->index(diph_index->diphone[unit].f("middle"));
-    pm_end = full_coefs->index(diph_index->diphone[unit].f("end"));
+    // pm_start = full_coefs->index(diph_index->diphone[unit].f("start"));
+    // pm_middle = full_coefs->index(diph_index->diphone[unit].f("middle"));
+    // pm_end = full_coefs->index(diph_index->diphone[unit].f("end"));
     
     diph_index->diphone[unit].set_val("full_coefs", est_val(full_coefs));
 
