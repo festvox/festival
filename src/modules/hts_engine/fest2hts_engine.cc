@@ -193,24 +193,24 @@ void HTS_get_copyright(char *str) {
   sprintf(str,
            "\nThe HMM-Based Speech Synthesis Engine \"hts_engine API\"\n");
 
-  sprintf(str,
-           "%shts_engine API version %s (%s)\n", str, version, url);
+  sprintf(str+strlen(str),
+           "hts_engine API version %s (%s)\n", version, url);
   for (i = 0; i < nCopyright; i++) {
     if (i == 0)
-      sprintf(str,
-               "%sCopyright (C) %s\n", str, copyright[i]);
+        sprintf(str+strlen(str),
+               "Copyright (C) %s\n", copyright[i]);
     else
-      sprintf(str,
-               "%s              %s\n", str, copyright[i]);
+        sprintf(str+strlen(str),
+               "              %s\n", copyright[i]);
   }
-  sprintf(str, "%sAll rights reserved.\n", str);
+  sprintf(str+strlen(str), "All rights reserved.\n");
 
   return;
 }
 
 
 void festival_hts_engine_init(void) {
-  char buf[4096];
+  char buf[8192];
 
   HTS_get_copyright(buf);
   proclaim_module("hts_engine", buf);
