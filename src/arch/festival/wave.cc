@@ -42,6 +42,7 @@
 #include <cstdlib>
 #include "festival.h"
 #include "festivalP.h"
+#include "EST_Wave.h"
 
 #ifdef WIN32
 #include "winsock2.h"
@@ -98,6 +99,141 @@ static LISP wave_save(LISP lwave,LISP fname,LISP ftype,LISP stype)
 	festival_error();
     }
     
+    return truth;
+}
+
+static LISP wave_save_data_fp(LISP lwave, LISP lfp, LISP ftype, LISP stype)
+{
+    EST_Wave *w = wave(lwave);
+    EST_String filetype,sampletype;
+    FILE * fp;
+
+    fp = get_c_file(lfp, stdout);
+
+    if (ftype == NIL)
+    {
+	if (ft_get_param("Wavefiletype"))
+	    filetype = get_c_string(ft_get_param("Wavefiletype"));
+	else
+	    filetype = "nist";
+    }
+    else
+	filetype = get_c_string(ftype);
+    if (stype == NIL)
+    {
+	if (ft_get_param("Wavesampletype"))
+	    sampletype = get_c_string(ft_get_param("Wavesampletype"));
+	else
+	    sampletype = "short";
+    }
+    else
+	sampletype = get_c_string(stype);
+
+    if (w->save_file_data(fp,filetype,sampletype,EST_NATIVE_BO) != write_ok)
+    {
+	cerr << "utt.save.wave.fp: failed to write wave" << endl;
+	festival_error();
+    }
+
+    return truth;
+}
+
+
+
+static LISP wave_save_fp(LISP lwave, LISP lfp, LISP ftype, LISP stype)
+{
+    EST_Wave *w = wave(lwave);
+    EST_String filetype,sampletype;
+    FILE * fp;
+
+    fp = get_c_file(lfp, stdout);
+
+    if (ftype == NIL)
+    {
+	if (ft_get_param("Wavefiletype"))
+	    filetype = get_c_string(ft_get_param("Wavefiletype"));
+	else
+	    filetype = "nist";
+    }
+    else
+	filetype = get_c_string(ftype);
+    if (stype == NIL)
+    {
+	if (ft_get_param("Wavesampletype"))
+	    sampletype = get_c_string(ft_get_param("Wavesampletype"));
+	else
+	    sampletype = "short";
+    }
+    else
+	sampletype = get_c_string(stype);
+
+    if (w->save_file(fp,filetype,sampletype,EST_NATIVE_BO) != write_ok)
+    {
+	cerr << "utt.save.wave.data.fp: failed to write wave" << endl;
+	festival_error();
+    }
+
+    return truth;
+}
+
+
+
+static LISP wave_save_header_fp(LISP arglist)
+{
+    LISP lfp = car(arglist);
+    arglist = cdr(arglist);
+    LISP lwave = car(arglist);
+    arglist = cdr(arglist);
+    LISP lftype = car(arglist);
+    arglist = cdr(arglist);
+    LISP lstype = car(arglist);
+    arglist = cdr(arglist);
+    LISP force_values = car(arglist);
+    arglist = cdr(arglist);
+
+    FILE *fp;
+    fp = get_c_file(lfp, NULL);
+    EST_String ftype, stype;
+    EST_Wave *w = wave(lwave);
+
+    int num_samples = w->num_samples();
+    int num_channels = w->num_channels();
+    int sample_rate = w->sample_rate();
+    int bo = EST_NATIVE_BO;
+
+    num_samples = (int) get_param_float("numsamples", force_values, (float) num_samples);
+    num_channels = (int) get_param_float("numchannels", force_values, (float) num_channels);
+    sample_rate = (int) get_param_float("samplerate", force_values, (float) sample_rate);
+    bo = (int) get_param_float("bo", force_values, (float) bo);
+
+    if (lftype == NIL)
+    {
+	    if (ft_get_param("Wavefiletype"))
+	        ftype = get_c_string(ft_get_param("Wavefiletype"));
+	    else
+	        ftype = "nist";
+    }
+    else
+	    ftype = get_c_string(lftype);
+
+    if (lstype == NIL)
+    {
+        if (ft_get_param("Wavesampletype"))
+            stype = get_c_string(ft_get_param("Wavesampletype"));
+        else
+            stype = "short";
+    }
+    else
+        stype = get_c_string(lstype);
+
+
+    if (wave_io_save_header(fp, num_samples, num_channels,
+                        sample_rate, stype, bo, ftype) != write_ok)
+    {
+        cerr << "utt.save.wave.header: failed" << endl;
+	    festival_error();
+    }
+
     return truth;
 }
 
@@ -606,10 +742,34 @@ static LISP send_sexpr_to_client(LISP l)
 void festival_wave_init(void)
 {
     // declare utterance (wave) specific Lisp functions 
-
+    init_lsubr("wave.save.header", wave_save_header_fp,
+ "(wave.save.header FILEPOINTER WAVE FILETYPE SAMPLETYPE OVERRIDEPARAMS)\n\
+  Write a wave header of format FILETYPE to FILEPOINTER.\n\
+  Header parameters are read first from WAVE and SAMPLETYPE,\n\
+  and can be overridden with OVERRIDEPARAMS\n\
+  OVERRIDEPARAMS = ( (\"numsamples\" 84000)\n\
+                     (\"numchannels\" 1)\n\
+                     (\"samplerate\" 16000)\n\
+                     (\"bo\" 10)\n\
+                     (\"numsamples\" 16000)\n\
+                    )");
+    init_subr_4("wave.save.fp", wave_save_fp,
+ "(wave.save.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)\n\
+  Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified\n\
+  if these last two arguments are unspecified the global parameters\n\
+  Wavefiletype and Wavesampletype are used.  Returns t is successful\n\
+  and throws an error if not.");
+    init_subr_4("wave.save.data.fp", wave_save_data_fp,
+ "(wave.save.data.fp WAVE FILEPOINTER FILETYPE SAMPLETYPE)\n\
+  Write WAVE to FILEPOINTER, respecting FILETYPE and SAMPLETYPE if specified\n\
+  ignoring any file header.\n\
+  if these last two arguments are unspecified the global parameters\n\
+  Wavefiletype and Wavesampletype are used.  Returns t is successful\n\
+  and throws an error if not. It can be used with wave.save.header\n\
+  in order to concatenate several waves.");
     init_subr_4("wave.save",wave_save,
  "(wave.save WAVE FILENAME FILETYPE SAMPLETYPE)\n\
-  Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specifed\n\
+  Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specified\n\
   if these last two arguments are unspecified the global parameters\n\
   Wavefiletype and Wavesampletype are used.  Returns t is successful\n\
   and throws an error if not.");  
