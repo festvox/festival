@@ -19,7 +19,7 @@ Festival has two major modes, command and tts (text-to-speech).
 When in command mode input (from file or interactively) is interpreted
 by the command interpreter.  When in tts mode input is rendered as 
 speech.  When in command mode filenames that start with a left
-paranthesis are treated as literal commands and evaluated.
+parenthesis are treated as literal commands and evaluated.
 
 .SH OPTIONS
 

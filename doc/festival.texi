@@ -4190,8 +4190,8 @@ waveform itself may be saved using the function @code{utt.save.wave}.
 This will save the waveform in the named file in the format specified
 in the @code{Parameter} @code{Wavefiletype}.  All formats supported by
 the Edinburgh Speech Tools are valid including @code{nist}, @code{esps},
-@code{sun}, @code{riff}, @code{aiff}, @code{raw} and @code{ulaw}.  Note
-the functions @code{utt.wave.rescale} and @code{utt.wave.resample} may
+@code{sun}, @code{riff}, @code{aiff}, @code{raw}, @code{alaw} and @code{ulaw}.
+Note the functions @code{utt.wave.rescale} and @code{utt.wave.resample} may
 be used to change the gain and sample frequency of the waveform before
 saving it.  A waveform may be imported into an existing utterance with
 the function @code{utt.import.wave}.  This is specifically designed to
@@ -5778,7 +5778,7 @@ Some earlier (and smaller machines) only have 8bit audio even though
 they include a @file{/dev/dsp} (Soundblaster PRO for example).  This was
 not dealt with properly in earlier versions of the system but now the
 support automatically checks to see the sample width supported and uses
-it accordingly.  8 bit at higher frequencies that 8K sounds better than
+it accordingly.  8 bit at higher frequencies than 8K sounds better than
 straight 8k ulaw so this feature is useful.
 
 @cindex Windows NT audio
@@ -7996,7 +7996,7 @@ does not offer any way to send commands as well as the text to the
 server.
 @item --otype OUTPUTTYPE
 If an output waveform file is to be used this specified the output type
-of the file.  The default is @code{nist}, but, @code{ulaw},
+of the file.  The default is @code{nist}, but @code{alaw},
 @code{riff}, @code{ulaw} and others as supported by the Edinburgh
 Speech Tools Library are valid.  You may use raw too but note that
 Festival may return waveforms of various sampling rates depending on the
