@@ -1,6 +1,12 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
-@setfilename festival.info
+@setfilename festival
+@dircategory Sound
+@dircategory Development
+@direntry
+* Festival: (festival).           Speech synthesis system.
+@end direntry
+@c c@setfilename festival.info
 @settitle Festival Speech Synthesis System
 @finalout
 @setchapternewpage odd

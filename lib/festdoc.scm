@@ -55,6 +55,7 @@ format to respective files."
 
  ;; Need to ensure all library files are actually loaded if they contain
  ;; funcstions/variables which have to be put in the manual
+ (require 'festival)
  (require 'display)
  (require 'mbrola)
  (require 'tilt)

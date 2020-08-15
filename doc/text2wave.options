@@ -1,0 +1,47 @@
+.\"
+.\".SH OPTIONS
+.\"  -mode <string>  Explicit tts mode.
+.\"  -o ofile        File to save waveform (default is stdout).
+.\"  -otype <string> Output waveform type: alaw, ulaw, snd, aiff, riff, nist etc.
+.\"                  (default is riff)
+.\"  -F <int>        Output frequency.
+.\"  -scale <float>  Volume factor
+.\"  -eval <string>  File or lisp s-expression to be evaluated before
+.\"                  synthesis.
+
+.TP
+.B \-mode
+.I string
+.br
+Explicit tts mode.
+.TP
+.B \-o
+.I ofile
+.br
+File to save waveform to.
+.br
+The default is
+.B stdout.
+.TP
+.B \-otype
+.I string
+.br
+Output waveform type: alaw, ulaw, snd, aiff, riff, nist etc.
+.br
+The default is
+.B riff.
+.TP
+.B \-f
+.I integer
+.br
+Output frequency.
+.TP
+.B \-scale
+.I float
+.br
+Volume factor.
+.TP
+.B \-eval
+.I "string"
+.br
+File or lisp s-expression to be evaluated before synthesis.

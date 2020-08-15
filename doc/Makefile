@@ -34,29 +34,12 @@ TOP=..
 DIRNAME=doc
 
 DOCNAME=festival
-DSSL_SANE_DB=$(EST)/doc/sane_to_docbook.dsl
-DSSSL_HTML=$(EST)/doc/cstr.dssl
-DSSSL=$(DSSSL_HTML)
-
-# Temporarilly we explicitly list the programs which have been documented
-
-MAIN_TO_DOCUMENT=
-
-EXAMPLE_TO_DOCUMENT=
 
 FESTIVAL=$(TOP)/bin/festival --libdir $(TOP)/lib
 
-# Include some of EST documentation.
-DOCXX_EXTRA_FILES = 
-
-DOCXXIMAGES = edcrest.gif cstr.gif \
-	est.jpg est_small.jpg \
-	festival.jpg festival_small.jpg festival_tiny.jpg
-DOCXXFILES=  classHeader.inc hierHeader.inc indexHeader.inc \
-	     banner.inc $(DOCXXIMAGES)
-
 MANPAGES = festival.head festival.tail \
-           festival_client.head festival_client.tail
+           festival_client.head festival_client.tail \
+           text2wave.head text2wave.tail
 
 #SGMLFILES = festival.sgml \
 #	introductory.sgml basics.sgml core.sgml advanced.sgml programming.sgml
@@ -64,10 +47,9 @@ MANPAGES = festival.head festival.tail \
 FILES=Makefile $(MANPAGES) festival.texi $(SGMLFILES) refcard.tex  $(DOCXXFILES)
 LOCAL_CLEAN = *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr
 
-ALL = festival.1 festival_client.1
+ALL = festival.1 festival_client.1 text2wave.1
 
 include $(TOP)/config/common_make_rules
-include $(EST)/config/rules/doc.mak
 
 %.1 : %.head %.options %.tail 
 	cat $^ >$@
@@ -83,19 +65,19 @@ festival.info: festival.texi festfunc.texi festvars.texi festfeat.texi
 	@ cp festfunc.texi info/festfunc.texi
 	@ cp festvars.texi info/festvars.texi
 	@ cp festfeat.texi info/festfeat.texi
-	( cd info; makeinfo festival.texi )
+	( cd info; makeinfo --output festival.info festival.texi )
 	@ rm info/*.texi
-# texi2html is available from http://wwwcn.cern.ch/dci/texi2html/
+
 festival.html: festival.texi festfunc.texi festvars.texi
 	@ if [ ! -d html ] ; \
           then mkdir -p html ; fi
-	(cd html; texi2html -number -split_chapter ../festival.texi)
+	(cd html; makeinfo --html --ifinfo  ../festival.texi)
 # give the html files background color of white
-	@ for i in html/*.html ; \
-	  do \
-	    sed 's/<BODY>/<BODY bgcolor="#ffffff">/' $$i >ttt.html; \
-	    mv ttt.html $$i ; \
-	  done
+	#@ for i in html/*.html ; \
+	#  do \
+	#    sed 's/<BODY>/<BODY bgcolor="#ffffff">/' $$i >ttt.html; \
+	#    mv ttt.html $$i ; \
+	#  done
 festival.ps: festival.dvi
 	dvips -f festival.dvi >festival.ps
 festival.dvi: festival.texi festfunc.texi festvars.texi
@@ -104,8 +86,8 @@ festival.dvi: festival.texi festfunc.texi festvars.texi
 	tex festival.texi
 doc:	festival.ps festival.html festival.info
 
-festfunc.texi festvars.texi festfeat.texi: $(TOP)/src/main/festival
-	echo "(load_library \"festdoc.scm\") (make-doc)" | $(FESTIVAL)
+festfunc.texi festvars.texi festfeat.texi: $(TOP)/src/main/festival doc.scm
+	$(FESTIVAL) < doc.scm
 
 refcard.dvi:	refcard.tex
 	latex refcard.tex
