@@ -31,7 +31,7 @@
 ;;;                                                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Preapre to access voices. Searches down a path of places.
+;;; Prepare to access voices. Searches down a path of places.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -76,7 +76,7 @@
 
 
 ;; Declaration of voices. When we declare a voice we record the
-;; directory and set up an autoload for the vocie-selecting function
+;; directory and set up an autoload for the voice-selecting function
 
 (defvar voice-locations ()
   "voice-locations

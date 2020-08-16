@@ -32,8 +32,8 @@ OPTIONS
 
      --libdir PATH
 	     Specify alternate to default library directory (used
-	     in	 initializing  the  variable  load-path,  and for
-	     loading most intinialisation files)
+	     in	 initializing the  variable  load-path,  and for
+	     loading most initialisation files)
 
      -b	or --batch
 	     Run in batch mode.	 In batch mode no input	 is  read
