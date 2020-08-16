@@ -44,5 +44,7 @@ FILES=Makefile common_make_rules vc_common_make_rules \
       $(CONFIGS)
 ALL_DIRS = modules systems
 
+LOCAL_DISTCLEAN = modinclude*.inc system.mak config
+
 include $(TOP)/config/common_make_rules
 

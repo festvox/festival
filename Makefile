@@ -40,13 +40,15 @@
 TOP=.
 DIRNAME=.
 BUILD_DIRS = src lib examples bin doc
-ALL_DIRS=config $(BUILD_DIRS) testsuite
+ALL_DIRS= $(BUILD_DIRS) testsuite config
 CONFIG=configure configure.in config.sub config.guess \
        missing install-sh mkinstalldirs
 FILES = Makefile README.md ACKNOWLEDGMENTS NEWS COPYING INSTALL $(CONFIG)
 VERSION=$(PROJECT_VERSION)
 
 LOCAL_CLEAN= Templates.DB
+
+LOCAL_DISTCLEAN = config.log config.status
 
 ALL = .config_error $(BUILD_DIRS)
 
