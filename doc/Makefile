@@ -49,7 +49,7 @@ MANPAGES = festival.head festival.tail \
 #SGMLFILES = festival.sgml \
 #	introductory.sgml basics.sgml core.sgml advanced.sgml programming.sgml
 
-FILES=Makefile $(MANPAGES) festival.texi $(SGMLFILES) refcard.tex  $(DOCXXFILES)
+FILES=Makefile $(MANPAGES) festival.texi $(SGMLFILES) refcard.tex
 LOCAL_CLEAN = *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr
 
 ALL = festival.1 festival_client.1 text2wave.1
@@ -77,18 +77,15 @@ festival.html: festival.texi festfunc.texi festvars.texi
 	@ if [ ! -d html ] ; \
           then mkdir -p html ; fi
 	(cd html; makeinfo --html --ifinfo  ../festival.texi)
-# give the html files background color of white
-	#@ for i in html/*.html ; \
-	#  do \
-	#    sed 's/<BODY>/<BODY bgcolor="#ffffff">/' $$i >ttt.html; \
-	#    mv ttt.html $$i ; \
-	#  done
+
 festival.ps: festival.dvi
 	dvips -f festival.dvi >festival.ps
+
 festival.dvi: festival.texi festfunc.texi festvars.texi
 	tex festival.texi
 	texindex festival.cp
 	tex festival.texi
+
 doc:	festival.ps festival.html festival.info refcard.ps
 
 festfunc.texi festvars.texi festfeat.texi: $(TOP)/src/main/festival doc.scm
