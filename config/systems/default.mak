@@ -132,12 +132,6 @@ GNUTEST = gnutest
 ## Avoid clever RMs people may have on their path
 RM = /bin/rm
 
-###########################################################################
-## Arguments for DOC++ for creating documentation
-
-DOCXX = doc++_sane
-DOCXX_ARGS = -a -f -B banner.inc -M sane -D 'SYSTEM "$(EST_HOME)/doc/sane.dtd"'
-
 
 COMPILER_VERSION_COMMAND=true
 JAVA_COMPILER_VERSION_COMMAND=true
