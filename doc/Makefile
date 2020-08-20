@@ -84,7 +84,7 @@ festival.dvi: festival.texi festfunc.texi festvars.texi
 	tex festival.texi
 	texindex festival.cp
 	tex festival.texi
-doc:	festival.ps festival.html festival.info
+doc:	festival.ps festival.html festival.info refcard.ps
 
 festfunc.texi festvars.texi festfeat.texi: $(TOP)/src/main/festival doc.scm
 	$(FESTIVAL) < doc.scm
