@@ -30,6 +30,11 @@
 ##  THIS SOFTWARE.                                                       ##
 ##                                                                       ##
 ###########################################################################
+## To build the documentation you will have to run "make doc" from       ##
+## this directory.                                                       ##
+## You will need latex, dvips, makeinfo and having built festival        ##
+###########################################################################
+
 TOP=..
 DIRNAME=doc
 
