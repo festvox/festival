@@ -427,7 +427,7 @@ double HTS_Engine_get_generated_speech(HTS_Engine * engine, size_t index);
 HTS_Boolean HTS_Engine_synthesize_from_fn(HTS_Engine * engine, const char *fn);
 
 /* HTS_Engine_synthesize_from_strings: synthesize speech from string list */
-HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, char **lines, size_t num_lines);
+HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, const char **lines, size_t num_lines);
 
 /* HTS_Engine_save_information: save trace information */
 void HTS_Engine_save_information(HTS_Engine * engine, FILE * fp);

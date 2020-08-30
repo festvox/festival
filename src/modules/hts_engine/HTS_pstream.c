@@ -324,7 +324,7 @@ HTS_Boolean HTS_PStreamSet_create(HTS_PStreamSet * pss, HTS_SStreamSet * sss, do
       /* copy dynamic window */
       pst->win_l_width = (int *) HTS_calloc(pst->win_size, sizeof(int));
       pst->win_r_width = (int *) HTS_calloc(pst->win_size, sizeof(int));
-      pst->win_coefficient = (double **) HTS_calloc(pst->win_size, sizeof(double));
+      pst->win_coefficient = (double **) HTS_calloc(pst->win_size, sizeof(double *));
       for (j = 0; j < pst->win_size; j++) {
          pst->win_l_width[j] = HTS_SStreamSet_get_window_left_width(sss, i, j);
          pst->win_r_width[j] = HTS_SStreamSet_get_window_right_width(sss, i, j);
