@@ -77,6 +77,8 @@
 (cond
  ((member 'nas *modules*)
   (Parameter.def 'Audio_Method 'netaudio))
+ ((member 'pulse *modules*)
+  (Parameter.def 'Audio_Method 'pulseaudio))
  ((member 'esd *modules*)
   (Parameter.def 'Audio_Method 'esdaudio))
  ((member 'sun16audio *modules*)
