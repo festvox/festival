@@ -59,23 +59,6 @@ MACHINETYPE=`{ mach || uname -m || echo unknown ; } 2>/dev/null |
 OSREV=`{ uname -r || echo ""; } 2> /dev/null |
 	sed -e 's/^\([^.]*\)\(\.[^-. ]*\).*/\1\2/'`
 
-# Sort out various flavours of Linux
-if [ "$OSTYPE" = Linux ]
-    then
-    if [ -f "/etc/redhat-release" ]
-	then
-	OSTYPE=RedHatLinux
-	OSREV=`cat /etc/redhat-release | sed -e 's/[^0-9]*\([0-9.]*\).*/\1/'`
-    elif [ -f "/etc/debian_version" ]
-	then
-	OSTYPE=DebianGNULinux
-	OSREV=`cat /etc/debian_version`
-    else
-	# Generic unknown GNU/Linux system.
-	OSTYPE=Linux
-    fi
-fi
-
 # Make sure we actually have a .mak file for it, otherwise fall back
 # to sensible defaults (for example, kernel version and architecture
 # are completely irrelevant on Linux)
@@ -86,10 +69,6 @@ if [ ! -f "${SYSTEMS}/${MACHINETYPE}_${OSTYPE}${OSREV}.mak" ]; then
 	OSREV=
     elif [ -f "${SYSTEMS}/unknown_${OSTYPE}.mak" ]; then
         MACHINETYPE=unknown
-	OSREV=
-    elif [ "$OSTYPE" = "RedHatLinux" -o "$OSTYPE" = "DebianGNULinux" ]; then
-	MACHINETYPE=unknown
-	OSTYPE=Linux
 	OSREV=
     elif [ "$OSTYPE" = "Darwin" ]; then
         OSREV=
