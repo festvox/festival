@@ -130,8 +130,9 @@
       (sit-for 0)
       (setq festival-process
 	    (start-process "festival" (get-buffer-create "*festival*")
-			   festival-program-name)))
-    ))
+                           festival-program-name))
+      (set-process-coding-system festival-process 'iso-latin-1 'iso-latin-1)
+      festival-process) ))
 
 (defun festival-kill-process ()
   "Kill festival sub-process"
@@ -152,7 +153,8 @@
 as a file in /tmp and then tells festival to say that file.  The
 major mode is *not* passed as text mode name to Festival."
   (interactive "r")
-  (write-region reg-start reg-end festival-tmp-file)
+  (let ((coding-system-for-write 'iso-latin-1))
+    (write-region reg-start reg-end festival-tmp-file))
   (festival-send-command (list 'tts festival-tmp-file nil)))
 
 (defun festival-say-buffer ()
@@ -160,7 +162,8 @@ major mode is *not* passed as text mode name to Festival."
 as a file in /tmp and then tells festival to say that file.  The
 major-mode is passed as a text mode to Festival."
   (interactive)
-  (write-region (point-min) (point-max) festival-tmp-file)
+  (let ((coding-system-for-write 'iso-latin-1))
+    (write-region (point-min) (point-max) festival-tmp-file))
   ;; Because there may by sgml-like sub-files mentioned 
   ;; ensure festival tracks the buffer's default-directory
   (festival-send-command (list 'cd (expand-file-name default-directory)))
