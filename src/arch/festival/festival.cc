@@ -342,6 +342,8 @@ void festival_lisp_vars(void)
     siod_set_lval("*module-descriptions*",NIL);
     if (nas_supported)
 	proclaim_module("nas");
+    if (pulse_supported)
+	proclaim_module("pulse");
     if (esd_supported)
 	proclaim_module("esd");
     if (sun16_supported)
