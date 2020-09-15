@@ -415,6 +415,16 @@ static void load_signal_file(DIPHONE_DATABASE *db, int i, int mode)
 		ulaw_to_short(ulaw,db->vox[i]->signal,db->vox[i]->nsamples);
 		wfree(ulaw);
 	    }
+	    else if (db->group_encoding == di_alaw)
+	    {
+		unsigned char *alaw = 
+		    walloc(unsigned char,db->vox[i]->nsamples);
+		db->vox[i]->signal = walloc(short,db->vox[i]->nsamples);
+		fseek(db->gfd,db->gsignalbase+(db->offsets[i]),SEEK_SET);
+		fread(alaw,sizeof(unsigned char),db->vox[i]->nsamples,db->gfd);
+		alaw_to_short(alaw,db->vox[i]->signal,db->vox[i]->nsamples);
+		wfree(alaw);
+	    }
 	    else
 	    {
 		cerr << "Diphone: unknown group type" << endl;
@@ -800,8 +810,13 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	}
 	else if (db->group_encoding == di_ulaw)
 	{
-	    db->allulawsignal = walloc(unsigned char,totsamples);
-	    fread(db->allulawsignal,sizeof(unsigned char),totsamples,db->gfd);
+	    db->allualawsignal = walloc(unsigned char,totsamples);
+	    fread(db->allualawsignal,sizeof(unsigned char),totsamples,db->gfd);
+	}
+	else if (db->group_encoding == di_alaw)
+	{
+	    db->allualawsignal = walloc(unsigned char,totsamples);
+	    fread(db->allualawsignal,sizeof(unsigned char),totsamples,db->gfd);
 	}
     }
     else
@@ -821,7 +836,13 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	    else if (db->group_encoding == di_ulaw)
 	    {
 		db->vox[i]->signal = walloc(short,samp_counts[i]);
-		ulaw_to_short(&db->allulawsignal[sample_offset],
+		ulaw_to_short(&db->allualawsignal[sample_offset],
+			      db->vox[i]->signal,samp_counts[i]);
+	    }
+	    else if (db->group_encoding == di_alaw)
+	    {
+		db->vox[i]->signal = walloc(short,samp_counts[i]);
+		alaw_to_short(&db->allualawsignal[sample_offset],
 			      db->vox[i]->signal,samp_counts[i]);
 	    }
 	    else
@@ -838,7 +859,7 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	sample_offset += samp_counts[i];
     }
     if (db->sig_access_type != di_direct)
-	if (db->group_encoding == di_ulaw)
+	if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw)
 	    fseek(db->gfd,(long)sample_offset,SEEK_CUR);
 	else
 	    fseek(db->gfd,(long)sample_offset*sizeof(short),SEEK_CUR);
@@ -867,7 +888,7 @@ static void di_group_load_lpc_params(DIPHONE_DATABASE *db)
 	if (db->swap) 
 	    swap_bytes_float(db->allframes,totframes*db->lpc_order);
     }
-    else if (db->group_encoding == di_ulaw) // its as shorts
+    else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw) // its as shorts
     {
 	db->allframesshort = walloc(short,totframes*db->lpc_order);
 	fread(db->allframesshort,sizeof(short),
@@ -885,7 +906,7 @@ static void di_group_load_lpc_params(DIPHONE_DATABASE *db)
 	    for (j=0;j<db->lpc[i]->nframes;j++)
 		db->lpc[i]->f[j] = 
 		    &db->allframes[(frame_offset+j)*db->lpc_order];
-	else if (db->group_encoding == di_ulaw)
+	else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw)
 	{
 	    int fixedpoint = FALSE;
 	    if (siod_get_lval("lpc_fixedpoint",NULL) != NIL)
@@ -1031,6 +1052,13 @@ void di_save_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db)
 	    fwrite(ulaw,sizeof(unsigned char),db->vox[i]->nsamples,fd);
 	    wfree(ulaw);
 	}
+	else if (db->group_encoding == di_alaw)
+	{
+	    unsigned char *alaw = walloc(unsigned char,db->vox[i]->nsamples);
+	    short_to_alaw(db->vox[i]->signal,alaw,db->vox[i]->nsamples);
+	    fwrite(alaw,sizeof(unsigned char),db->vox[i]->nsamples,fd);
+	    wfree(alaw);
+	}
 	else
 	{
 	    cerr << "Diphone: unknown group type for dumping" << endl;
@@ -1058,7 +1086,7 @@ void di_save_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db)
 		for (j=0; j<db->lpc[i]->nframes; j++)
 		    fwrite(db->lpc[i]->f[j],sizeof(float),db->lpc_order,fd);
 	    }
-	    else if (db->group_encoding == di_ulaw) // saved as shorts
+	    else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw) // saved as shorts
 	    {   
 		short *sh = new short[db->lpc_order];
 		

@@ -41,7 +41,7 @@
 
 enum di_sigaccess_t {di_direct, di_dynamic, di_ondemand};
 enum di_db_type_t {di_pcm, di_lpc};
-enum di_group_encode_t {di_raw, di_ulaw };
+enum di_group_encode_t {di_raw, di_ulaw, di_alaw };
 enum di_group_t {di_grouped, di_ungrouped};
 
 typedef struct {
@@ -109,7 +109,7 @@ typedef struct DD_STRUCT {
     int lpc_pitch_synch;    /* True if lpc frames are pitch synchronous */
 
     short *allsignal;                /* used in group files */
-    unsigned char *allulawsignal;
+    unsigned char *allualawsignal;
     float *allframes;
     short *allframesshort;
 
