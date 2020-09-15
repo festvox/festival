@@ -433,7 +433,7 @@ a newline before they can get a connection.  It would be normal
 to set this for the particular server task.
 [see Server/client API]")
 
-(defvar server_access_list '(localhost)
+(defvar server_access_list '("127.0.0.1" "localhost\.localdomain" "localhost")
   "server_access_list
 If non-nil this is the exhaustive list of machines and domains
 from which clients may access the server.  This is a list of REGEXs
