@@ -64,24 +64,23 @@ OSREV=`{ uname -r || echo ""; } 2> /dev/null |
 # are completely irrelevant on Linux)
 if [ ! -f "${SYSTEMS}/${MACHINETYPE}_${OSTYPE}${OSREV}.mak" ]; then
     if [ -f "${SYSTEMS}/${OSTYPE}${OSREV}.mak" ]; then
-	MACHINETYPE=unknown
+        MACHINETYPE=unknown
     elif [ -f "${SYSTEMS}/${MACHINETYPE}_${OSTYPE}.mak" ]; then
-	OSREV=
+        OSREV=
     elif [ -f "${SYSTEMS}/unknown_${OSTYPE}.mak" ]; then
         MACHINETYPE=unknown
-	OSREV=
+        OSREV=
     elif [ "$OSTYPE" = "Darwin" ]; then
         OSREV=
     else
-	OSTYPE=unknown
-	OSREV=
+        OSTYPE=unknown
+        OSREV=
     fi
 fi
 
 echo ' ###########################################################################'
 echo ' ## This file is created automatically from your config file.'
 echo ' ## Do not hand edit.'
-echo ' ## Created:'`date`
 echo ' ###########################################################################'
 
 echo ''
