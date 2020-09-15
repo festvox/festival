@@ -56,12 +56,12 @@
 HTS_LABEL_C_START;
 
 #include <stdlib.h>             /* for atof() */
-#include <ctype.h>              /* for isgraph(),isdigit() */
+#include <ctype.h>              /* for isprint(),isdigit() */
 
 /* hts_engine libraries */
 #include "HTS_hidden.h"
 
-static HTS_Boolean isdigit_string(char *str)
+static HTS_Boolean isdigit_string(const char *str)
 {
    int i;
 
@@ -116,8 +116,8 @@ static void HTS_Label_load(HTS_Label * label, size_t sampling_rate, size_t fperi
    }
 
    /* parse label file */
-   while (HTS_get_token_from_fp(fp, buff)) {
-      if (!isgraph((int) buff[0]))
+   while (HTS_get_token_from_fp(fp, buff, HTS_MAXBUFLEN)) {
+      if (!isprint((int) buff[0]))
          break;
       label->size++;
 
@@ -130,9 +130,9 @@ static void HTS_Label_load(HTS_Label * label, size_t sampling_rate, size_t fperi
       }
       if (isdigit_string(buff)) {       /* has frame infomation */
          start = atof(buff);
-         HTS_get_token_from_fp(fp, buff);
+         HTS_get_token_from_fp(fp, buff, HTS_MAXBUFLEN);
          end = atof(buff);
-         HTS_get_token_from_fp(fp, buff);
+         HTS_get_token_from_fp(fp, buff, HTS_MAXBUFLEN);
          lstring->start = rate * start;
          lstring->end = rate * end;
       } else {
@@ -154,7 +154,7 @@ void HTS_Label_load_from_fn(HTS_Label * label, size_t sampling_rate, size_t fper
 }
 
 /* HTS_Label_load_from_strings: load label from strings */
-void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, char **lines, size_t num_lines)
+void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char **lines, size_t num_lines)
 {
    char buff[HTS_MAXBUFLEN];
    HTS_LabelString *lstring = NULL;
@@ -169,7 +169,7 @@ void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t
    }
    /* copy label */
    for (i = 0; i < num_lines; i++) {
-      if (!isgraph((int) lines[i][0]))
+      if (!isprint((int) lines[i][0]))
          break;
       label->size++;
 
@@ -182,11 +182,11 @@ void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t
       }
       data_index = 0;
       if (isdigit_string(lines[i])) {   /* has frame infomation */
-         HTS_get_token_from_string(lines[i], &data_index, buff);
+         HTS_get_token_from_string(lines[i], &data_index, buff, HTS_MAXBUFLEN);
          start = atof(buff);
-         HTS_get_token_from_string(lines[i], &data_index, buff);
+         HTS_get_token_from_string(lines[i], &data_index, buff, HTS_MAXBUFLEN);
          end = atof(buff);
-         HTS_get_token_from_string(lines[i], &data_index, buff);
+         HTS_get_token_from_string(lines[i], &data_index, buff, HTS_MAXBUFLEN);
          lstring->name = HTS_strdup(buff);
          lstring->start = rate * start;
          lstring->end = rate * end;

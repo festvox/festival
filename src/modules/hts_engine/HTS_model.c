@@ -194,12 +194,12 @@ static HTS_Boolean HTS_Question_load(HTS_Question * question, HTS_File * fp)
    HTS_Question_clear(question);
 
    /* get question name */
-   if (HTS_get_pattern_token(fp, buff) == FALSE)
+   if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE)
       return FALSE;
    question->string = HTS_strdup(buff);
 
    /* get pattern list */
-   if (HTS_get_pattern_token(fp, buff) == FALSE) {
+   if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
       HTS_Question_clear(question);
       return FALSE;
    }
@@ -207,7 +207,7 @@ static HTS_Boolean HTS_Question_load(HTS_Question * question, HTS_File * fp)
    last_pattern = NULL;
    if (strcmp(buff, "{") == 0) {
       while (1) {
-         if (HTS_get_pattern_token(fp, buff) == FALSE) {
+         if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
             HTS_Question_clear(question);
             return FALSE;
          }
@@ -218,7 +218,7 @@ static HTS_Boolean HTS_Question_load(HTS_Question * question, HTS_File * fp)
             question->head = pattern;
          pattern->string = HTS_strdup(buff);
          pattern->next = NULL;
-         if (HTS_get_pattern_token(fp, buff) == FALSE) {
+         if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
             HTS_Question_clear(question);
             return FALSE;
          }
@@ -358,7 +358,7 @@ static HTS_Boolean HTS_Tree_load(HTS_Tree * tree, HTS_File * fp, HTS_Question * 
    if (tree == NULL || fp == NULL)
       return FALSE;
 
-   if (HTS_get_pattern_token(fp, buff) == FALSE) {
+   if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
       HTS_Tree_clear(tree);
       return FALSE;
    }
@@ -367,14 +367,14 @@ static HTS_Boolean HTS_Tree_load(HTS_Tree * tree, HTS_File * fp, HTS_Question * 
    tree->root = last_node = node;
 
    if (strcmp(buff, "{") == 0) {
-      while (HTS_get_pattern_token(fp, buff) == TRUE && strcmp(buff, "}") != 0) {
+      while (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == TRUE && strcmp(buff, "}") != 0) {
          node = HTS_Node_find(last_node, atoi(buff));
          if (node == NULL) {
             HTS_error(0, "HTS_Tree_load: Cannot find node %d.\n", atoi(buff));
             HTS_Tree_clear(tree);
             return FALSE;
          }
-         if (HTS_get_pattern_token(fp, buff) == FALSE) {
+         if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
             HTS_Tree_clear(tree);
             return FALSE;
          }
@@ -389,7 +389,7 @@ static HTS_Boolean HTS_Tree_load(HTS_Tree * tree, HTS_File * fp, HTS_Question * 
          HTS_Node_initialize(node->yes);
          HTS_Node_initialize(node->no);
 
-         if (HTS_get_pattern_token(fp, buff) == FALSE) {
+         if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
             node->quest = NULL;
             free(node->yes);
             free(node->no);
@@ -403,7 +403,7 @@ static HTS_Boolean HTS_Tree_load(HTS_Tree * tree, HTS_File * fp, HTS_Question * 
          node->no->next = last_node;
          last_node = node->no;
 
-         if (HTS_get_pattern_token(fp, buff) == FALSE) {
+         if (HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN) == FALSE) {
             node->quest = NULL;
             free(node->yes);
             free(node->no);
@@ -495,7 +495,7 @@ static HTS_Boolean HTS_Window_load(HTS_Window * win, HTS_File ** fp, size_t size
    win->coefficient = (double **) HTS_calloc(win->size, sizeof(double *));
    /* set delta coefficents */
    for (i = 0; i < win->size; i++) {
-      if (HTS_get_token_from_fp(fp[i], buff) == FALSE) {
+      if (HTS_get_token_from_fp(fp[i], buff, HTS_MAXBUFLEN) == FALSE) {
          result = FALSE;
          fsize = 1;
       } else {
@@ -508,7 +508,7 @@ static HTS_Boolean HTS_Window_load(HTS_Window * win, HTS_File ** fp, size_t size
       /* read coefficients */
       win->coefficient[i] = (double *) HTS_calloc(fsize, sizeof(double));
       for (j = 0; j < fsize; j++) {
-         if (HTS_get_token_from_fp(fp[i], buff) == FALSE) {
+         if (HTS_get_token_from_fp(fp[i], buff, HTS_MAXBUFLEN) == FALSE) {
             result = FALSE;
             win->coefficient[i][j] = 0.0;
          } else {
@@ -610,7 +610,7 @@ static HTS_Boolean HTS_Model_load_tree(HTS_Model * model, HTS_File * fp)
    last_question = NULL;
    last_tree = NULL;
    while (!HTS_feof(fp)) {
-      HTS_get_pattern_token(fp, buff);
+      HTS_get_pattern_token(fp, buff, HTS_MAXBUFLEN);
       /* parse questions */
       if (strcmp(buff, "QS") == 0) {
          question = (HTS_Question *) HTS_calloc(1, sizeof(HTS_Question));

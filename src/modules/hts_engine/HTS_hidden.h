@@ -117,16 +117,16 @@ size_t HTS_fread_little_endian(void *buf, size_t size, size_t n, HTS_File * fp);
 size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * fp);
 
 /* HTS_get_pattern_token: get pattern token (single/double quote can be used) */
-HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff);
+HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff, int bufflen);
 
 /* HTS_get_token: get token from file pointer (separators are space,tab,line break) */
-HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff);
+HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff, int bufflen);
 
 /* HTS_get_token: get token from file pointer with specified separator */
 HTS_Boolean HTS_get_token_from_fp_with_separator(HTS_File * fp, char *buff, char separator);
 
 /* HTS_get_token_from_string: get token from string (separator are space,tab,line break) */
-HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff);
+HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff, int bufflen);
 
 /* HTS_get_token_from_string_with_separator: get token from string with specified separator */
 HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * index, char *buff, char separator);
@@ -248,7 +248,7 @@ void HTS_Label_initialize(HTS_Label * label);
 void HTS_Label_load_from_fn(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char *fn);
 
 /* HTS_Label_load_from_strings: load label list from string list */
-void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, char **lines, size_t num_lines);
+void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char **lines, size_t num_lines);
 
 /* HTS_Label_get_size: get number of label string */
 size_t HTS_Label_get_size(HTS_Label * label);
