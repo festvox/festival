@@ -609,7 +609,7 @@ void festival_wave_init(void)
 
     init_subr_4("wave.save",wave_save,
  "(wave.save WAVE FILENAME FILETYPE SAMPLETYPE)\n\
-  Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specifed\n\
+  Save WAVE in FILENAME, respecting FILETYPE and SAMPLETYPE if specified\n\
   if these last two arguments are unspecified the global parameters\n\
   Wavefiletype and Wavesampletype are used.  Returns t is successful\n\
   and throws an error if not.");  

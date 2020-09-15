@@ -494,7 +494,7 @@ Getting Help
 (If compiled with editline)
   M-h               displays help on current symbol  
   M-s               speaks help on current symbol  
-  M-m               displays relevant manual page in local netscape
+  M-m               displays relevant manual page in local web browser
   TAB               Command, symbol and filename completion
   C-p or up-arrow   Previous command
   C-b or left-arrow Move back one character
