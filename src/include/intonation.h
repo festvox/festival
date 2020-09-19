@@ -40,9 +40,9 @@
 #ifndef __INTONATION_H__
 #define __INTONATION_H__
 
-EST_Item *add_target(EST_Utterance *u, EST_Item *seg,
+EST_Item *add_target(EST_Utterance &u, EST_Item *seg,
 			  float pos,float val);
-EST_Item *add_IntEvent(EST_Utterance *u, EST_Item *syl,
+EST_Item *add_IntEvent(EST_Utterance &u, EST_Item *syl,
 			    const EST_String &label);
 
 #endif /* __INTONATION_H__ */

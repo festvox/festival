@@ -43,10 +43,10 @@
 #include "modules.h"
 #include "intonation.h"
 
-static void create_words(EST_Utterance *u);
-static void create_segments(EST_Utterance *u);
-static void create_wave(EST_Utterance *u);
-static void create_phones(EST_Utterance *u);
+static void create_words(EST_Utterance &u);
+static void create_segments(EST_Utterance &u);
+static void create_wave(EST_Utterance &u);
+static void create_phones(EST_Utterance &u);
 
 LISP FT_Initialize_Utt(LISP utt)
 {
@@ -62,17 +62,17 @@ LISP FT_Initialize_Utt(LISP utt)
     utt_cleanup(*u);  // delete all relations
 
     if (type == "Words")
-	create_words(u);
+	create_words(*u);
     else if (type == "Text")
 	;
     else if (type == "Segments")
-	create_segments(u);
+	create_segments(*u);
     else if (type == "Phones")
-	create_phones(u);
+	create_phones(*u);
     else if (type == "Phrase")
-	create_phraseinput(u);
+	create_phraseinput(*u);
     else if (type == "Wave")
-	create_wave(u);
+	create_wave(*u);
     else
     {
 	// error
@@ -84,14 +84,14 @@ LISP FT_Initialize_Utt(LISP utt)
     return utt;
 }
 
-void create_words(EST_Utterance *u)
+void create_words(EST_Utterance &u)
 {
     // Add words from IForm
     LISP lwords,w;
     EST_Item *word;
 
-    u->create_relation("Word");
-    lwords = utt_iform(*u);
+    u.create_relation("Word");
+    lwords = utt_iform(u);
 
     for (w=lwords; w != NIL; w=cdr(w))
     {
@@ -106,14 +106,14 @@ void create_words(EST_Utterance *u)
 
 }
 
-void create_wave(EST_Utterance *u)
+void create_wave(EST_Utterance &u)
 {
     // Get the fname for the wave and load it
     EST_Item *item = 0;
     LISP lwave;
     EST_Wave *wave = new EST_Wave;
 
-    lwave = utt_iform(*u);
+    lwave = utt_iform(u);
 
     if (wave->load(get_c_string(lwave)) != format_ok)
     {
@@ -121,22 +121,22 @@ void create_wave(EST_Utterance *u)
 	festival_error();
     }
 
-    item = u->create_relation("Wave")->append();
+    item = u.create_relation("Wave")->append();
     item->set_val("wave",est_val(wave));
 
 }
 
-void create_segments(EST_Utterance *u)
+void create_segments(EST_Utterance &u)
 {
     // Add segments from IForm
     LISP lsegs,s,targs,t;
     EST_String seg;
     EST_Item *Seg;;
     float start,end,dur,tpos,tval;
-    u->create_relation("Segment");
-    u->create_relation("Target");
+    u.create_relation("Segment");
+    u.create_relation("Target");
 
-    lsegs = utt_iform(*u);
+    lsegs = utt_iform(u);
 
     end = 0.0;
     for (s=lsegs; s != NIL; s=cdr(s))
@@ -158,14 +158,14 @@ void create_segments(EST_Utterance *u)
 
 }
 
-static void create_phones(EST_Utterance *u)
+static void create_phones(EST_Utterance &u)
 {
     // Add phones from IForm
     LISP lsegs,s;
     EST_String seg;
 
-    u->create_relation("Segment");
-    lsegs = utt_iform(*u);
+    u.create_relation("Segment");
+    lsegs = utt_iform(u);
 
     for (s=lsegs; s != NIL; s=cdr(s))
     {

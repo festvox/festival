@@ -113,13 +113,13 @@ LISP FT_Any_Token_Utt(LISP utt)
 	    words = word_it(t,t->name());
 	    for (w=words; w != NIL; w=cdr(w))
 	    {
-		new_word = add_word(u,car(w));
+		new_word = add_word(*u,car(w));
 		append_daughter(t,"Token",new_word);
 	    }
 	}
 	else
 	{   // No user token_to_word function so just do it directly
-	    new_word = add_word(u,t->name());
+	    new_word = add_word(*u,t->name());
 	    append_daughter(t,"Token",new_word);
 	}
     }
@@ -156,7 +156,7 @@ LISP FT_English_Token_Utt(LISP utt)
 	    l = symbolexplode(strintern(t->f("prepunctuation").string()));
 	    for (w=l; w != NIL; w=cdr(w))
 	    {
-		new_word = add_word(u,car(w));
+		new_word = add_word(*u,car(w));
 		append_daughter(t,"Token",new_word);
 	    }
 	}
@@ -164,7 +164,7 @@ LISP FT_English_Token_Utt(LISP utt)
 	// Words become words
 	for (w=words; w != NIL; w=cdr(w))
 	{
-	    new_word = add_word(u,car(w));
+	    new_word = add_word(*u,car(w));
 	    append_daughter(t,"Token",new_word);
 	}
 
@@ -181,7 +181,7 @@ LISP FT_English_Token_Utt(LISP utt)
 		l = symbolexplode(strintern(ffeature(t,"punc").string()));
 		for (w=l; w != NIL; w=cdr(w))
 		{
-		    new_word = add_word(u,car(w));
+		    new_word = add_word(*u,car(w));
 		    append_daughter(t,"Token",new_word);
 		}
 	    }

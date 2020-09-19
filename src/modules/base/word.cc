@@ -43,7 +43,9 @@
 #include "lexicon.h"
 #include "modules.h"
 
-static EST_Item *add_syllable(EST_Utterance *u, int stress);
+using namespace std;
+
+static EST_Item *add_syllable(EST_Utterance &u, int stress);
 static LISP specified_word_pronunciation(EST_Item *w, LISP lpos);
 
 LISP FT_Classic_Word_Utt(LISP utt)
@@ -81,11 +83,11 @@ LISP FT_Classic_Word_Utt(LISP utt)
 	SylStructure->append(w);
 	for (s=car(cdr(cdr(entry))); s != NIL; s=cdr(s))
 	{
-	    syl = add_syllable(u,get_c_int(car(cdr(car(s)))));
+	    syl = add_syllable(*u,get_c_int(car(cdr(car(s)))));
 	    append_daughter(w,"SylStructure",syl);
 	    for (p=car(car(s)); p != NIL; p=cdr(p))
 	    {
-		seg = add_segment(u,get_c_string(car(p)));
+		seg = add_segment(*u,get_c_string(car(p)));
 		append_daughter(syl,"SylStructure",seg);
 	    }
 	}
@@ -143,11 +145,11 @@ LISP FT_Unilex_Word_Utt(LISP utt)
 	if (entry2) // compare full and reduced form entries
 	  for (s=car(cdr(cdr(entry))),s2=car(cdr(cdr(entry2))) ; s != NIL; s=cdr(s))
 	    {
-	      syl = add_syllable(u,get_c_int(car(cdr(car(s)))));
+	      syl = add_syllable(*u,get_c_int(car(cdr(car(s)))));
 	      append_daughter(w,"SylStructure",syl);
 	      for (p=car(car(s)),p2=car(car(s2)); p != NIL; p=cdr(p))
 		{
-		  seg = add_segment(u,get_c_string(car(p)));
+		  seg = add_segment(*u,get_c_string(car(p)));
 		  append_daughter(syl,"SylStructure",seg);
 
 		  if(p2 != NIL)
@@ -169,11 +171,11 @@ LISP FT_Unilex_Word_Utt(LISP utt)
 	else
 	  for (s=car(cdr(cdr(entry))); s != NIL; s=cdr(s))
 	    {
-	      syl = add_syllable(u,get_c_int(car(cdr(car(s)))));
+	      syl = add_syllable(*u,get_c_int(car(cdr(car(s)))));
 	      append_daughter(w,"SylStructure",syl);
 	      for (p=car(car(s)); p != NIL; p=cdr(p))
 		{
-		  seg = add_segment(u,get_c_string(car(p)));
+		  seg = add_segment(*u,get_c_string(car(p)));
 		  append_daughter(syl,"SylStructure",seg);
 		}
 	    }	
@@ -204,16 +206,16 @@ static LISP specified_word_pronunciation(EST_Item *w, LISP lpos)
 
 }
 
-EST_Item *add_word(EST_Utterance *u, const EST_String &name)
+EST_Item *add_word(EST_Utterance &u, const EST_String &name)
 {
-    EST_Item *item = u->relation("Word")->append();
+    EST_Item *item = u.relation("Word")->append();
 
     item->set_name(name);
     
     return item;
 }
 
-EST_Item *add_word(EST_Utterance *u, LISP word)
+EST_Item *add_word(EST_Utterance &u, LISP word)
 {
     // Build a Word Ling_Item from the Lisp description, which may
     // contain other features
@@ -249,9 +251,9 @@ EST_Item *add_word(EST_Utterance *u, LISP word)
     return si_word;
 }
 
-static EST_Item *add_syllable(EST_Utterance *u, int stress)
+static EST_Item *add_syllable(EST_Utterance &u, int stress)
 {
-    EST_Item *item = u->relation("Syllable")->append();
+    EST_Item *item = u.relation("Syllable")->append();
     
     item->set_name("syl");
     item->set("stress",stress);
@@ -259,9 +261,9 @@ static EST_Item *add_syllable(EST_Utterance *u, int stress)
     return item;
 }
 
-EST_Item *add_segment(EST_Utterance *u, const EST_String &s)
+EST_Item *add_segment(EST_Utterance &u, const EST_String &s)
 {
-    EST_Item *item = u->relation("Segment")->append();
+    EST_Item *item = u.relation("Segment")->append();
     
     item->set_name(s);
 

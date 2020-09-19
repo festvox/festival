@@ -55,7 +55,7 @@ static int after_pause(EST_Item *s);
 static int before_pause(EST_Item *s);
 static EST_Item *vowel_seg(EST_Item *syl);
 static void init_int_lr_params(void);
-static void add_target_at(EST_Utterance *u, EST_Item *seg,
+static void add_target_at(EST_Utterance &u, EST_Item *seg,
 			  float val,lr_tpos pos);
 static float apply_lr_model(LISP model, EST_FVector &feats);
 static void find_feat_values(EST_Item *s, LISP model,EST_FVector &feats);
@@ -103,7 +103,7 @@ LISP Intonation_Accent_Tree_Utt(LISP utt)
 	if ((paccent = accent_specified(s)) == "0") // check if pre-specified
 	    paccent = (EST_String)wagon_predict(s,accent_tree);
 	if (paccent != "NONE")
-	    add_IntEvent(u,s,paccent);
+	    add_IntEvent(*u,s,paccent);
     }
     return utt;
 }
@@ -124,7 +124,7 @@ LISP Intonation_Endtone_Tree_Utt(LISP utt)
 	if ((ptone = tone_specified(s)) == "0")
 	    ptone = (EST_String)wagon_predict(s,endtone_tree);
 	if (ptone != "NONE")
-	    add_IntEvent(u,s,ptone);
+	    add_IntEvent(*u,s,ptone);
     }
     return utt;
 }
@@ -209,19 +209,19 @@ LISP FT_Int_Targets_LR_Utt(LISP utt)
 	pstart = apply_lr_model(start_lr,feats);
 	pstart = MAP_F0(pstart);
 	if (after_pause(s))
-	    add_target_at(u,daughter1(s,"SylStructure"),pstart,tp_start);
+	    add_target_at(*u,daughter1(s,"SylStructure"),pstart,tp_start);
 	else
-	    add_target_at(u,daughter1(s,"SylStructure"),
+	    add_target_at(*u,daughter1(s,"SylStructure"),
 			  (pstart+pend)/2.0,tp_start);
 
 	pmid = apply_lr_model(mid_lr,feats);
 	pmid = MAP_F0(pmid);
-	add_target_at(u,vowel_seg(s),pmid,tp_mid);
+	add_target_at(*u,vowel_seg(s),pmid,tp_mid);
 
 	pend = apply_lr_model(end_lr,feats);
 	pend = MAP_F0(pend);
 	if (before_pause(s))
-	    add_target_at(u,daughtern(s,"SylStructure"),pend,tp_end);
+	    add_target_at(*u,daughtern(s,"SylStructure"),pend,tp_end);
     }
 
     return utt;
@@ -256,25 +256,25 @@ LISP FT_Int_Targets_LR_5_Utt(LISP utt)
 	pstart = apply_lr_model(start_lr,feats);
 	pstart = MAP_F0(pstart);
 	if (after_pause(s))
-	    add_target_at(u,daughter1(s,"SylStructure"),pstart,tp_start);
+	    add_target_at(*u,daughter1(s,"SylStructure"),pstart,tp_start);
 	else
-	    add_target_at(u,daughter1(s,"SylStructure"),
+	    add_target_at(*u,daughter1(s,"SylStructure"),
 			  (pstart+pend)/2.0,tp_start);
 
 	pleft = apply_lr_model(left_lr,feats);
 	pleft = MAP_F0(pleft);
-	add_target_at(u,vowel_seg(s),pleft,tp_left);
+	add_target_at(*u,vowel_seg(s),pleft,tp_left);
 	pmid = apply_lr_model(mid_lr,feats);
 	pmid = MAP_F0(pmid);
-	add_target_at(u,vowel_seg(s),pmid,tp_mid);
+	add_target_at(*u,vowel_seg(s),pmid,tp_mid);
 	pright = apply_lr_model(right_lr,feats);
 	pright = MAP_F0(pright);
-	add_target_at(u,vowel_seg(s),pright,tp_right);
+	add_target_at(*u,vowel_seg(s),pright,tp_right);
 
 	pend = apply_lr_model(end_lr,feats);
 	pend = MAP_F0(pend);
 	if (before_pause(s))
-	    add_target_at(u,daughtern(s,"SylStructure"),pend,tp_end);
+	    add_target_at(*u,daughtern(s,"SylStructure"),pend,tp_end);
     }
 
     return utt;
@@ -337,7 +337,7 @@ static void init_int_lr_params(void)
 }
 
 
-static void add_target_at(EST_Utterance *u, EST_Item *seg,
+static void add_target_at(EST_Utterance &u, EST_Item *seg,
 			  float val,lr_tpos pos)
 {
     // Add a target to segment at position
