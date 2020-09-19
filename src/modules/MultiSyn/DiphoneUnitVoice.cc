@@ -251,6 +251,7 @@ DiphoneUnitVoice::~DiphoneUnitVoice()
 
 void DiphoneUnitVoice::addToCatalogue( const EST_Utterance *utt )
 {
+  (void) utt;
   // needed?
 }
 
@@ -387,6 +388,7 @@ static EST_VTCandidate* getCandidatesFunction( EST_Item *s,
 EST_VTCandidate* DiphoneUnitVoice::getCandidates( EST_Item *s, 
 						  EST_Features &f) const 
 {
+  (void) f;
   EST_VTCandidate *c = 0;
   EST_VTCandidate *moduleListHead = 0;
   EST_VTCandidate *moduleListTail = 0;

@@ -335,6 +335,7 @@ static void phrasing_by_cart_viterbi(EST_Utterance &u)
 
 static EST_VTCandidate *cart_bb_candlist(EST_Item *s, EST_Features &f)
 {
+  (void) f;
   double prob=1.0;
   double divisor = 1.0;
   EST_VTCandidate *all_c = 0;
