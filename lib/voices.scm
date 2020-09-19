@@ -144,12 +144,19 @@ to be used."
 
    ;; The follow are reset to allow existing voices to continue
    ;; to work, new voices should be setting these explicitly
+   (Param.set 'Text_Method 'Text_int)
    (Parameter.set 'Token_Method 'Token_English)
    (Parameter.set 'POS_Method Classic_POS)
    (Parameter.set 'Phrasify_Method Classic_Phrasify)
    (Parameter.set 'Word_Method Classic_Word)
    (Parameter.set 'Pause_Method Classic_Pauses)
    (Parameter.set 'PostLex_Method Classic_PostLex)
+   ;; From pos.scm:
+   (set! pos_p_start_tag "punc")
+   (set! pos_pp_start_tag "nn")
+   (set! pos_supported nil)
+   (set! pos_ngram_name nil)
+   (set! pos_map nil)
 
    (set! diphone_module_hooks nil)
    (set! UniSyn_module_hooks nil)
