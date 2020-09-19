@@ -75,7 +75,7 @@ typedef EST_THash<EST_Item*,TCData*> TCDataHash;
 class EST_FlatTargetCost : public EST_TargetCost {
 
  public:
-  EST_FlatTargetCost() : li(0){};
+  EST_FlatTargetCost() : li(0){ t=0;c=0;};
 
 
  private:
