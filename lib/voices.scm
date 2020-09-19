@@ -345,7 +345,9 @@ in the proclaim_voice description fields."
        (while voices
 	 (set! voicedir (car voices))
 	 (set! voice (path-basename voicedir))
-	 (if (string-matches voicedir ".*\\..*")
+	 (if (or (string-matches voicedir ".*\\..*") 
+                 (not (probe_file (path-append dir language voicedir "festvox" (string-append voicedir ".scm"))))
+             );; if directory is \.. or voice description doesn't exist, then do nothing. Else, load voice
 	     nil
 	     (begin
 	       ;; load the voice definition file, but don't evaluate it!
@@ -355,7 +357,12 @@ in the proclaim_voice description fields."
 	       (mapcar
 		(lambda (line)
 		  (if (string-matches (car line) "proclaim_voice")
-		      (voice-location-multisyn (intern (cadr (cadr line)))  voicedir (path-append dir language voicedir) "registerd multisyn voice")))
+                    (begin
+		      (voice-location-multisyn (intern (cadr (cadr line)))  voicedir (path-append dir language voicedir) "registerd multisyn voice")
+                      (eval line)
+                    )
+                  )
+                )
 		voice-def-file)
 	     ))
 	 (set! voices (cdr voices)))
