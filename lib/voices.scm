@@ -139,18 +139,18 @@ This should always be set by the voice definition function (even
 if it does nothing).  This allows voice specific changes to be reset
 when a new voice is selection.  Unfortunately I can't force this
 to be used."
-   (Parameter.set 'Duration_Stretch 1.0)
+   (Param.set 'Duration_Stretch 1.0)
    (set! after_synth_hooks default_after_synth_hooks)
 
    ;; The follow are reset to allow existing voices to continue
    ;; to work, new voices should be setting these explicitly
    (Param.set 'Text_Method 'Text_int)
-   (Parameter.set 'Token_Method 'Token_English)
-   (Parameter.set 'POS_Method Classic_POS)
-   (Parameter.set 'Phrasify_Method Classic_Phrasify)
-   (Parameter.set 'Word_Method Classic_Word)
-   (Parameter.set 'Pause_Method Classic_Pauses)
-   (Parameter.set 'PostLex_Method Classic_PostLex)
+   (Param.set 'Token_Method 'Token_English)
+   (Param.set 'POS_Method Classic_POS)
+   (Param.set 'Phrasify_Method Classic_Phrasify)
+   (Param.set 'Word_Method Classic_Word)
+   (Param.set 'Pause_Method Classic_Pauses)
+   (Param.set 'PostLex_Method Classic_PostLex)
    ;; From pos.scm:
    (set! pos_p_start_tag "punc")
    (set! pos_pp_start_tag "nn")
