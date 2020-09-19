@@ -32,7 +32,7 @@
 ##                                                                       ##
 ###########################################################################
 ##
-##  test overall installtion (and not continue if there are problems
+##  test overall installation (and stop if there are problems)           ##
 
 FESTIVAL=$1/bin/festival
 HOME=$1/testsuite/data

@@ -195,7 +195,7 @@ static void pipe_close(int *fds)
 
 static int *pipe_open(const char *command)
 {
-    // Starts a subprocess with its stdin and stdout bounad to pipes
+    // Starts a subprocess with its stdin and stdout bound to pipes
     // the ends of which are returned in an array
     int argc;
     char **argv;

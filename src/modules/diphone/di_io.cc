@@ -858,11 +858,12 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	}
 	sample_offset += samp_counts[i];
     }
-    if (db->sig_access_type != di_direct)
+    if (db->sig_access_type != di_direct) {
 	if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw)
 	    fseek(db->gfd,(long)sample_offset,SEEK_CUR);
 	else
 	    fseek(db->gfd,(long)sample_offset*sizeof(short),SEEK_CUR);
+    }
     wfree(samp_counts);
 }
 
