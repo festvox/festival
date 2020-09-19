@@ -276,24 +276,46 @@ in the proclaim_voice description fields."
   (let ((dirs voice-path)
 	(dir nil)
 	languages language
-	voices voicedir voice
+	voices voicedir voice voice_proclaimed
 	)
     (while dirs
      (set! dir (car dirs))
      (setq languages (directory-entries dir t))
      (while languages
        (set! language (car languages))
+       (set! voice_proclaimed nil) ; flag to mark if proclaim_voice is found
        (set! voices (directory-entries (path-append dir language) t))
        (while voices
 	 (set! voicedir (car voices))
 	 (set! voice (path-basename voicedir))
-	 (if (string-matches voicedir ".*\\..*")
+	 (if (or (string-matches voicedir ".*\\..*") 
+             (not (probe_file (path-append dir language voicedir "festvox" (string-append voicedir ".scm"))))
+             );; if directory is \.. or voice description doesn't exist, then do nothing. Else, load voice
 	     nil
-	     (voice-location 
-	      voice 
-	      (path-as-directory (path-append dir language voicedir))
-	      "voice found on path")
-	     )
+             (begin
+	       ;; Do the voice proclamation: load the voice definition file.
+	       (set! voice-def-file (load (path-append dir language voicedir "festvox" 
+						       (string-append voicedir ".scm")) t))
+	       ;; now find the "proclaim_voice" lines and register these voices.
+	       (mapcar
+		(lambda (line)
+		  (if (string-matches (car line) "proclaim_voice")
+                    (begin
+		                (voice-location (intern (cadr (cadr line)))
+                                    (path-as-directory (path-append dir language voicedir)) "registered voice")
+                      (eval line)
+                    (set! voice_proclaimed t)
+                    )
+                  )
+                )
+		voice-def-file)
+               (if (not voice_proclaimed) ;proclaim_voice is missing. Use old voice location method
+                 (voice-location voice
+                  (path-as-directory (path-append dir language voicedir))
+                    "voice found on path")
+               )
+             )
+	 )
 	 (set! voices (cdr voices))
 	 )
        (set! languages (cdr languages))
