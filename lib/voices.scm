@@ -388,26 +388,52 @@ A variable whose value is a function name that is called on start up to
 the default voice. [see Site initialization]")
 
 (defvar default-voice-priority-list 
-  '(kal_diphone
-    cmu_us_slt_cg
-    cmu_us_rms_cg
-    cmu_us_bdl_cg
-    cmu_us_jmk_cg
-    cmu_us_awb_cg
-;    cstr_rpx_nina_multisyn       ; restricted license (lexicon)
-;    cstr_rpx_jon_multisyn       ; restricted license (lexicon)
-;    cstr_edi_awb_arctic_multisyn ; restricted license (lexicon)
-;    cstr_us_awb_arctic_multisyn
-    ked_diphone
-    don_diphone
-    rab_diphone
-    en1_mbrola
-    us1_mbrola
-    us2_mbrola
-    us3_mbrola
-    gsw_diphone  ;; not publically distributed
-    el_diphone
+  (reverse (remove-duplicates (reverse 
+  (append 
+    (list
+      ; A default hardcoded list with higher priority
+      'kal_diphone
+      'cmu_us_slt_cg
+      'cmu_us_rms_cg
+      'cmu_us_bdl_cg
+      'cmu_us_jmk_cg
+      'cmu_us_awb_cg
+      'cstr_rpx_nina_multisyn       ; restricted license (lexicon)
+      'cstr_rpx_jon_multisyn       ; restricted license (lexicon)
+      'cstr_edi_awb_arctic_multisyn ; restricted license (lexicon)
+      'cstr_us_awb_arctic_multisyn
+      'nitech_us_slt_arctic_hts
+      'nitech_us_awb_arctic_hts
+      'nitech_us_bdl_arctic_hts
+      'nitech_us_clb_arctic_hts
+      'nitech_us_jmk_arctic_hts
+      'nitech_us_rms_arctic_hts
+      'ked_diphone
+      'don_diphone
+      'rab_diphone
+      'en1_mbrola
+      'us1_mbrola
+      'us2_mbrola
+      'us3_mbrola
+      'gsw_diphone  ;; not publically distributed
+      'el_diphone
+      'ked_diphone
+      'cstr_us_awb_arctic_multisyn
+      'cstr_us_jmk_arctic_multisyn
     )
+    ; Any clustergen voice
+    (voice.find (list (list 'engine 'clustergen)))
+    ; Any hts voice
+    (voice.find (list (list 'engine 'hts)))
+    ; Any multisyn voice
+    (voice.find (list (list 'engine 'multisyn)))
+    ; Any diphone voice
+    (voice.find (list (list 'engine 'diphone)))
+    ; Any clunits voice
+    (voice.find (list (list 'engine 'clunits)))
+    ; Any voice
+    (voice.list)
+  ))))
   "default-voice-priority-list
    List of voice names. The first of them available becomes the default voice.")
 
