@@ -437,16 +437,38 @@ the default voice. [see Site initialization]")
   "default-voice-priority-list
    List of voice names. The first of them available becomes the default voice.")
 
-(let ((voices default-voice-priority-list)
-      voice)
-  (while (and voices (eq voice_default 'no_voice_error))
-	 (set! voice (car voices))
-	 (if (assoc voice voice-locations)
-	     (set! voice_default (intern (string-append "voice_" voice)))
-	     )
-	 (set! voices (cdr voices))
-	 )
+
+(define (voice.remove_unavailable voices)
+ "voice.remove_unavailable VOICES takes a list of voice names and returns
+a list with the voices in VOICES available."
+  (let ((output (mapcar (lambda(x) (if (assoc (intern x) voice-locations ) (intern x))) voices)))
+    (while (member nil output)
+       (set! output (remove nil output))
+    )
+  output
   )
+)
 
 
+
+(define (set_voice_default voices)
+ "set_voice_default VOICES sets as voice_default the first voice available from VOICES list"
+  (let ( (avail_voices (voice.remove_unavailable voices))
+       )
+       (if avail_voices
+         (begin
+           (set! voice_default (intern (string-append "voice_" (car avail_voices))))
+          t
+         )
+         (begin 
+           (print "Could not find any of these voices:")
+           (print voices)
+           nil
+         )
+       )
+  )
+)
+
+
+(set_voice_default default-voice-priority-list)
 (provide 'voices)
