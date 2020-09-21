@@ -139,17 +139,24 @@ This should always be set by the voice definition function (even
 if it does nothing).  This allows voice specific changes to be reset
 when a new voice is selection.  Unfortunately I can't force this
 to be used."
-   (Parameter.set 'Duration_Stretch 1.0)
+   (Param.set 'Duration_Stretch 1.0)
    (set! after_synth_hooks default_after_synth_hooks)
 
    ;; The follow are reset to allow existing voices to continue
    ;; to work, new voices should be setting these explicitly
-   (Parameter.set 'Token_Method 'Token_English)
-   (Parameter.set 'POS_Method Classic_POS)
-   (Parameter.set 'Phrasify_Method Classic_Phrasify)
-   (Parameter.set 'Word_Method Classic_Word)
-   (Parameter.set 'Pause_Method Classic_Pauses)
-   (Parameter.set 'PostLex_Method Classic_PostLex)
+   (Param.set 'Text_Method 'Text_int)
+   (Param.set 'Token_Method 'Token_English)
+   (Param.set 'POS_Method Classic_POS)
+   (Param.set 'Phrasify_Method Classic_Phrasify)
+   (Param.set 'Word_Method Classic_Word)
+   (Param.set 'Pause_Method Classic_Pauses)
+   (Param.set 'PostLex_Method Classic_PostLex)
+   ;; From pos.scm:
+   (set! pos_p_start_tag "punc")
+   (set! pos_pp_start_tag "nn")
+   (set! pos_supported nil)
+   (set! pos_ngram_name nil)
+   (set! pos_map nil)
 
    (set! diphone_module_hooks nil)
    (set! UniSyn_module_hooks nil)
@@ -230,6 +237,35 @@ These names can be used as arguments to voice.description and
 voice.describe."
    (mapcar car voice-locations))
 
+(define (voice.find parameters)
+"(voice.find PARAMETERS)
+List of the (potential) voices in the system that match the PARAMETERS described
+in the proclaim_voice description fields."
+  (let ((voices (eval (list voice.list)))
+        (validvoices nil)
+        (voice nil)
+       )
+    (while parameters
+      (while voices
+        (set! voice (car voices))
+;;I believe the next line should be improved. equal? doesn't work always.
+        (if (equal? (list (cadr (assoc (caar parameters)
+                                       (cadr (assoc voice Voice_descriptions))
+                                ))) (cdar parameters))
+            (begin
+              (set! validvoices (append (list voice) validvoices))
+            )
+        )
+        (set! voices (cdr voices))
+      )
+      (set! voices validvoices)
+      (set! validvoices nil)
+      (set! parameters (cdr parameters))
+    )
+  voices
+  )
+)
+
 ;; Voices are found on the voice-path if they are in directories of the form
 ;;		DIR/LANGUAGE/NAME
 
@@ -240,24 +276,46 @@ voice.describe."
   (let ((dirs voice-path)
 	(dir nil)
 	languages language
-	voices voicedir voice
+	voices voicedir voice voice_proclaimed
 	)
     (while dirs
      (set! dir (car dirs))
      (setq languages (directory-entries dir t))
      (while languages
        (set! language (car languages))
+       (set! voice_proclaimed nil) ; flag to mark if proclaim_voice is found
        (set! voices (directory-entries (path-append dir language) t))
        (while voices
 	 (set! voicedir (car voices))
 	 (set! voice (path-basename voicedir))
-	 (if (string-matches voicedir ".*\\..*")
+	 (if (or (string-matches voicedir ".*\\..*") 
+             (not (probe_file (path-append dir language voicedir "festvox" (string-append voicedir ".scm"))))
+             );; if directory is \.. or voice description doesn't exist, then do nothing. Else, load voice
 	     nil
-	     (voice-location 
-	      voice 
-	      (path-as-directory (path-append dir language voicedir))
-	      "voice found on path")
-	     )
+             (begin
+	       ;; Do the voice proclamation: load the voice definition file.
+	       (set! voice-def-file (load (path-append dir language voicedir "festvox" 
+						       (string-append voicedir ".scm")) t))
+	       ;; now find the "proclaim_voice" lines and register these voices.
+	       (mapcar
+		(lambda (line)
+		  (if (string-matches (car line) "proclaim_voice")
+                    (begin
+		                (voice-location (intern (cadr (cadr line)))
+                                    (path-as-directory (path-append dir language voicedir)) "registered voice")
+                      (eval line)
+                    (set! voice_proclaimed t)
+                    )
+                  )
+                )
+		voice-def-file)
+               (if (not voice_proclaimed) ;proclaim_voice is missing. Use old voice location method
+                 (voice-location voice
+                  (path-as-directory (path-append dir language voicedir))
+                    "voice found on path")
+               )
+             )
+	 )
 	 (set! voices (cdr voices))
 	 )
        (set! languages (cdr languages))
@@ -287,7 +345,9 @@ voice.describe."
        (while voices
 	 (set! voicedir (car voices))
 	 (set! voice (path-basename voicedir))
-	 (if (string-matches voicedir ".*\\..*")
+	 (if (or (string-matches voicedir ".*\\..*") 
+                 (not (probe_file (path-append dir language voicedir "festvox" (string-append voicedir ".scm"))))
+             );; if directory is \.. or voice description doesn't exist, then do nothing. Else, load voice
 	     nil
 	     (begin
 	       ;; load the voice definition file, but don't evaluate it!
@@ -297,7 +357,12 @@ voice.describe."
 	       (mapcar
 		(lambda (line)
 		  (if (string-matches (car line) "proclaim_voice")
-		      (voice-location-multisyn (intern (cadr (cadr line)))  voicedir (path-append dir language voicedir) "registerd multisyn voice")))
+                    (begin
+		      (voice-location-multisyn (intern (cadr (cadr line)))  voicedir (path-append dir language voicedir) "registerd multisyn voice")
+                      (eval line)
+                    )
+                  )
+                )
 		voice-def-file)
 	     ))
 	 (set! voices (cdr voices)))
@@ -323,39 +388,87 @@ A variable whose value is a function name that is called on start up to
 the default voice. [see Site initialization]")
 
 (defvar default-voice-priority-list 
-  '(kal_diphone
-    cmu_us_slt_cg
-    cmu_us_rms_cg
-    cmu_us_bdl_cg
-    cmu_us_jmk_cg
-    cmu_us_awb_cg
-;    cstr_rpx_nina_multisyn       ; restricted license (lexicon)
-;    cstr_rpx_jon_multisyn       ; restricted license (lexicon)
-;    cstr_edi_awb_arctic_multisyn ; restricted license (lexicon)
-;    cstr_us_awb_arctic_multisyn
-    ked_diphone
-    don_diphone
-    rab_diphone
-    en1_mbrola
-    us1_mbrola
-    us2_mbrola
-    us3_mbrola
-    gsw_diphone  ;; not publically distributed
-    el_diphone
+  (reverse (remove-duplicates (reverse 
+  (append 
+    (list
+      ; A default hardcoded list with higher priority
+      'kal_diphone
+      'cmu_us_slt_cg
+      'cmu_us_rms_cg
+      'cmu_us_bdl_cg
+      'cmu_us_jmk_cg
+      'cmu_us_awb_cg
+      'cstr_rpx_nina_multisyn       ; restricted license (lexicon)
+      'cstr_rpx_jon_multisyn       ; restricted license (lexicon)
+      'cstr_edi_awb_arctic_multisyn ; restricted license (lexicon)
+      'cstr_us_awb_arctic_multisyn
+      'nitech_us_slt_arctic_hts
+      'nitech_us_awb_arctic_hts
+      'nitech_us_bdl_arctic_hts
+      'nitech_us_clb_arctic_hts
+      'nitech_us_jmk_arctic_hts
+      'nitech_us_rms_arctic_hts
+      'ked_diphone
+      'don_diphone
+      'rab_diphone
+      'en1_mbrola
+      'us1_mbrola
+      'us2_mbrola
+      'us3_mbrola
+      'gsw_diphone  ;; not publically distributed
+      'el_diphone
+      'ked_diphone
+      'cstr_us_awb_arctic_multisyn
+      'cstr_us_jmk_arctic_multisyn
     )
+    ; Any clustergen voice
+    (voice.find (list (list 'engine 'clustergen)))
+    ; Any hts voice
+    (voice.find (list (list 'engine 'hts)))
+    ; Any multisyn voice
+    (voice.find (list (list 'engine 'multisyn)))
+    ; Any diphone voice
+    (voice.find (list (list 'engine 'diphone)))
+    ; Any clunits voice
+    (voice.find (list (list 'engine 'clunits)))
+    ; Any voice
+    (voice.list)
+  ))))
   "default-voice-priority-list
    List of voice names. The first of them available becomes the default voice.")
 
-(let ((voices default-voice-priority-list)
-      voice)
-  (while (and voices (eq voice_default 'no_voice_error))
-	 (set! voice (car voices))
-	 (if (assoc voice voice-locations)
-	     (set! voice_default (intern (string-append "voice_" voice)))
-	     )
-	 (set! voices (cdr voices))
-	 )
+
+(define (voice.remove_unavailable voices)
+ "voice.remove_unavailable VOICES takes a list of voice names and returns
+a list with the voices in VOICES available."
+  (let ((output (mapcar (lambda(x) (if (assoc (intern x) voice-locations ) (intern x))) voices)))
+    (while (member nil output)
+       (set! output (remove nil output))
+    )
+  output
   )
+)
 
 
+
+(define (set_voice_default voices)
+ "set_voice_default VOICES sets as voice_default the first voice available from VOICES list"
+  (let ( (avail_voices (voice.remove_unavailable voices))
+       )
+       (if avail_voices
+         (begin
+           (set! voice_default (intern (string-append "voice_" (car avail_voices))))
+          t
+         )
+         (begin 
+           (print "Could not find any of these voices:")
+           (print voices)
+           nil
+         )
+       )
+  )
+)
+
+
+(set_voice_default default-voice-priority-list)
 (provide 'voices)
