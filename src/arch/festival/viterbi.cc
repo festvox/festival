@@ -36,15 +36,15 @@
 /*  Generic Viterbi search specifications through scheme                 */
 /*                                                                       */
 /*=======================================================================*/
-#include <cstdio>
+#include <iostream>
 #include "festival.h"
 #include "lexicon.h"
 
 static EST_VTCandidate *gv_candlist(EST_Item *s,EST_Features &f);
 static EST_VTPath *gv_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f);
-static double gv_find_wfst_prob(EST_VTPath *p,EST_WFST *wfst,
+static double gv_find_wfst_prob(EST_VTPath *p,EST_WFST &wfst,
 				int n,int &state);
-static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar *ngram,
+static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar &ngram,
 				 int n,int &state,EST_Features &f);
 
 LISP Gen_Viterbi(LISP utt)
@@ -54,7 +54,7 @@ LISP Gen_Viterbi(LISP utt)
     LISP params = siod_get_lval("gen_vit_params","no gen_vit_params");
     EST_Features f;
     EST_WFST *wfst = 0;
-    EST_Ngrammar *ngram = 0;
+    EST_Ngrammar *ngram = NULL;
     int num_states;
 
     // Add some defaults
@@ -67,6 +67,10 @@ LISP Gen_Viterbi(LISP utt)
     if (f.present("ngramname"))
     {
 	ngram = get_ngram(f.S("ngramname"));
+    if (ngram == NULL) {
+        cerr << "Gen_Viterbi: Error. Could not get ngram " << f.S("ngramname") << endl;
+        return utt;
+    }
 	num_states = ngram->num_states();
     }
     else
@@ -105,8 +109,8 @@ static EST_VTCandidate *gv_candlist(EST_Item *s,EST_Features &f)
     LISP l;
     EST_VTCandidate *c;
     EST_VTCandidate *all_c = 0;
-    EST_WFST *w = 0;
-    EST_Ngrammar *n = 0;
+    EST_WFST *w = NULL;
+    EST_Ngrammar *n = NULL;
     float prob;
 
     // Call user function to get candidate probabilities
@@ -116,7 +120,10 @@ static EST_VTCandidate *gv_candlist(EST_Item *s,EST_Features &f)
 	n = get_ngram(f.S("ngramname"));
     else
 	w = get_wfst(f.S("wfstname"));
-
+    if (n == NULL && w == NULL) {
+        cerr << "gv_candlist: Neither ngram nor wfst were provided" << endl;
+        festival_error();
+    }
     for (l=p; l != NIL; l=cdr(l))
     {
 	prob = get_c_float(car(cdr(car(l))));
@@ -142,21 +149,24 @@ static EST_VTPath *gv_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f)
 {
     EST_VTPath *np = new EST_VTPath;
     double prob,lprob;
-    EST_WFST *wfst = 0;
-    EST_Ngrammar *ngram = 0;
+    EST_WFST *wfst = NULL;
+    EST_Ngrammar *ngram = NULL;
 
     if (f.present("ngramname"))
 	ngram = get_ngram(f.S("ngramname"));
     else
 	wfst = get_wfst(f.S("wfstname"));
-
+    if (ngram == NULL && wfst == NULL) {
+        cerr << "gv_npath: Neither ngramname nor wfstname were provided" << endl;
+        return np;
+    }
     np->c = c;
     np->from = p;
     int n = c->name.Int();
-    if (wfst == 0)
-	prob = gv_find_ngram_prob(p,ngram,n,np->state,f);
+    if (wfst == NULL)
+	prob = gv_find_ngram_prob(p,*ngram,n,np->state,f);
     else
-	prob = gv_find_wfst_prob(p,wfst,n,np->state);
+	prob = gv_find_wfst_prob(p,*wfst,n,np->state);
 
     prob = f.F("gscale_p") + (prob * (1-f.F("gscale_p")));
 
@@ -181,21 +191,21 @@ static EST_VTPath *gv_npath(EST_VTPath *p,EST_VTCandidate *c,EST_Features &f)
     return np;
 }
     
-static double gv_find_wfst_prob(EST_VTPath *p,EST_WFST *wfst,
+static double gv_find_wfst_prob(EST_VTPath *p,EST_WFST &wfst,
 				int n,int &state)
 {
     float prob;
     int oldstate;
 
     if (p == 0)
-	oldstate = wfst->start_state();
+	oldstate = wfst.start_state();
     else
 	oldstate = p->state;
-    state = wfst->transition(oldstate,n,n,prob);
+    state = wfst.transition(oldstate,n,n,prob);
     return prob;
 }
 
-static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar *ngram,
+static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar &ngram,
 				 int n,int &state,EST_Features &f)
 {
     int oldstate=0;
@@ -204,7 +214,7 @@ static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar *ngram,
     if (p == 0)
     {
         // This could be done once before the search is called
-	int order = ngram->order();
+	int order = ngram.order();
 	int i;
 	EST_IVector window(order);
 	
@@ -212,16 +222,16 @@ static double gv_find_ngram_prob(EST_VTPath *p,EST_Ngrammar *ngram,
 	    window.a_no_check(order-1) = n;
 	if (order > 2)
 	    window.a_no_check(order-2) = 
-		ngram->get_vocab_word(f.S("p_word"));
+		ngram.get_vocab_word(f.S("p_word"));
 	for (i = order-3; i>=0; i--)
 	    window.a_no_check(i) =
-		ngram->get_vocab_word(f.S("pp_word"));
-	oldstate = ngram->find_state_id(window);
+		ngram.get_vocab_word(f.S("pp_word"));
+	oldstate = ngram.find_state_id(window);
     }
     else
 	oldstate = p->state;
-    state = ngram->find_next_state_id(oldstate,n);
-    const EST_DiscreteProbDistribution &pd = ngram->prob_dist(oldstate);
+    state = ngram.find_next_state_id(oldstate,n);
+    const EST_DiscreteProbDistribution &pd = ngram.prob_dist(oldstate);
     if (pd.samples() == 0)
 	prob = 0;
     else

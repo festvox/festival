@@ -43,23 +43,25 @@
 #include "modules.h"
 #include "text.h"
 
-static EST_Item *make_phrase_node(EST_Utterance *u,
+using namespace std;
+
+static EST_Item *make_phrase_node(EST_Utterance &u,
 					 const EST_String &name,
 					 LISP feats);
-static EST_Item *make_token_node(EST_Utterance *u,
+static EST_Item *make_token_node(EST_Utterance &u,
 					const EST_String &name,
 					LISP feats);
 
-void create_phraseinput(EST_Utterance *u)
+void create_phraseinput(EST_Utterance &u)
 {
     // Build from phrase input form (phrase, tokens, segs)
     LISP l,ptree,t;
     EST_Item *phrase,*token;
 
-    ptree = utt_iform(*u);
+    ptree = utt_iform(u);
     
-    u->create_relation("Phrase");
-    u->create_relation("Token");
+    u.create_relation("Phrase");
+    u.create_relation("Token");
 
     for (l=ptree; l != NIL; l=cdr(l))
     {
@@ -84,7 +86,7 @@ void create_phraseinput(EST_Utterance *u)
     }
 }
 
-static EST_Item *make_phrase_node(EST_Utterance *u,
+static EST_Item *make_phrase_node(EST_Utterance &u,
 				       const EST_String &name,
 				       LISP feats)
 {
@@ -97,13 +99,13 @@ static EST_Item *make_phrase_node(EST_Utterance *u,
     return p;
 }
 
-static EST_Item *make_token_node(EST_Utterance *u, 
+static EST_Item *make_token_node(EST_Utterance &u, 
 				      const EST_String &name,
 				      LISP feats)
 {
     // Create a token node with name and features
     EST_Token t = name;
-    EST_Item *li = add_token(u,t);
+    EST_Item *li = add_token(&u,t);
     LISP f;
 
     for (f=feats; f != NIL; f=cdr(f))

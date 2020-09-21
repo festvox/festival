@@ -103,7 +103,7 @@ static void festival_main(int argc, char **argv)
 	"              are printed (default if stdin not a tty)\n"+
 	"--language <string>\n"+
         "              Run in named language, default is\n"+
-	"              english, spanish and welsh are available\n"+
+	"              English, Spanish, Russian, Welsh and others are available\n"+
 	"--server      Run in server mode waiting for clients\n"+
 	"              of server_port (1314)\n"+
 	"--script <ifile>\n"+
