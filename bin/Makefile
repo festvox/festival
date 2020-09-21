@@ -47,6 +47,7 @@ TOP=..
 DIRNAME=bin
 FILES= Makefile VCLocalRules
 
+LOCAL_DISTCLEAN_RULES = .remove_links
 ALL = .remove_links .link_main .process_scripts text2wave
 
 include $(TOP)/config/common_make_rules
