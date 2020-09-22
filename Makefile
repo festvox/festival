@@ -41,7 +41,7 @@ TOP=.
 DIRNAME=.
 BUILD_DIRS = src lib examples bin doc
 ALL_DIRS= $(BUILD_DIRS) testsuite config
-CONFIG=configure configure.in config.sub config.guess \
+CONFIG=configure configure.ac config.sub config.guess \
        missing install-sh mkinstalldirs
 FILES = Makefile README.md ACKNOWLEDGMENTS NEWS COPYING INSTALL $(CONFIG)
 VERSION=$(PROJECT_VERSION)
