@@ -58,199 +58,307 @@
 (defvar hts_use_phone_align 0)
 
 (defSynthType HTS
-  (let ((featfile (make_tmp_filename))
-	(mcepfile (make_tmp_filename))
-	(f0file (make_tmp_filename))
-	(wavfile (make_tmp_filename))
-	(labfile (make_tmp_filename)))
+  (let (
+         ;(featfile (make_tmp_filename))
+	       ;(mcepfile (make_tmp_filename))
+         ;(f0file (make_tmp_filename))
+         ;(wavfile (make_tmp_filename))
+	        (labfile (make_tmp_filename))
+          (featstring "")
+       )
 
     (apply_hooks hts_synth_pre_hooks utt)
 
+    (set! featstring_list (hts_dump_feats_string_list utt hts_feats_list))
+    ;(set! featstring (hts_dump_feats_string utt hts_feats_list))
+    ;(hts_dump_feats utt hts_feats_list featfile)
+    
     (set! hts_output_params
-	  (list
-	   (list "-labelfile" featfile)
-	   (list "-om" mcepfile)
-	   (list "-of" f0file)
-	   (list "-or" wavfile)
-		 (list "-od" labfile))
-		)
-
-    (hts_dump_feats utt hts_feats_list featfile)
+      (list
+        (list "-labelstring" featstring_list)
+	    ;(list "-labelfile" featfile)
+	    ;(list "-om" mcepfile)
+	    ;(list "-of" f0file)
+	    ;(list "-or" wavfile)
+		;(list "-od" labfile)
+        )
+    )
 
     (HTS_Synthesize utt)
 
-    (delete-file featfile)
-    (delete-file mcepfile)
-    (delete-file f0file)
-    (delete-file wavfile)
-    (delete-file labfile)
+    ;(delete-file featfile)
+    ;(delete-file mcepfile)
+    ;(delete-file f0file)
+    ;(delete-file wavfile)
+    ;(delete-file labfile)
 
     (apply_hooks hts_synth_post_hooks utt)
     utt)
 )
 
 (define (hts_feats_output ofd s)
+   (let ((text (hts_feats_output_string s)))
+      (format ofd "%s" text)
+    )
+)
+
+(define (hts_feats_output_string s)
   "This  is bad as it makes decisions about what the feats are"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  SEGMENT
+  (let ((output ""))
 
-;  boundary
-  (format ofd "%10.0f %10.0f " 
-	  (* 10000000 (item.feat s "segment_start"))
-	  (* 10000000 (item.feat s "segment_end")))
-
-;  pp.name
-  (format ofd "%s" (if (string-equal "0" (item.feat s "p.p.name"))
-		       "x" (item.feat s "p.p.name")))
-;  p.name
-  (format ofd "^%s" (if (string-equal "0" (item.feat s "p.name"))
-			"x" (item.feat s "p.name")))
-;  c.name
-  (format ofd "-%s" (if (string-equal "0" (item.feat s "name"))
-			"x" (item.feat s "name")))
-;  n.name
-  (format ofd "+%s" (if (string-equal "0" (item.feat s "n.name"))
-			"x" (item.feat s "n.name")))
-;  nn.name
-  (format ofd "=%s" (if (string-equal "0" (item.feat s "n.n.name"))
-			"x" (item.feat s "n.n.name")))
+  (set! output (string-append output 
+                          ;  boundary
+                          (format nil "%10.0f %10.0f " 
+	                            (* 10000000 (item.feat s "segment_start"))
+	                            (* 10000000 (item.feat s "segment_end"))
+                          )
+                          ;  pp.name
+                          (format nil "%s" 
+                               (if (string-equal "0" (item.feat s "p.p.name"))
+                                  "x" (item.feat s "p.p.name")))
+                          ;  p.name
+                          (format nil "^%s" (if (string-equal "0" (item.feat s "p.name"))
+                                  "x" (item.feat s "p.name")))
+                          ;  c.name
+                          (format nil "-%s" (if (string-equal "0" (item.feat s "name"))
+                                  "x" (item.feat s "name")))
+                          ;  n.name
+                          (format nil "+%s" (if (string-equal "0" (item.feat s "n.name"))
+			                            "x" (item.feat s "n.name")))
+                          ;  nn.name
+                          (format nil "=%s" (if (string-equal "0" (item.feat s "n.n.name"))
+			                              "x" (item.feat s "n.n.name")))
+               )
+  )
 
 ;  position in syllable (segment)
-  (format ofd "@")
-  (format ofd "%s" (if (string-equal "pau" (item.feat s "name"))
-		       "x" (+ 1 (item.feat s "pos_in_syl"))))
-  (format ofd "_%s" (if (string-equal "pau" (item.feat s "name"))
-			"x" (- (item.feat s "R:SylStructure.parent.R:Syllable.syl_numphones") 
-			       (item.feat s "pos_in_syl"))))
-
+  (set! output (string-append output 
+                                (format nil "@")
+               )
+  )
+  (set! output (string-append output 
+                                  (format nil "%s" (if (string-equal "pau" (item.feat s "name"))
+                                     "x" (+ 1 (item.feat s "pos_in_syl"))))
+               )
+  )
+  (set! output (string-append output 
+                                  (format nil "_%s" (if (string-equal "pau" (item.feat s "name"))
+		                                 	"x" (- (item.feat s "R:SylStructure.parent.R:Syllable.syl_numphones") 
+                                             (item.feat s "pos_in_syl"))))
+               )
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  SYLLABLE
 
 ;; previous syllable
 
 ;  p.stress
-  (format ofd "/A:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.R:Syllable.stress")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.p.stress")))
+  (set! output (string-append output 
+                        (format nil "/A:%s" 
+                          (if (string-equal "pau" (item.feat s "name"))
+                              (item.feat s "p.R:SylStructure.parent.R:Syllable.stress")
+                              (item.feat s "R:SylStructure.parent.R:Syllable.p.stress")))
+               )
+  )
 ;  p.accent
-  (format ofd "_%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.R:Syllable.accented")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.p.accented")))
+  (set! output (string-append output 
+                      (format nil "_%s" 
+                        (if (string-equal "pau" (item.feat s "name"))
+                            (item.feat s "p.R:SylStructure.parent.R:Syllable.accented")
+                            (item.feat s "R:SylStructure.parent.R:Syllable.p.accented")))
+               )
+  )
+
 ;  p.length
-  (format ofd "_%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.R:Syllable.syl_numphones")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.p.syl_numphones")))
+  (set! output (string-append output 
+                    (format nil "_%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          (item.feat s "p.R:SylStructure.parent.R:Syllable.syl_numphones")
+                          (item.feat s "R:SylStructure.parent.R:Syllable.p.syl_numphones")))
+               )
+  )
+
 ;; current syllable
 
 ;  c.stress
-  (format ofd "/B:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.stress")))
+  (set! output (string-append output 
+                    (format nil "/B:%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.R:Syllable.stress")))
+               )
+  )
+
 ;  c.accent
-  (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.accented")))
+  (set! output (string-append output 
+                      (format nil "-%s" 
+                          (if (string-equal "pau" (item.feat s "name"))
+                                "x"
+                                (item.feat s "R:SylStructure.parent.R:Syllable.accented")))
+               )
+  )
+
 ;  c.length
-  (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.syl_numphones")))
+  (set! output (string-append output 
+                        (format nil "-%s" 
+                          (if (string-equal "pau" (item.feat s "name"))
+                              "x"
+                              (item.feat s "R:SylStructure.parent.R:Syllable.syl_numphones")))
+               )
+  )
+
 
 ;  position in word (syllable)
-  (format ofd "@%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1 (item.feat s "R:SylStructure.parent.R:Syllable.pos_in_word"))))
-  (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (- 
-	       (item.feat s "R:SylStructure.parent.parent.R:Word.word_numsyls")
-	       (item.feat s "R:SylStructure.parent.R:Syllable.pos_in_word"))))
+  (set! output (string-append output 
+                        (format nil "@%s" 
+                          (if (string-equal "pau" (item.feat s "name"))
+                              "x"
+                              (+ 1 (item.feat s "R:SylStructure.parent.R:Syllable.pos_in_word"))))
+               )
+  )
 
+  (set! output (string-append output 
+                          (format nil "-%s" 
+                            (if (string-equal "pau" (item.feat s "name"))
+                                "x"
+                                (- 
+                                 (item.feat s "R:SylStructure.parent.parent.R:Word.word_numsyls")
+                                 (item.feat s "R:SylStructure.parent.R:Syllable.pos_in_word"))))
+               )
+  )
+  
 ;  position in phrase (syllable)
-    (format ofd "&%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.syl_in"))))
-    (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.syl_out"))))
+  (set! output (string-append output 
+                        (format nil "&%s" 
+                        (if (string-equal "pau" (item.feat s "name"))
+                            "x"
+                            (+ 1
+                         (item.feat s "R:SylStructure.parent.R:Syllable.syl_in"))))
+               )
+  )
+
+  (set! output (string-append output 
+                    (format nil "-%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (+ 1
+                     (item.feat s "R:SylStructure.parent.R:Syllable.syl_out"))))
+               )
+  )
 
 ;  position in phrase (stressed syllable)
-    (format ofd "#%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.ssyl_in"))))
-    (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.ssyl_out"))))
+  (set! output (string-append output 
+                      (format nil "#%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (+ 1
+                       (item.feat s "R:SylStructure.parent.R:Syllable.ssyl_in"))))
+               )
+  )
+
+  (set! output (string-append output 
+                    (format nil "-%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (+ 1
+                     (item.feat s "R:SylStructure.parent.R:Syllable.ssyl_out"))))
+               )
+  )
 
 ;  position in phrase (accented syllable)
-    (format ofd "$%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.asyl_in"))))
-    (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1
-		 (item.feat s "R:SylStructure.parent.R:Syllable.asyl_out"))))
+  (set! output (string-append output 
+                    (format nil "$%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (+ 1
+                     (item.feat s "R:SylStructure.parent.R:Syllable.asyl_in"))))
+               )
+  )
+
+  (set! output (string-append output 
+                      (format nil "-%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (+ 1
+                       (item.feat s "R:SylStructure.parent.R:Syllable.asyl_out"))))
+               )
+  )
+
 
 ;  distance from stressed syllable
-    (format ofd "!%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_p_stress")))
-    (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_n_stress")))
+  (set! output (string-append output 
+                    (format nil "!%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_p_stress")))
+               )
+  )
+
+  (set! output (string-append output 
+                    (format nil "-%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_n_stress")))
+               )
+  )
 
 ;  distance from accented syllable 
-    (format ofd ";%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_p_accent")))
-    (format ofd "-%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_n_accent")))
+  (set! output (string-append output 
+                      (format nil ";%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_p_accent")))
+               )
+  )
+
+  (set! output (string-append output 
+                    (format nil "-%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.R:Syllable.lisp_distance_to_n_accent")))
+               )
+  )
+
 
 ;  name of the vowel of current syllable
-    (format ofd "|%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.R:Syllable.syl_vowel")))
+  (set! output (string-append output 
+                    (format nil "|%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.R:Syllable.syl_vowel")))
+               )
+  )
+
 
 ;; next syllable
-  (format ofd "/C:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.R:Syllable.stress")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.n.stress")))
-;  n.accent
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.R:Syllable.accented")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.n.accented")))
-;  n.length
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.R:Syllable.syl_numphones")
-	      (item.feat s "R:SylStructure.parent.R:Syllable.n.syl_numphones"))) 
+  (set! output (string-append output 
+                  (format nil "/C:%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        (item.feat s "n.R:SylStructure.parent.R:Syllable.stress")
+                        (item.feat s "R:SylStructure.parent.R:Syllable.n.stress")))
+               )
+  )
 
+;  n.accent
+  (set! output (string-append output 
+                  (format nil "+%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        (item.feat s "n.R:SylStructure.parent.R:Syllable.accented")
+                        (item.feat s "R:SylStructure.parent.R:Syllable.n.accented")))
+               )
+  )
+
+;  n.length
+  (set! output (string-append output 
+                (format nil "+%s" 
+                  (if (string-equal "pau" (item.feat s "name"))
+                      (item.feat s "n.R:SylStructure.parent.R:Syllable.syl_numphones")
+                      (item.feat s "R:SylStructure.parent.R:Syllable.n.syl_numphones")))
+               )
+  )
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  WORD
 
@@ -258,149 +366,220 @@
 ;; previous word
 
 ;  p.gpos
-  (format ofd "/D:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.parent.R:Word.gpos")
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.p.gpos")))
-;  p.lenght (syllable)
-  (format ofd "_%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.parent.R:Word.word_numsyls")
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.p.word_numsyls")))
+  (set! output (string-append output 
+                    (format nil "/D:%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          (item.feat s "p.R:SylStructure.parent.parent.R:Word.gpos")
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.p.gpos")))
+               )
+  )
+
+;  p.length (syllable)
+  (set! output (string-append output 
+                    (format nil "_%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          (item.feat s "p.R:SylStructure.parent.parent.R:Word.word_numsyls")
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.p.word_numsyls")))
+               )
+  )
+
 
 ;;;;;;;;;;;;;;;;;
 ;; current word
 
 ;  c.gpos
-  (format ofd "/E:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.gpos")))
-;  c.lenght (syllable)
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.word_numsyls")))
+  (set! output (string-append output 
+                    (format nil "/E:%s" 
+                        (if (string-equal "pau" (item.feat s "name"))
+                            "x"
+                            (item.feat s "R:SylStructure.parent.parent.R:Word.gpos")))
+               )
+  )
+
+;  c.length (syllable)
+  (set! output (string-append output 
+                    (format nil "+%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.word_numsyls")))
+               )
+  )
+
 
 ;  position in phrase (word)
-  (format ofd "@%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (+ 1 (item.feat s "R:SylStructure.parent.parent.R:Word.pos_in_phrase"))))
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.words_out")))
+  (set! output (string-append output 
+                  (format nil "@%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (+ 1 (item.feat s "R:SylStructure.parent.parent.R:Word.pos_in_phrase"))))
+                  (format nil "+%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.parent.R:Word.words_out")))
+               )
+  )
+
+
+
 
 ;  position in phrase (content word)
-  (format ofd "&%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.content_words_in")))
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.content_words_out")))
+  (set! output (string-append output 
+                  (format nil "&%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.parent.R:Word.content_words_in")))
+                  (format nil "+%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        "x"
+                        (item.feat s "R:SylStructure.parent.parent.R:Word.content_words_out")))
+               )
+  )
+
 
 ;  distance from content word in phrase
-  (format ofd "#%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.lisp_distance_to_p_content")))
-  (format ofd "+%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.lisp_distance_to_n_content")))
+  (set! output (string-append output 
+                    (format nil "#%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.lisp_distance_to_p_content")))
+                    (format nil "+%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.lisp_distance_to_n_content")))
+               )
+  )
+
 
 ;;;;;;;;;;;;;;
 ;; next word
 
 ;  n.gpos
-  (format ofd "/F:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.parent.R:Word.gpos")
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.n.gpos")))
-;  n.lenghte (syllable)
-  (format ofd "_%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.parent.R:Word.word_numsyls")
-	      (item.feat s "R:SylStructure.parent.parent.R:Word.n.word_numsyls")))
+  (set! output (string-append output 
+                    (format nil "/F:%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          (item.feat s "n.R:SylStructure.parent.parent.R:Word.gpos")
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.n.gpos")))
+               )
+  )
+
+;  n.length (syllable)
+  (set! output (string-append output 
+                    (format nil "_%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          (item.feat s "n.R:SylStructure.parent.parent.R:Word.word_numsyls")
+                          (item.feat s "R:SylStructure.parent.parent.R:Word.n.word_numsyls")))
+               )
+  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  PHRASE
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; previous phrase
-
-;  length of previous phrase (syllable)
-  (format ofd "/G:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.p.lisp_num_syls_in_phrase")))
-
-;  length of previous phrase (word)
-  (format ofd "_%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "p.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.p.lisp_num_words_in_phrase")))
+  (set! output (string-append output 
+                    ;  length of previous phrase (syllable)
+                      (format nil "/G:%s" 
+                        (if (string-equal "pau" (item.feat s "name"))
+                            (item.feat s "p.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")
+                            (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.p.lisp_num_syls_in_phrase")))
+                    ;  length of previous phrase (word)
+                      (format nil "_%s" 
+                        (if (string-equal "pau" (item.feat s "name"))
+                            (item.feat s "p.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")
+                            (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.p.lisp_num_words_in_phrase")))
+               )
+  )
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; current phrase
 
-;  length of current phrase (syllable)
-  (format ofd "/H:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")))
+  (set! output (string-append output 
+                  ;  length of current phrase (syllable)
+                    (format nil "/H:%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")))
 
-;  length of current phrase (word)
-  (format ofd "=%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      "x"
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")))
+                  ;  length of current phrase (word)
+                    (format nil "=%s" 
+                      (if (string-equal "pau" (item.feat s "name"))
+                          "x"
+                          (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")))
 
-;  position in major phrase (phrase)
-  (format ofd "@%s" 
-	  (+ 1 (item.feat s "R:SylStructure.parent.R:Syllable.sub_phrases")))
-  (format ofd "=%s" 
-	  (- 
-	   (item.feat s "lisp_total_phrases")
-	   (item.feat s "R:SylStructure.parent.R:Syllable.sub_phrases")))
+                  ;  position in major phrase (phrase)
+                    (format nil "@%s" 
+                      (+ 1 (item.feat s "R:SylStructure.parent.R:Syllable.sub_phrases")))
+                    (format nil "=%s" 
+                      (- 
+                       (item.feat s "lisp_total_phrases")
+                       (item.feat s "R:SylStructure.parent.R:Syllable.sub_phrases")))
 
-;  type of tobi endtone of current phrase
-  (format ofd "|%s" 
-	  (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.daughtern.R:SylStructure.daughtern.tobi_endtone"))
+                  ;  type of tobi endtone of current phrase
+                    (format nil "|%s" 
+                      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.daughtern.R:SylStructure.daughtern.tobi_endtone"))
+               )
+  )
+  
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; next phrase
+  (set! output (string-append output 
+                ;  length of next phrase (syllable)
+                  (format nil "/I:%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        (item.feat s "n.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")
+                        (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.n.lisp_num_syls_in_phrase")))
 
-;  length of next phrase (syllable)
-  (format ofd "/I:%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_syls_in_phrase")
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.n.lisp_num_syls_in_phrase")))
+                ;  length of next phrase (word)
+                  (format nil "=%s" 
+                    (if (string-equal "pau" (item.feat s "name"))
+                        (item.feat s "n.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")
+                        (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.n.lisp_num_words_in_phrase")))
+               )
+  )
 
-;  length of next phrase (word)
-  (format ofd "=%s" 
-	  (if (string-equal "pau" (item.feat s "name"))
-	      (item.feat s "n.R:SylStructure.parent.parent.R:Phrase.parent.lisp_num_words_in_phrase")
-	      (item.feat s "R:SylStructure.parent.parent.R:Phrase.parent.n.lisp_num_words_in_phrase")))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  UTTERANCE
+  (set! output (string-append output 
+                      ;  length (syllable)
+                        (format nil "/J:%s" (item.feat s "lisp_total_syls"))
 
-;  length (syllable)
-  (format ofd "/J:%s" (item.feat s "lisp_total_syls"))
+                      ;  length (word)
+                        (format nil "+%s" (item.feat s "lisp_total_words"))
 
-;  length (word)
-  (format ofd "+%s" (item.feat s "lisp_total_words"))
+                      ;  length (phrase)
+                        (format nil "-%s" (item.feat s "lisp_total_phrases"))
 
-;  length (phrase)
-  (format ofd "-%s" (item.feat s "lisp_total_phrases"))
+                        (format nil "\n")
+              )
+  )
 
-  (format ofd "\n")
-
+  output)
 )
+
+(define (hts_dump_feats_string_list utt feats)
+   (let ((output ()))
+    (mapcar
+     (lambda (s)
+       (set! output (append output (list (hts_feats_output_string s)))))
+     (utt.relation.items utt 'Segment))
+    output)
+)
+
+
+(define (hts_dump_feats_string utt feats)
+   (let ((output ""))
+    (mapcar
+     (lambda (s)
+       (set! output (string-append output (hts_feats_output_string s))))
+     (utt.relation.items utt 'Segment))
+    output)
+)
+    
 
 (define (hts_dump_feats utt feats ofile)
   (let ((ofd (fopen ofile "w")))

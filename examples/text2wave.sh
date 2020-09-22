@@ -63,6 +63,8 @@
 (gc-status nil)
 
 ;;; Default argument values
+(defvar fp nil)
+(defvar totalnumsamples 0)
 (defvar outfile "-")
 (defvar output_type 'riff)
 (defvar frequency nil)  ;; default is no frequency modification
@@ -70,6 +72,7 @@
 (defvar mode nil)
 (defvar volume "1.0")
 (defvar wavefiles nil)
+(defvar an_utt nil)
 
 ;;; Get options
 (define (get_options)
@@ -127,38 +130,39 @@
   (format stderr "%s: %s\n" "text2wave" message)
   (text2wave_help))
 
-(define (save_record_wave utt)
+
+(define (save_record_wave_fp utt)
 "Saves the waveform and records its so it can be joined into a 
 a single waveform at the end."
-  (let ((fn (make_tmp_filename)))
-    (utt.save.wave utt fn)
-    (set! wavefiles (cons fn wavefiles))
-    utt))
-
-(define (combine_waves)
-  "Join all the waves together into the desired output file
-and delete the intermediate ones."
-  (let ((wholeutt (utt.synth (Utterance Text ""))))
-    (mapcar
-     (lambda (d) 
-       (utt.import.wave wholeutt d t)
-       (delete-file d))
-     (reverse wavefiles))
     (if frequency
-	(utt.wave.resample wholeutt (parse-number frequency)))
+	   (utt.wave.resample utt (parse-number frequency))
+  )
+  (if (eq? totalnumsamples 0)
+        (wave.save.header fp (utt.wave utt) output_type nil
+                (list (list "numsamples" 0)))
+  )
+  (set! totalnumsamples (+ totalnumsamples
+                           (get_param 'num_samples (wave.info (utt.wave utt)) 0)
+                        )
+  )
     (if (not (equal? volume "1.0"))
 	(begin
-	  (utt.wave.rescale wholeutt (parse-number volume))))
-    (utt.save.wave wholeutt outfile output_type)
-    ))
+	    (utt.wave.rescale utt (parse-number volume))
+    )
+  )
+  (wave.save.data.fp (utt.wave utt) fp output_type nil)
+  (set! an_utt utt)
+)
 
 ;;;
 ;;; Redefine what happens to utterances during text to speech 
 ;;;
-(set! tts_hooks (list utt.synth save_record_wave))
+(set! tts_hooks (list utt.synth save_record_wave_fp))
 
 (define (main)
   (get_options)
+
+  (set! fp (fopen outfile "wb"))
 
   ;; do the synthesis
   (mapcar
@@ -168,8 +172,12 @@ and delete the intermediate ones."
 	 (tts_file f (tts_find_text_mode f auto-text-mode-alist))))
    text_files)
 
-  ;; Now put the waveforms together at again
-  (combine_waves)
+  ;; Now update the header
+  (fseek fp 0 0)
+  (wave.save.header fp (utt.wave an_utt) output_type nil
+                (list (list "numsamples" totalnumsamples))
+  )
+  (fclose fp)
 )
 
 ;;;  Do the work

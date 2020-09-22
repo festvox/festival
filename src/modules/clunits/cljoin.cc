@@ -88,6 +88,7 @@ static void make_segment_varied_mapping(EST_Relation &source_lab,
 					float dur_impose_factor,
 					float f0_impose_factor) 
 {
+    (void) f0_impose_factor;
     int n_i, s_i, u_i, u_frames;
     int spp;
     float stime, ttime, ltime, dratio, n_frames;

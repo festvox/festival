@@ -1,0 +1,19 @@
+.TH  TEXT2WAVE 1 "6th Apr 1998"
+.SH NAME
+text2wave \- convert text to .wav files
+.SH SYNOPSIS
+.B text2wave
+.I [options]
+<
+.I text
+>
+.I sound.wav
+
+
+.SH DESCRIPTION
+
+This script is part of the festival text-to-speech system.
+It is a wrapper for festival's Scheme code for easy usage in TTS
+scripts.
+
+.SH OPTIONS

@@ -32,14 +32,13 @@ dnl                                                                      ##
 dnl########################################################################
 AC_INIT(src/include/festival.h)
 
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
+AC_PROG_CXX
 AC_PROG_CC
-if test "x$GCC" = "xyes"; then
-	CFLAGS="$CFLAGS -Wall"
-fi
 AC_PROG_RANLIB
 AC_CHECK_TOOL(AR, ar)
 
 AC_C_BIGENDIAN
 
-AC_OUTPUT(config/config)
+AC_CONFIG_FILES([config/config])
+AC_OUTPUT

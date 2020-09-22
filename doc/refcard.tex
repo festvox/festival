@@ -33,8 +33,8 @@
 %%
 %%  A reference card for Festival with the standard commands
 %%
-\documentstyle{article}
-
+\documentclass[a4paper]{article}
+\usepackage[landscape]{geometry}
 %\setlength{\textwidth}{9in}
 \setlength{\textwidth}{380pt}
 \setlength{\textheight}{7.0in}
@@ -60,13 +60,13 @@
 \begin{minipage}{3.6in}
 % page 1 col 1
 \begin{center}
-{\bf The Festival Speech Synthesis System 1.4}
+{\bf The Festival Speech Synthesis System 2.5}
 {\bf Reference Card}
 \end{center}
 
 \maintitle{Festival on-line manual:}
 {\small \tt http://www.cstr.ed.ac.uk/projects/festival/manual/}
-\explain{If Netscape is running, in command interpreter}
+\explain{If web browser is running, in command interpreter}
 \excodett{(manual nil)}
 \hspace{1in}\\
 \maintitle{Making it talk:}
@@ -89,7 +89,7 @@ abc \= C-xxxx \= explain \kill
     \> {\tt \small M-h} \> {\small \it print help on current symbol}\\
     \> {\tt \small M-s} \> {\small \it say help on current symbol}\\
     \> {\tt \small M-m} \> {\small goto appropriate manual page}\\
-    \>           \> {\small \it (requires Netscape to be running)}
+    \>           \> {\small \it (requires web browser to be running)}
 \end{tabbing}
 \explain{Emacs keys may be used for editing command line}
 \weebreak
@@ -166,22 +166,22 @@ abc \= C-xxxx \= explain \kill
 \maintitle{Audio}
 \explain{Audio should be setup at installation}
 \explain{NAS (network audio server) multi-platform}
-\excodett{(Parameter.set 'Audio\_Method 'netaudio)}
+\excodett{(Param.set 'Audio\_Method 'netaudio)}
 \explain{8bit ulaw {\tt /dev/audio} (Sun, FreeBSD, Linux)}
-\excodett{(Parameter.set 'Audio\_Method 'sunaudio)}
+\excodett{(Param.set 'Audio\_Method 'sunaudio)}
 \explain{Sun/FreeBSD/Linux 16 linear (compile-time options)}
-\excodett{(Parameter.set 'Audio\_Method 'sun16audio)}
-\excodett{(Parameter.set 'Audio\_Method 'freebsd16audio)}
-\excodett{(Parameter.set 'Audio\_Method 'linux16audio)}
+\excodett{(Param.set 'Audio\_Method 'sun16audio)}
+\excodett{(Param.set 'Audio\_Method 'freebsd16audio)}
+\excodett{(Param.set 'Audio\_Method 'linux16audio)}
 \explain{Arbitrary command, will execute given command}
 \explain{on waveform. {\tt \$FILE} and {\tt \$SR} will be set}
-\excodett{(Parameter.set 'Audio\_Method 'Audio\_Command)}
-\excodett{(Parameter.set 'Audio\_Command}
+\excodett{(Param.set 'Audio\_Method 'Audio\_Command)}
+\excodett{(Param.set 'Audio\_Command}
 \excode{\mbox{\hspace{0.3in}{\tt "adplay -raw -rate \$SR \$FILE")}}}
 \explain{Default for command is unheadered, shorts (native)}
 \explain{You can change format and sample rate with}
-\excodett{(Parameter.set 'Audio\_Required\_Rate 8000)}
-\excodett{(Parameter.set 'Audio\_Required\_Fromat 'riff)}
+\excodett{(Param.set 'Audio\_Required\_Rate 8000)}
+\excodett{(Param.set 'Audio\_Required\_Fromat 'riff)}
 \explain{formats include: {\tt riff, aiff, nist, snd, esps}}
 
 \end{minipage}

@@ -81,7 +81,7 @@ class EST_TargetCost {
 
   // Base class operator() doesn't do much, but it will work.
   virtual float operator()( const EST_Item* targp, const EST_Item* candp ) const
-    { return defScore; }
+    { (void)targp; (void)candp; return defScore; }
 
   // Allow flatpacking
   virtual const bool is_flatpack() const {return false;}

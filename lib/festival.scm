@@ -433,7 +433,7 @@ a newline before they can get a connection.  It would be normal
 to set this for the particular server task.
 [see Server/client API]")
 
-(defvar server_access_list '(localhost)
+(defvar server_access_list '("127.0.0.1" "localhost\.localdomain" "localhost")
   "server_access_list
 If non-nil this is the exhaustive list of machines and domains
 from which clients may access the server.  This is a list of REGEXs
@@ -494,7 +494,7 @@ Getting Help
 (If compiled with editline)
   M-h               displays help on current symbol  
   M-s               speaks help on current symbol  
-  M-m               displays relevant manual page in local netscape
+  M-m               displays relevant manual page in local web browser
   TAB               Command, symbol and filename completion
   C-p or up-arrow   Previous command
   C-b or left-arrow Move back one character

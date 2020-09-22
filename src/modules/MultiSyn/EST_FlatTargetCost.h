@@ -75,7 +75,7 @@ typedef EST_THash<EST_Item*,TCData*> TCDataHash;
 class EST_FlatTargetCost : public EST_TargetCost {
 
  public:
-  EST_FlatTargetCost() : li(0){};
+  EST_FlatTargetCost() : li(0){ t=0;c=0;};
 
 
  private:
@@ -110,7 +110,8 @@ class EST_FlatTargetCost : public EST_TargetCost {
 
  public:
   float operator()(const EST_Item* targ, const EST_Item* cand) const
-  { EST_error("EST_FlatTargetCost operator() called with EST_Items\n");
+  { (void) targ; (void) cand;
+    EST_error("EST_FlatTargetCost operator() called with EST_Items\n");
     return 1; }
   float operator()(const TCData *targ, const TCData *cand) const;
   const bool is_flatpack() const { return true; }

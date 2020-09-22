@@ -41,12 +41,12 @@
 #ifndef __MODULES_H__
 #define __MODULES_H__
 
-EST_Item *add_word(EST_Utterance *u, const EST_String &name);
-EST_Item *add_word(EST_Utterance *u, LISP word);
-EST_Item *add_segment(EST_Utterance *u, const EST_String &s);
-EST_Item *add_phrase(EST_Utterance *u);
+EST_Item *add_word(EST_Utterance &u, const EST_String &name);
+EST_Item *add_word(EST_Utterance &u, LISP word);
+EST_Item *add_segment(EST_Utterance &u, const EST_String &s);
+EST_Item *add_phrase(EST_Utterance &u);
 
-void create_phraseinput(EST_Utterance *u);
+void create_phraseinput(EST_Utterance &u);
 
 #endif /* __MODULES_H__ */
 

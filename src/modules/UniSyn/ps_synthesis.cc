@@ -77,7 +77,7 @@ void us_generate_wave(EST_Utterance &utt,
     if (filter_method == "lpc")
       {
 	map_coefs(*source_coef, *target_coef, *map);
-        // Save residual for external prcessing 
+        // Save residual for external processing 
         res = new EST_Wave;
         res->copy(*sig);
         utt.relation("TargetCoef", 1)->head()->set_val("residual",est_val(res));

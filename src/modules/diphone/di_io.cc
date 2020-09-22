@@ -400,8 +400,12 @@ static void load_signal_file(DIPHONE_DATABASE *db, int i, int mode)
 	    {
 		db->vox[i]->signal = walloc(short,db->vox[i]->nsamples);
 		fseek(db->gfd,db->gsignalbase+(db->offsets[i]*2),SEEK_SET);
-		fread(db->vox[i]->signal,sizeof(short),
-		      db->vox[i]->nsamples,db->gfd);
+		if (fread(db->vox[i]->signal,sizeof(short),
+		          db->vox[i]->nsamples,db->gfd) != db->vox[i]->nsamples)
+		{
+			cerr << "Diphone: Could not read samples" << endl;
+			festival_error();
+		}
 		if (db->swap)
 		    swap_bytes_short(db->vox[i]->signal,db->vox[i]->nsamples);
 	    }
@@ -411,9 +415,27 @@ static void load_signal_file(DIPHONE_DATABASE *db, int i, int mode)
 		    walloc(unsigned char,db->vox[i]->nsamples);
 		db->vox[i]->signal = walloc(short,db->vox[i]->nsamples);
 		fseek(db->gfd,db->gsignalbase+(db->offsets[i]),SEEK_SET);
-		fread(ulaw,sizeof(unsigned char),db->vox[i]->nsamples,db->gfd);
+		if (fread(ulaw,sizeof(unsigned char),db->vox[i]->nsamples,db->gfd) != db->vox[i]->nsamples)
+		{
+			cerr << "Diphone: Could not read ulaw samples" << endl;
+			festival_error();
+		}
 		ulaw_to_short(ulaw,db->vox[i]->signal,db->vox[i]->nsamples);
 		wfree(ulaw);
+	    }
+	    else if (db->group_encoding == di_alaw)
+	    {
+		unsigned char *alaw = 
+		    walloc(unsigned char,db->vox[i]->nsamples);
+		db->vox[i]->signal = walloc(short,db->vox[i]->nsamples);
+		fseek(db->gfd,db->gsignalbase+(db->offsets[i]),SEEK_SET);
+		if(fread(alaw,sizeof(unsigned char),db->vox[i]->nsamples,db->gfd) != db->vox[i]->nsamples)
+		{
+			cerr << "Diphone: Could not read ulaw samples" << endl;
+			festival_error();
+		}
+		alaw_to_short(alaw,db->vox[i]->signal,db->vox[i]->nsamples);
+		wfree(alaw);
 	    }
 	    else
 	    {
@@ -724,7 +746,11 @@ void di_load_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db,
 	festival_error();
     }
 
-    fread(&magic,sizeof(int),1,db->gfd);
+    if (fread(&magic,sizeof(int),1,db->gfd) != 1)
+    {
+        cerr << "Diphone: Could not read magic number" << endl;
+        festival_error();
+    }
     if (magic == SWAPINT(DIPHONE_MAGIC))
 	db->swap = TRUE;
     else if (magic != DIPHONE_MAGIC)
@@ -742,11 +768,18 @@ void di_load_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db,
     database_malloc(db->ndiphs,db);
     db->nindex = db->ndiphs;  // we can trust that number this time
 
-    fread(&strsize,sizeof(int),1,db->gfd);  // number of chars in diph names
+    if (fread(&strsize,sizeof(int),1,db->gfd) != 1) {  // number of chars in diph names
+        cerr << "Diphone: Could not read number of chars in diphone names" << endl;
+        festival_error();
+    }
     if (db->swap)
 	strsize = SWAPINT(strsize);
     diphnames = walloc(char,strsize);
-    fread(diphnames,sizeof(char),strsize,db->gfd);
+    if (fread(diphnames,sizeof(char),strsize,db->gfd) != (unsigned int)strsize)
+    {
+        cerr << "Diphone Could not read diphone names" << endl;
+        festival_error();
+    }
     for (j=i=0;i<db->nindex;i++)
     {
 	db->indx[i]->diph = &diphnames[j];
@@ -784,9 +817,17 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
     int sample_offset,totsamples;
 
     samp_counts = walloc(unsigned short,db->nindex);
-    fread(samp_counts,sizeof(unsigned short),db->nindex,db->gfd);
+    if (fread(samp_counts,sizeof(unsigned short),db->nindex,db->gfd) != (unsigned int)db->nindex)
+    {
+        cerr << "Diphone: fread error" << endl;
+        festival_error();
+    }
     if (db->swap) swap_bytes_ushort(samp_counts,db->nindex);
-    fread(&totsamples,sizeof(int),1,db->gfd);
+    if (fread(&totsamples,sizeof(int),1,db->gfd) != 1)
+    {
+        cerr << "Diphone: fread error" << endl;
+        festival_error();
+    }
     if (db->swap)
 	totsamples = SWAPINT(totsamples);
     if (db->sig_access_type == di_direct)
@@ -794,14 +835,31 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	if (db->group_encoding == di_raw)
 	{
 	    db->allsignal = walloc(short,totsamples);
-	    fread(db->allsignal,sizeof(short),totsamples,db->gfd);
+	    if (fread(db->allsignal,sizeof(short),totsamples,db->gfd) != (unsigned int)totsamples)
+        {
+            cerr << "Diphone: fread error" << endl;
+            festival_error();
+        }
 	    if (db->swap)
 		swap_bytes_short(db->allsignal,totsamples);
 	}
 	else if (db->group_encoding == di_ulaw)
 	{
-	    db->allulawsignal = walloc(unsigned char,totsamples);
-	    fread(db->allulawsignal,sizeof(unsigned char),totsamples,db->gfd);
+	    db->allualawsignal = walloc(unsigned char,totsamples);
+	    if(fread(db->allualawsignal,sizeof(unsigned char),totsamples,db->gfd) != (unsigned int)totsamples)
+        {
+            cerr << "Diphone: fread error" << endl;
+            festival_error();
+        }
+	}
+	else if (db->group_encoding == di_alaw)
+	{
+	    db->allualawsignal = walloc(unsigned char,totsamples);
+	    if(fread(db->allualawsignal,sizeof(unsigned char),totsamples,db->gfd) != (unsigned int)totsamples)
+            {
+                cerr << "Diphone: fread error" << endl;
+                festival_error();
+            }
 	}
     }
     else
@@ -821,7 +879,13 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	    else if (db->group_encoding == di_ulaw)
 	    {
 		db->vox[i]->signal = walloc(short,samp_counts[i]);
-		ulaw_to_short(&db->allulawsignal[sample_offset],
+		ulaw_to_short(&db->allualawsignal[sample_offset],
+			      db->vox[i]->signal,samp_counts[i]);
+	    }
+	    else if (db->group_encoding == di_alaw)
+	    {
+		db->vox[i]->signal = walloc(short,samp_counts[i]);
+		alaw_to_short(&db->allualawsignal[sample_offset],
 			      db->vox[i]->signal,samp_counts[i]);
 	    }
 	    else
@@ -837,11 +901,12 @@ static void di_group_load_signal(DIPHONE_DATABASE *db)
 	}
 	sample_offset += samp_counts[i];
     }
-    if (db->sig_access_type != di_direct)
-	if (db->group_encoding == di_ulaw)
+    if (db->sig_access_type != di_direct) {
+	if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw)
 	    fseek(db->gfd,(long)sample_offset,SEEK_CUR);
 	else
 	    fseek(db->gfd,(long)sample_offset*sizeof(short),SEEK_CUR);
+    }
     wfree(samp_counts);
 }
 
@@ -855,23 +920,39 @@ static void di_group_load_lpc_params(DIPHONE_DATABASE *db)
     int this_frame;
     
     frame_counts = walloc(unsigned short, db->nindex);
-    fread(frame_counts,sizeof(unsigned short),db->nindex,db->gfd);
+    if (fread(frame_counts,sizeof(unsigned short),db->nindex,db->gfd) != (unsigned int)db->nindex)
+    {
+        cerr << "Diphone: read error" << endl;
+        festival_error();
+    }
     if (db->swap) swap_bytes_ushort(frame_counts,db->nindex);
-    fread(&totframes,sizeof(int),1,db->gfd);
+    if (fread(&totframes,sizeof(int),1,db->gfd) != 1)
+    {
+        cerr << "Diphone: read error" << endl;
+        festival_error();
+    }
     if (db->swap) totframes = SWAPINT(totframes);
     if (db->group_encoding == di_raw) // its as floats
     {
 	db->allframes = walloc(float,totframes*db->lpc_order);
-	fread(db->allframes,sizeof(float),
-	      totframes*db->lpc_order,db->gfd);
+	if (fread(db->allframes,sizeof(float),
+	          totframes*db->lpc_order,db->gfd) != (unsigned int)totframes*db->lpc_order )
+	{
+		cerr << "Diphone: read error" << endl;
+		festival_error();
+	}
 	if (db->swap) 
 	    swap_bytes_float(db->allframes,totframes*db->lpc_order);
     }
-    else if (db->group_encoding == di_ulaw) // its as shorts
+    else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw) // its as shorts
     {
 	db->allframesshort = walloc(short,totframes*db->lpc_order);
-	fread(db->allframesshort,sizeof(short),
-	      totframes*db->lpc_order,db->gfd);
+	if (fread(db->allframesshort,sizeof(short),
+	          totframes*db->lpc_order,db->gfd) != (unsigned int)totframes*db->lpc_order)
+	{
+		cerr << "Diphone: read error" << endl;
+		festival_error();
+	}
 	if (db->swap)
 	    swap_bytes_short(db->allframesshort,
 			     totframes*db->lpc_order);
@@ -885,7 +966,7 @@ static void di_group_load_lpc_params(DIPHONE_DATABASE *db)
 	    for (j=0;j<db->lpc[i]->nframes;j++)
 		db->lpc[i]->f[j] = 
 		    &db->allframes[(frame_offset+j)*db->lpc_order];
-	else if (db->group_encoding == di_ulaw)
+	else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw)
 	{
 	    int fixedpoint = FALSE;
 	    if (siod_get_lval("lpc_fixedpoint",NULL) != NIL)
@@ -937,7 +1018,11 @@ static void di_group_load_pm(DIPHONE_DATABASE *db)
 	db->pm[i]->nmark = pm_info[i*3];
 	db->pm[i]->lmark = pm_info[(i*3)+1];
 	db->pm[i]->rmark = pm_info[(i*3)+2];
-	fread(db->pm[i]->mark,sizeof(unsigned short),db->pm[i]->nmark,db->gfd);
+	if (fread(db->pm[i]->mark,sizeof(unsigned short),db->pm[i]->nmark,db->gfd) != (unsigned int) db->pm[i]->nmark)
+	{
+		cerr << "DIPHONE: short group file, can't read pm\n";
+		festival_error();
+	}
 	if (db->swap)
 	    for (j=0; j < db->pm[i]->nmark; j++)
 		db->pm[i]->mark[j] = SWAPSHORT(db->pm[i]->mark[j]);
@@ -1031,6 +1116,13 @@ void di_save_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db)
 	    fwrite(ulaw,sizeof(unsigned char),db->vox[i]->nsamples,fd);
 	    wfree(ulaw);
 	}
+	else if (db->group_encoding == di_alaw)
+	{
+	    unsigned char *alaw = walloc(unsigned char,db->vox[i]->nsamples);
+	    short_to_alaw(db->vox[i]->signal,alaw,db->vox[i]->nsamples);
+	    fwrite(alaw,sizeof(unsigned char),db->vox[i]->nsamples,fd);
+	    wfree(alaw);
+	}
 	else
 	{
 	    cerr << "Diphone: unknown group type for dumping" << endl;
@@ -1058,7 +1150,7 @@ void di_save_grouped_db(const EST_Pathname &filename, DIPHONE_DATABASE *db)
 		for (j=0; j<db->lpc[i]->nframes; j++)
 		    fwrite(db->lpc[i]->f[j],sizeof(float),db->lpc_order,fd);
 	    }
-	    else if (db->group_encoding == di_ulaw) // saved as shorts
+	    else if (db->group_encoding == di_ulaw || db->group_encoding == di_alaw) // saved as shorts
 	    {   
 		short *sh = new short[db->lpc_order];
 		

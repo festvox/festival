@@ -77,6 +77,8 @@
 (cond
  ((member 'nas *modules*)
   (Parameter.def 'Audio_Method 'netaudio))
+ ((member 'pulse *modules*)
+  (Parameter.def 'Audio_Method 'pulseaudio))
  ((member 'esd *modules*)
   (Parameter.def 'Audio_Method 'esdaudio))
  ((member 'sun16audio *modules*)
@@ -147,7 +149,12 @@
     (load (path-append home-directory ".festivalrc")))
 
 ;;; Default voice (have to do something cute so autoloads still work)
+(unwind-protect
 (eval (list voice_default))
+ (begin
+   (format t "Error evaluating default voice: %s\n" voice_default)
+   (format t "continuing\n")))
+
 
 (provide 'init)
 

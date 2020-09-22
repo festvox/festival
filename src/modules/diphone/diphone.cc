@@ -180,6 +180,8 @@ void di_fixed_parameters(DIPHONE_DATABASE *db,LISP params)
 	db->group_encoding = di_raw;
     else if (streq(db->group_encoding_str,"ulaw"))
 	db->group_encoding = di_ulaw;
+    else if (streq(db->group_encoding_str,"alaw"))
+	db->group_encoding = di_alaw;
     else
     {
 	cerr << "Diphone: unknown group encoding" << endl;
@@ -218,7 +220,7 @@ static void delete_diphone_db(DIPHONE_DATABASE *db)
     {
 	wfree(db->indx[0]->diph);  // ptr to the whole diphname table
 	wfree(db->allsignal);
-	wfree(db->allulawsignal);
+	wfree(db->allualawsignal);
 	wfree(db->allframes);
     }
     for (i=0; i < db->nindex; i++)
@@ -275,7 +277,7 @@ DIPHONE_DATABASE *make_diphone_db(void)
     db->alternates_before = NIL;
     db->alternates_after = NIL;
     db->allsignal = 0;
-    db->allulawsignal = 0;
+    db->allualawsignal = 0;
     db->offsets = 0;
     db->gfd = 0;
     db->default_diphone = 0;

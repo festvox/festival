@@ -67,7 +67,7 @@ static LISP tts_file_xml(LISP filename)
 	source = SourceFromStream("<stdin>",stdin);
     else
     {
-	ent = NewExternalEntity(0,0,strdup8(inname),0,0);
+	ent = NewExternalEntity("",0,strdup8(inname),0,0);
 	if (ent)
 	    source = EntityOpen(ent);
     }

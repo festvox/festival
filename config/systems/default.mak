@@ -100,7 +100,8 @@ RANLIB = ranlib
 ECHO_N = echo -n
 
 ## make depend for when we haven't specified a compiler
-MAKE_DEPEND = makedepend $(INCLUDES) $(TEMPLATES) $(TEMPLATE_SPECIFIC)
+MAKE_DEPEND_C = makedepend $(INCLUDES) $(TEMPLATES) $(TEMPLATE_SPECIFIC)
+MAKE_DEPEND_CXX = makedepend $(INCLUDES) $(TEMPLATES) $(TEMPLATE_SPECIFIC)
 
 ## Generic library building
 BUILD_LIB =$(AR) cruv
@@ -130,12 +131,6 @@ GNUTEST = gnutest
 
 ## Avoid clever RMs people may have on their path
 RM = /bin/rm
-
-###########################################################################
-## Arguments for DOC++ for creating documentation
-
-DOCXX = doc++_sane
-DOCXX_ARGS = -a -f -B banner.inc -M sane -D 'SYSTEM "$(EST_HOME)/doc/sane.dtd"'
 
 
 COMPILER_VERSION_COMMAND=true

@@ -92,7 +92,7 @@ num syllables: 9
 Usage: festival Usage:
 festival  <options> <file0> <file1> ...
 In evaluation mode "filenames" starting with ( are evaluated inline
-Festival Speech Synthesis System: 2.4:beta December 2014
+Festival Speech Synthesis System: 2.5.1:current July 2020
 -q            Load no default setup files
 --libdir <string>
               Set library directory pathname
@@ -109,7 +109,7 @@ Festival Speech Synthesis System: 2.4:beta December 2014
               are printed (default if stdin not a tty)
 --language <string>
               Run in named language, default is
-              english, spanish and welsh are available
+              English, Spanish, Russian, Welsh and others are available
 --server      Run in server mode waiting for clients
               of server_port (1314)
 --script <ifile>

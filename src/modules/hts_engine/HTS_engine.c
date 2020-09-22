@@ -467,7 +467,7 @@ HTS_Boolean HTS_Engine_synthesize_from_fn(HTS_Engine * engine, const char *fn)
 }
 
 /* HTS_Engine_synthesize_from_strings: synthesize speech from strings */
-HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, char **lines, size_t num_lines)
+HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, const char **lines, size_t num_lines)
 {
    HTS_Engine_refresh(engine);
    HTS_Label_load_from_strings(&engine->label, engine->condition.sampling_frequency, engine->condition.fperiod, lines, num_lines);

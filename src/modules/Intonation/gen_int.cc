@@ -82,7 +82,7 @@ LISP FT_Int_Targets_General_Utt(LISP utt)
 	for (t=targets; t != NIL; t=cdr(t))
 	{
 	    seg = find_nearest_seg(u,get_c_float(car(car(t))));
-	    add_target(u,seg,get_c_float(car(car(t))),
+	    add_target(*u,seg,get_c_float(car(car(t))),
 		       get_c_float(car(cdr(car(t)))));
 	}
     }

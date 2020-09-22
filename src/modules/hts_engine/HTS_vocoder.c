@@ -124,6 +124,7 @@ static double HTS_mlsafir(const double x, const double *b, const int m, const do
 /* HTS_mlsadf1: sub functions for MLSA filter */
 static double HTS_mlsadf1(double x, const double *b, const int m, const double a, const double aa, const int pd, double *d, const double *ppade)
 {
+   (void) m;
    double v, out = 0.0, *pt;
    int i;
 

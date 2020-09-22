@@ -46,14 +46,14 @@
 static EST_String IntEventname("IntEvent");
 static EST_String Targetname("Target");
 
-EST_Item *add_target(EST_Utterance *u,EST_Item *seg, 
+EST_Item *add_target(EST_Utterance &u,EST_Item *seg, 
 			    float pos, float val)
 {
 
   // Check time is NOT the same as the last target, as this causes problems...
 
   float last_time;
-  EST_Item* last_item = last_leaf(u->relation(Targetname)->first());
+  EST_Item* last_item = last_leaf(u.relation(Targetname)->first());
   if (last_item)
     last_time = last_item->f("pos");
   else 
@@ -66,7 +66,7 @@ EST_Item *add_target(EST_Utterance *u,EST_Item *seg,
     }
 
   if (seg->as_relation(Targetname) == 0)
-    u->relation(Targetname)->append(seg);
+    u.relation(Targetname)->append(seg);
   EST_Item *item = append_daughter(seg,Targetname);
   
   item->set("f0",val);
@@ -77,12 +77,12 @@ EST_Item *add_target(EST_Utterance *u,EST_Item *seg,
 }
 
 
-EST_Item *add_IntEvent(EST_Utterance *u,EST_Item *syl,
+EST_Item *add_IntEvent(EST_Utterance &u,EST_Item *syl,
 			      const EST_String &label)
 {
     if (syl->as_relation("Intonation") == 0)
-	u->relation("Intonation")->append(syl);
-    EST_Item *item = u->relation(IntEventname)->append();
+	u.relation("Intonation")->append(syl);
+    EST_Item *item = u.relation(IntEventname)->append();
     item->set_name(label);
     append_daughter(syl,"Intonation",item);
     return item;

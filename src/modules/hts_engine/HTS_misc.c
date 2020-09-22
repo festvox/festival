@@ -333,7 +333,7 @@ size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * f
 }
 
 /* HTS_get_pattern_token: get pattern token (single/double quote can be used) */
-HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
+HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff, int bufflen)
 {
    char c;
    size_t i;
@@ -369,7 +369,7 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
    }
 
    i = 0;
-   while (1) {
+   while (i<bufflen) {
       buff[i++] = c;
       c = HTS_fgetc(fp);
       if (squote && c == '\'')
@@ -386,12 +386,16 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
       }
    }
 
+   if (i == bufflen) {
+      HTS_error(2,"HTS_get_pattern_token: Buffer overflow.\n");
+   }
+
    buff[i] = '\0';
    return TRUE;
 }
 
 /* HTS_get_token: get token from file pointer (separators are space, tab, and line break) */
-HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
+HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff, int bufflen)
 {
    char c;
    size_t i;
@@ -407,13 +411,17 @@ HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
          return FALSE;
    }
 
-   for (i = 0; c != ' ' && c != '\n' && c != '\t';) {
+   for (i = 0; c != ' ' && c != '\n' && c != '\t'  && (i<bufflen);) {
       buff[i++] = c;
       if (HTS_feof(fp))
          break;
       c = HTS_fgetc(fp);
       if (c == EOF)
          break;
+   }
+
+   if (i == bufflen) {
+      HTS_error(2,"HTS_get_token: Buffer overflow.\n");
    }
 
    buff[i] = '\0';
@@ -451,7 +459,7 @@ HTS_Boolean HTS_get_token_from_fp_with_separator(HTS_File * fp, char *buff, char
 }
 
 /* HTS_get_token_from_string: get token from string (separators are space, tab, and line break) */
-HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff)
+HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff, int bufflen)
 {
    char c;
    size_t i;
@@ -467,9 +475,13 @@ HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *
          return FALSE;
       c = string[(*index)++];
    }
-   for (i = 0; c != ' ' && c != '\n' && c != '\t' && c != '\0'; i++) {
+   for (i = 0; c != ' ' && c != '\n' && c != '\t' && c != '\0' && (i<bufflen); i++) {
       buff[i] = c;
       c = string[(*index)++];
+   }
+
+   if (i == bufflen) {
+      HTS_error(2,"HTS_get_token_from_string: Buffer overflow.\n");
    }
 
    buff[i] = '\0';

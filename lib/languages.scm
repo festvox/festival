@@ -2,7 +2,7 @@
 ;;;                                                                       ;;
 ;;;                Centre for Speech Technology Research                  ;;
 ;;;                     University of Edinburgh, UK                       ;;
-;;;                       Copyright (c) 1996,1997                         ;;
+;;;                       Copyright (c) 1996,2010                         ;;
 ;;;                        All Rights Reserved.                           ;;
 ;;;                                                                       ;;
 ;;;  Permission is hereby granted, free of charge, to use and distribute  ;;
@@ -31,90 +31,225 @@
 ;;;                                                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;;               Author: Sergio Oller
+;;;                 Date: January 2010 
 ;;;  Specification of voices and some major choices of synthesis
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;  This should use some sort of database description for voices so
-;;;  new voices will become automatically available.
+;;;     Language definitions, now it works similar to voice definitions.
 ;;;
 
-(define (language_british_english)
-"(language_british_english)
-Set up language parameters for British English."
-  (require 'voices)
-  ;;  Will get more elaborate, with different choices of voices in language
 
-  (set! male1 voice_rab_diphone)
-  (set! male2 voice_don_diphone)
-  (if (symbol-bound? 'voice_gsw_diphone)
-      (set! male3 voice_gsw_diphone))
-  (if (symbol-bound? 'voice_gsw_450)
-      (set! male4 voice_gsw_450))
+(defvar system-language-path '( )
+  "system-language-path
+   Additional directory not near the load path where languages can be
+   found, this can be redefined in lib/sitevars.scm if desired.")
 
-  (male1)
-  (Parameter.set 'Language 'britishenglish)
+(defvar language-path 
+  (remove-duplicates
+   (append (mapcar (lambda (d) (path-append d "languages/")) load-path)
+	   (mapcar (lambda (d) (path-as-directory d)) system-language-path)
+	   ))
+
+  "language-path
+   List of places to look for languages. If not set it is initialised from
+   load-path by appending \"languages/\" to each directory with 
+   system-language-path appended.")
+
+(defvar language-locations ()
+  "language-locations
+   Association list recording where languages were found.")
+
+(defvar language-location-trace nil
+  "language-location-trace
+   Set t to print language locations as they are found")
+
+(defvar Language_descriptions nil
+  "Internal variable containing list of language descriptions as
+decribed by proclaim_language.")
+
+(define (language.get_voices langname)
+  "Returns a list with the installed voices for language langname"
+ (let ( (defmale nil) (deffemale nil) (lang nil) )
+
+  (set! lang (cdr (assoc langname Language_aliases)))
+  (if (string-equal lang nil)
+    (set! lang langname)
+  )
+
+  (set! defmale (cdr (assoc 'default_male (cadr (assoc langname Language_descriptions)))))
+  (set! deffemale (cdr (assoc 'default_female (cadr (assoc langname Language_descriptions)))))
+  (list (cons 'male defmale) (cons 'female deffemale))
+ )
 )
 
-(define (language_american_english)
-"(language_american_english)
-Set up language parameters for Aemerican English."
 
-  (if (symbol-bound? 'voice_kal_diphone)
-      (set! female1 voice_kal_diphone))
-  (set! male1 voice_ked_diphone)
+(define (proclaim_language name description)
+"(proclaim_language NAME DESCRIPTION)
+Describe a language to the systen.  NAME should be atomic name, that
+conventionally will have language_ prepended to name the basic selection
+function.  OPTIONS is an assoc list of feature and value and must
+have at least features for default_male, default_female and name aliases.
+Values for these features must be lists of atoms."
+  (let ((langdesc (assoc name Language_descriptions))
+        (default_male (cadr (assoc 'default_male description)))
+        (default_female (cadr (assoc 'default_female description)))
+        (aliases (cadr (assoc 'aliases description)))
+        (langname (cadr (assoc 'language description)))
+        (voice_conditions nil)
+        (dialect (cadr (assoc 'dialect description)))
+        (voice_conditions_gender nil)
+       )
+    (set! voice_conditions (list (list 'language langname)))
+    ; In order to find available voices we may need to impose 
+    ; specific dialect conditions
+    (if dialect
+       (set! voice_conditions (cons (list 'dialect dialect) voice_conditions))
+    )
 
-  (male1)
-  (Parameter.set 'Language 'americanenglish)
+    ; Let's find available male voices:
+    (set! voice_conditions_gender (cons (list 'gender 'male) voice_conditions))
+    (set! default_male (append default_male (voice.find voice_conditions_gender)))
+    (set! default_male (voice.remove_unavailable default_male))
+    (set! default_male (reverse (remove-duplicates (reverse default_male))))
+
+    ; Let's find available female voices:
+    (set! voice_conditions_gender (cons (list 'gender 'female) voice_conditions))
+    (set! default_female (append default_female (voice.find voice_conditions_gender)))
+    (set! default_female (voice.remove_unavailable default_female))
+    (set! default_female (reverse (remove-duplicates (reverse default_female))))
+
+    ; Now we change the given description replacing default voices:
+    (set-car! (cdr (assoc 'default_male description)) default_male)
+    (set-car! (cdr (assoc 'default_female description)) default_female)
+
+    ; Set up language aliases:
+    (if aliases
+       (language.names.add name aliases))
+    ; Set up description:
+    (if langdesc
+       (set-car! (cdr langdesc) description)
+       (set! Language_descriptions
+             (cons (list name description) Language_descriptions)))
+  )
 )
 
-(define (language_scots_gaelic)
-"(language_scots_gaelic)
-Set up language parameters for Scots Gaelic."
-  (error "Scots Gaelic not yet supported.")
 
-  (Parameter.set 'Language 'scotsgaelic)
+(defvar Language_aliases nil
+  "Internal variable containing an association of language name
+   aliases such as english-> british_english.")
+
+(define (language.names.add language aliases)
+"(language.names.add LANGUAGE ALIASES)
+Describe a language to the systen. LANGUAGE should be atomic name, that
+conventionally will have language_ prepended to name the basic selection
+function. ALIASES is a list of names for that language."
+  (let ( (alias nil) )
+
+       (while aliases
+        (set! alias (car aliases))
+        (cond ( (not (assoc alias Language_aliases) nil)
+	         (set! Language_aliases  (cons (cons alias language) Language_aliases))
+              )
+              (t
+                 (set-cdr! (assoc alias Language_aliases) language)
+              )
+        )
+        (set! aliases (cdr aliases))
+       )
+  )
 )
 
-(define (language_welsh)
-"(language_welsh)
-Set up language parameters for Welsh."
+(define (language-location name dir doc)
+  "(language-location NAME DIR DOCSTRING)
+   Record the location of a language. Called for each language found on language-path.
+   Can be called in site-init or .festivalrc for additional languages which
+   exist elsewhere."
+  (let ((func_name (intern name))
+	)
 
-  (set! male1 voice_welsh_hl)
-
-  (male1)
-  (Parameter.set 'Language 'welsh)
+    (set! name (intern name))
+    (set! language-locations (cons (cons name dir) language-locations))
+    (eval (list 'autoload func_name dir doc))
+    (if language-location-trace
+	(format t "Language: %s %s.scm\n" name dir)
+    )
+  )
 )
 
-(define (language_castillian_spanish)
-"(language_spanish)
-Set up language parameters for Castillian Spanish."
 
-  (voice_el_diphone)
-  (set! male1 voice_el_diphone)
+(define (language.list)
+"(language.list)
+List of all (potential) languages in the system.  This checks the language-location
+list of potential languages found be scanning the language-path at start up time."
+   (mapcar car Language_descriptions)
+)
 
-  (Parameter.set 'Language 'spanish)
+(define (language.select name)
+"(language.select LANG)
+Call function to set up language LANG.  This is normally done by 
+prepending language_ to LANG and call it as a function."
+   (let ( (lang nil) )
+       (set! lang (cdr (assoc name Language_aliases)))
+       (if (string-equal lang nil)
+           (set! lang name)
+       )
+   (cond 
+      ((boundp (intern(string-append "language_" lang))) ;;if function "language_lang" exists, evaluate it
+          (eval (list (intern (string-append "language_" lang))))
+      )
+      ((string-matches lang "klingon")
+        (print "Klingon is not supported yet, using English:")
+        (language.select 'english)
+      )
+      (t ;;else, print a message with available languages
+        (print "Language not installed. The installed languages are:")
+        (print (language.list))
+      )
+   )
+   )
+nil
+)
+
+
+(define (search-for-languages)
+  "(search-for-languages)
+   Search down language-path to locate languages."
+
+  (let ((dirs language-path)
+	(dir nil)
+	languages language
+	name 
+	)
+    (while dirs
+     (set! dir (car dirs))
+       (setq languages (directory-entries dir t))
+       (while languages
+         (set! language (car languages))
+         (if (string-matches language "language_.*scm$")
+                (begin
+                 (load (path-append dir language))
+	         (language-location (path-basename language)
+                                    (path-append dir (path-basename language))
+                                    "language found")
+	        )
+         )
+       (set! languages (cdr languages))
+      )
+     (set! dirs (cdr dirs))
+     )
+    )
 )
 
 (define (select_language language)
-  (cond
-   ((or (equal? language 'britishenglish)
-	(equal? language 'english))  ;; we all know its the *real* English
-    (language_british_english))
-   ((equal? language 'americanenglish)
-    (language_american_english))
-   ((equal? language 'scotsgaelic)
-    (language_scots_gaelic))
-   ((equal? language 'welsh)
-    (language_welsh))
-   ((equal? language 'spanish)
-    (language_castillian_spanish))
-   ((equal? language 'klingon)
-    (language_klingon))
-   (t
-    (print "Unsupported language, using English")
-    (language_british_english))))
+"(select_language LANG)
+Chooses language."
+  (language.select language)
+)
 
-(defvar language_default language_british_english)
+(search-for-languages)
+
+(defvar language_default 'british_english)
 
 (provide 'languages)
