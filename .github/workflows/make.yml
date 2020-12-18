@@ -1,0 +1,53 @@
+name: make
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        repository: festvox/speech_tools
+        path: speech_tools
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: festival
+    - run: |
+       cd speech_tools
+       ./configure
+       make
+       make test
+    - run: |
+       cd festival
+       ./configure
+       make
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - run: brew install gcc
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        repository: festvox/speech_tools
+        path: speech_tools
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: festival
+    - run: |
+       cd speech_tools
+       ./configure
+       make
+       make test
+      env:
+        CC: gcc
+    - run: |
+       cd festival
+       ./configure
+       make
+      env:
+        CC: gcc
