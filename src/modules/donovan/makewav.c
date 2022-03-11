@@ -75,8 +75,8 @@ void makewave(CONFIG *config, ACOUSTIC *as)
 		rfctolpc(rbuf); /* convert to lpc coeffs */
 
 		for(j=0;j < as->duration[i];j++,ptptr++) {
-			register float v,*cptr;
-			register short *backptr;
+			float v,*cptr;
+			short *backptr;
 			short *endptr;
 			float exc;
 

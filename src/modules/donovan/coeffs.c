@@ -47,8 +47,8 @@
 void rfctolpc(float *buf)
 {
 	float a,b;
-	register float *cptr;
-	register int n,k;
+	float *cptr;
+	int n,k;
 
     /* HCL-H algorithm goes through coeffs in reverse of order in which they
      * appear here, working on buffer numbered from 1 upwards. To get same
