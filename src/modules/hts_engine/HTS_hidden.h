@@ -254,7 +254,7 @@ void HTS_Label_initialize(HTS_Label * label);
 void HTS_Label_load_from_fn(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char *fn);
 
 /* HTS_Label_load_from_strings: load label list from string list */
-void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, char **lines, size_t num_lines);
+void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char **lines, size_t num_lines);
 
 /* HTS_Label_get_size: get number of label string */
 size_t HTS_Label_get_size(HTS_Label * label);
