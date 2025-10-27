@@ -154,7 +154,7 @@ void HTS_Label_load_from_fn(HTS_Label * label, size_t sampling_rate, size_t fper
 }
 
 /* HTS_Label_load_from_strings: load label from strings */
-void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, char **lines, size_t num_lines)
+void HTS_Label_load_from_strings(HTS_Label * label, size_t sampling_rate, size_t fperiod, const char **lines, size_t num_lines)
 {
    char buff[HTS_MAXBUFLEN];
    HTS_LabelString *lstring = NULL;
