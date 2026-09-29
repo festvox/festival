@@ -40,5 +40,32 @@ AC_CHECK_TOOL(AR, ar)
 
 AC_C_BIGENDIAN
 
+dnl ##### systemd #####
+AC_ARG_WITH([systemd],
+  [AS_HELP_STRING([--with-systemd], [enable systemd socket activation])],
+  [],
+  [with_systemd=auto])
+SYSTEMD_CPPFLAGS=""
+SYSTEMD_LIBS=""
+
+AS_IF([test "x$with_systemd" != "xno"], [
+  AC_CHECK_HEADERS([systemd/sd-daemon.h], [have_systemd_header=yes], [have_systemd_header=no])
+  AC_CHECK_LIB([systemd], [sd_listen_fds], [have_systemd_lib=yes], [have_systemd_lib=no])
+
+  AS_IF([test "x$have_systemd_header" = "xyes" -a "x$have_systemd_lib" = "xyes"], [
+    SYSTEMD_LIBS="-lsystemd"
+    AC_DEFINE([HAVE_SYSTEMD], [1], [Define if systemd socket activation is available])
+    have_systemd=yes
+  ], [
+    have_systemd=no
+  ])
+], [
+  have_systemd=no
+])
+AC_SUBST([SYSTEMD_LIBS])
+dnl ##### systemd #####
+
+AC_SUBST([have_systemd])
+
 AC_CONFIG_FILES([config/config])
 AC_OUTPUT

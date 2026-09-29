@@ -43,6 +43,17 @@ FESTIVAL_HOME := $(shell (cd $(TOP); pwd))
 include $(EST)/config/config
 
 ###########################################################################
+## Define HAVE_SYSTEMD
+
+SYSTEMD_LIBS = @SYSTEMD_LIBS@
+HAVE_SYSTEMD = @have_systemd@
+
+ifeq ($(HAVE_SYSTEMD),yes)
+  CXXFLAGS += -DHAVE_SYSTEMD
+  MODULE_EXTRA_LIBS += $(SYSTEMD_LIBS)
+endif
+
+###########################################################################
 ## Add any extra modules you wish to include
 
 ## These sub modules are *optional* and unless you know what they are

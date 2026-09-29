@@ -47,6 +47,11 @@
 #include <cstdio>
 #include <cerrno>
 #include <sys/types.h>
+
+#ifdef HAVE_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 #include <cstring>
 #include <ctime>
 #include "EST_unix.h"
@@ -99,40 +104,50 @@ int festival_start_server(int port)
     {
 	festival_error();
       }
-    
-    fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-   if (NOT_A_SOCKET(fd))
-    {
-      int n = socket_error();
-      cerr << "socket: socket failed (" << n << ")\n";
-	
-	festival_error();
-    }
-   int one = 1;
-
-   if (setsockopt(fd, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) 
+#ifdef HAVE_SYSTEMD
+    if (sd_listen_fds(0) >= 1)
      {
-       cerr << "socket: SO_REUSEADDR failed" << endl;
-	festival_error();
+       /* Daemon launched via Systemd socket activation */
+       fd = SD_LISTEN_FDS_START;
      }
-
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    if (::bind(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
+    else
+#endif
     {
-	cerr << "socket: bind failed" << endl;
-	festival_error();
-    }
+      fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+      if (NOT_A_SOCKET(fd))
+       {
+         int n = socket_error();
+         cerr << "socket: socket failed (" << n << ")\n";
+	
+         festival_error();
+       }
+      int one = 1;
+
+      if (setsockopt(fd, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) 
+       {
+         cerr << "socket: SO_REUSEADDR failed" << endl;
+         festival_error();
+       }
+
+      memset(&serv_addr, 0, sizeof(serv_addr));
+      serv_addr.sin_family = AF_INET;
+      serv_addr.sin_port = htons(port);
+      serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+      if (::bind(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
+      {
+	      cerr << "socket: bind failed" << endl;
+	      festival_error();
+      }
     
-    if (listen(fd, 5) != 0)
-    {
-	cerr << "socket: listen failed" << endl;
-	festival_error();
-    }
+      if (listen(fd, 5) != 0)
+       {
+         cerr << "socket: listen failed" << endl;
+	 festival_error();
+       }
+   }
 
 #if SINGLE_CLIENT
     log_message(0,EST_String("Festival server (non-forking) started on port ")+
