@@ -136,11 +136,11 @@ int festival_start_server(int port)
       serv_addr.sin_port = htons(port);
       serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-      if (bind(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
-       {
-        cerr << "socket: bind failed" << endl;
-	festival_error();
-       }
+      if (::bind(fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
+      {
+	      cerr << "socket: bind failed" << endl;
+	      festival_error();
+      }
     
       if (listen(fd, 5) != 0)
        {
