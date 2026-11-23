@@ -203,7 +203,7 @@ static LISP HTS_Synthesize_Utt(LISP utt) {
     if ( labfn != NULL ) {
       HTS_Engine_synthesize_from_fn(engine, labfn);
     } else if ( label_string_array != NULL ) {
-      HTS_Engine_synthesize_from_strings(engine, label_string_array, numlabels);
+      HTS_Engine_synthesize_from_strings(engine, const_cast<char **>(label_string_array), numlabels);
     } else {
       cerr << "No input label specified" << endl;
       HTS_Engine_refresh(engine);
