@@ -330,7 +330,7 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
         }
     }
 
-    HTS_Vocoder_end_excitation(v, nlpf);
+    HTS_Vocoder_end_excitation(v, p);
     HTS_movem(v->cc, v->c, m + 1);
 }
 
