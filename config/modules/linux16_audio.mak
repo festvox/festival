@@ -43,12 +43,21 @@ INCLUDE_LINUX16_AUDIO=1
 
 MOD_DESC_LINUX16_AUDIO=(from EST) Native audio module for Linux systems
 
+# LINUXAUDIO options: pulse (default), alsa, oss
+# Default to PulseAudio (standard on Linux since ~2010, also works with PipeWire)
+LINUXAUDIO ?= pulse
+
+ifeq ($(LINUXAUDIO),pulse)
+   AUDIO_DEFINES += -DSUPPORT_PULSEAUDIO
+   MODULE_LIBS += -lpulse-simple -lpulse
+endif
+
 ifeq ($(LINUXAUDIO),alsa)
    AUDIO_DEFINES += -DSUPPORT_ALSALINUX
    MODULE_LIBS += -lasound
 endif
 
-ifeq ($(LINUXAUDIO),none)
+ifeq ($(LINUXAUDIO),oss)
    AUDIO_DEFINES += -DSUPPORT_VOXWARE
 endif
 

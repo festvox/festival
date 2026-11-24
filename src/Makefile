@@ -46,6 +46,9 @@ ALL = .sub_directories
 
 include $(TOP)/config/common_make_rules
 
+# Ensure main waits for library directories to complete (fixes parallel make race condition)
+main: arch modules
+
 tags:
 	@ rm -f $(TOP)/FileList
 	@ $(MAKE) --no-print-directory file-list

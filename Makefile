@@ -60,6 +60,12 @@ system_dummy := $(shell $(MAKE) -C $(TOP)/config -f make_system.mak TOP=.. syste
 
 include $(TOP)/config/common_make_rules
 
+# Ensure proper build order for parallel make (fixes race conditions)
+# bin depends on src (for executables) and examples (for text2wave script)
+bin: src examples
+# doc depends on src (for festival executable to generate documentation)
+doc: src
+
 default_voices:
 	./src/scripts/default_voices.sh
 

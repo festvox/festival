@@ -46,6 +46,7 @@
 /*                                                                       */
 /*=======================================================================*/
 #include <cstdlib>
+#include <cmath>
 #include "festival.h"
 #include "clunits.h"
 
@@ -196,7 +197,7 @@ static void cumulate_ss_frames(EST_Track *a,EST_SuffStats *ss_frames)
 	for (j=0; j < a->num_channels(); j++)
 	{
 	    p = a->a_no_check(i,j);
-	    if (!finite(p))
+	    if (!std::isfinite(p))
 	    {
 		p = 1.0e5;
 		a->a_no_check(i,j) = p;

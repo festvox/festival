@@ -283,11 +283,11 @@ in the proclaim_voice description fields."
      (setq languages (directory-entries dir t))
      (while languages
        (set! language (car languages))
-       (set! voice_proclaimed nil) ; flag to mark if proclaim_voice is found
        (set! voices (directory-entries (path-append dir language) t))
        (while voices
 	 (set! voicedir (car voices))
 	 (set! voice (path-basename voicedir))
+         (set! voice_proclaimed nil) ; flag to mark if proclaim_voice is found
 	 (if (or (string-matches voicedir ".*\\..*") 
              (not (probe_file (path-append dir language voicedir "festvox" (string-append voicedir ".scm"))))
              );; if directory is \.. or voice description doesn't exist, then do nothing. Else, load voice
