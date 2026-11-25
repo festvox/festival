@@ -1,4 +1,4 @@
-;/* ----------------------------------------------------------------- */
+/* ----------------------------------------------------------------- */
 /*           The HMM-Based Speech Synthesis Engine "hts_engine API"  */
 /*           developed by HTS Working Group                          */
 /*           http://hts-engine.sourceforge.net/                      */
