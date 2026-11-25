@@ -4,7 +4,7 @@
 /*           http://hts-engine.sourceforge.net/                      */
 /* ----------------------------------------------------------------- */
 /*                                                                   */
-/*  Copyright (c) 2001-2012  Nagoya Institute of Technology          */
+/*  Copyright (c) 2001-2015  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /*                2001-2008  Tokyo Institute of Technology           */
@@ -59,7 +59,7 @@ HTS_ENGINE_H_START;
 
 /* common ---------------------------------------------------------- */
 
-typedef int HTS_Boolean;
+typedef char HTS_Boolean;
 
 #ifndef TRUE
 #define TRUE  1
@@ -75,7 +75,7 @@ typedef int HTS_Boolean;
 
 /* copyright ------------------------------------------------------- */
 
-#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion 1.07 (http://hts-engine.sourceforge.net/)\nCopyright (C) 2001-2012 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
+#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion 1.10 (http://hts-engine.sourceforge.net/)\nCopyright (C) 2001-2015 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
 
 /* audio ----------------------------------------------------------- */
 
@@ -411,6 +411,12 @@ size_t HTS_Engine_get_nstream(HTS_Engine * engine);
 /* HTS_Engine_get_nstate: get number of state */
 size_t HTS_Engine_get_nstate(HTS_Engine * engine);
 
+/* HTS_Engine_get_fullcontext_label_format: get full context label format */
+const char *HTS_Engine_get_fullcontext_label_format(HTS_Engine * engine);
+
+/* HTS_Engine_get_fullcontext_label_version: get full context label version */
+const char *HTS_Engine_get_fullcontext_label_version(HTS_Engine * engine);
+
 /* HTS_Engine_get_total_frame: get total number of frame */
 size_t HTS_Engine_get_total_frame(HTS_Engine * engine);
 
@@ -427,7 +433,19 @@ double HTS_Engine_get_generated_speech(HTS_Engine * engine, size_t index);
 HTS_Boolean HTS_Engine_synthesize_from_fn(HTS_Engine * engine, const char *fn);
 
 /* HTS_Engine_synthesize_from_strings: synthesize speech from string list */
-HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, const char **lines, size_t num_lines);
+HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, char **lines, size_t num_lines);
+
+/* HTS_Engine_generate_state_sequence_from_fn: generate state sequence from file name (1st synthesis step) */
+HTS_Boolean HTS_Engine_generate_state_sequence_from_fn(HTS_Engine * engine, const char *fn);
+
+/* HTS_Engine_generate_state_sequence_from_strings: generate state sequence from string list (1st synthesis step) */
+HTS_Boolean HTS_Engine_generate_state_sequence_from_strings(HTS_Engine * engine, char **lines, size_t num_lines);
+
+/* HTS_Engine_generate_parameter_sequence: generate parameter sequence (2nd synthesis step) */
+HTS_Boolean HTS_Engine_generate_parameter_sequence(HTS_Engine * engine);
+
+/* HTS_Engine_generate_sample_sequence: generate sample sequence (3rd synthesis step) */
+HTS_Boolean HTS_Engine_generate_sample_sequence(HTS_Engine * engine);
 
 /* HTS_Engine_save_information: save trace information */
 void HTS_Engine_save_information(HTS_Engine * engine, FILE * fp);

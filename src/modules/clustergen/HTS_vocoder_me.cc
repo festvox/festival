@@ -105,7 +105,8 @@ void HTS_Vocoder_initialize_me(HTS_Vocoder_ME * v_me,
                                double *hp, double *hn) {
   int i;
   HTS_Vocoder *v = v_me->v; /* access to original HTS_Vocoder structure */
-
+  v->excite_buff_index = 0;
+  v->stage;
   /* set parameter */
   v->stage = stage;
   if (stage != 0)
@@ -117,7 +118,7 @@ void HTS_Vocoder_initialize_me(HTS_Vocoder_ME * v_me,
   v->next = SEED;
   v->gauss = GAUSS;
   v->rate = rate;
-  v->p1 = -1.0;
+  v->pitch_of_curr_point = -1.0;
   v->sw = 0;
   v->x = 0x55555555;
   /* init buffer */
@@ -143,8 +144,8 @@ void HTS_Vocoder_initialize_me(HTS_Vocoder_ME * v_me,
     v->d1 = v->cinc + m + 1;
   }
   /* ABY: think this is not required */
-  v->pulse_buff = NULL;
-  v->pulse_size = 0;
+  v->excite_ring_buff = NULL;
+  v->excite_buff_size = 0;
 
   /* initialize mixed excitation variables */
   /*---------------------------------------*/
@@ -213,8 +214,8 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
         p = v->rate / exp(lf0);
 
     /* first time */
-    if (v->p1 < 0.0) {
-        HTS_Vocoder_initialize_excitation(v, 0);
+    if (v->pitch_of_curr_point < 0.0) {
+        HTS_Vocoder_initialize_excitation(v, 0, nlpf);
         if (v->stage == 0) {      /* for MCP */
             HTS_mc2b(spectrum, v->c, m, alpha);
         } else {                  /* for LSP */
@@ -232,7 +233,7 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
         }
     }
 
-    HTS_Vocoder_start_excitation(v, p, 0);
+    HTS_Vocoder_start_excitation(v, p);
     if (v->stage == 0) {         /* for MCP */
         HTS_Vocoder_postfilter_mcp(v, spectrum, m, alpha, beta);
         HTS_mc2b(spectrum, v->cc, m, alpha);
@@ -254,7 +255,7 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
     for (j = 0, i = (IPERIOD + 1) / 2; (unsigned int)j < v->fprd; j++)
     {
         if (v->stage == 0) {      /* for MCP */
-            if (v->p1 == 0.0)
+            if (v->pitch_of_curr_point == 0.0)
             {
                 x = HTS_white_noise(v);
 
@@ -264,10 +265,10 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
             }
             else
             {
-                if ((v->pc += 1.0) >= v->p1)
+                if ((v->pitch_counter += 1.0) >= v->pitch_of_curr_point)
                 {
-                    x = sqrt(v->p1);
-                    v->pc = v->pc - v->p1;
+                    x = sqrt(v->pitch_of_curr_point);
+                    v->pitch_counter = v->pitch_counter - v->pitch_of_curr_point;
                 }
                 else
                 {
@@ -329,7 +330,7 @@ void HTS_Vocoder_synthesize_me(HTS_Vocoder_ME * v_me,
         }
     }
 
-    HTS_Vocoder_end_excitation(v, nlpf);
+    HTS_Vocoder_end_excitation(v, p);
     HTS_movem(v->cc, v->c, m + 1);
 }
 
@@ -371,10 +372,10 @@ void HTS_Vocoder_clear_me(HTS_Vocoder_ME * v_me)
       HTS_free(v->c);
       v->c = NULL;
     }
-    v->pulse_size = 0;
-    if (v->pulse_buff != NULL){
-      HTS_free(v->pulse_buff);
-      v->pulse_buff = NULL;
+    v->excite_buff_size = 0;
+    if (v->excite_ring_buff != NULL){
+      HTS_free(v->excite_ring_buff);
+      v->excite_ring_buff = NULL;
     }
 
     v_me->num_filters = 0;

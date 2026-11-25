@@ -4,7 +4,7 @@
 /*           http://hts-engine.sourceforge.net/                      */
 /* ----------------------------------------------------------------- */
 /*                                                                   */
-/*  Copyright (c) 2001-2012  Nagoya Institute of Technology          */
+/*  Copyright (c) 2001-2015  Nagoya Institute of Technology          */
 /*                           Department of Computer Science          */
 /*                                                                   */
 /*                2001-2008  Tokyo Institute of Technology           */
@@ -245,11 +245,14 @@ size_t HTS_ftell(HTS_File * fp)
    } else if (fp->type == HTS_FILE) {
       fpos_t pos;
       fgetpos((FILE *) fp->pointer, &pos);
-#if defined(_WIN32) || defined(__CYGWIN__) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(__APPLE__) || defined(__ANDROID__)
       return (size_t) pos;
 #else
       return (size_t) pos.__pos;
-#endif                          /* _WIN32 || __APPLE__ */
+#endif                          /* _WIN32 || __CYGWIN__ || __APPLE__ || __ANDROID__ */
+   } else if (fp->type == HTS_DATA) {
+      HTS_Data *d = (HTS_Data *) fp->pointer;
+      return d->index;
    }
    HTS_error(0, "HTS_ftell: Unknown file type.\n");
    return 0;
@@ -260,7 +263,8 @@ static size_t HTS_fread(void *buf, size_t size, size_t n, HTS_File * fp)
 {
    if (fp == NULL || size == 0 || n == 0) {
       return 0;
-   } else if (fp->type == HTS_FILE) {
+   }
+   if (fp->type == HTS_FILE) {
       return fread(buf, size, n, (FILE *) fp->pointer);
    } else if (fp->type == HTS_DATA) {
       HTS_Data *d = (HTS_Data *) fp->pointer;
@@ -333,7 +337,7 @@ size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * f
 }
 
 /* HTS_get_pattern_token: get pattern token (single/double quote can be used) */
-HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff, int bufflen)
+HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
 {
    char c;
    size_t i;
@@ -369,7 +373,7 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff, int bufflen)
    }
 
    i = 0;
-   while (i<bufflen) {
+   while (1) {
       buff[i++] = c;
       c = HTS_fgetc(fp);
       if (squote && c == '\'')
@@ -386,16 +390,12 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff, int bufflen)
       }
    }
 
-   if (i == bufflen) {
-      HTS_error(2,"HTS_get_pattern_token: Buffer overflow.\n");
-   }
-
    buff[i] = '\0';
    return TRUE;
 }
 
 /* HTS_get_token: get token from file pointer (separators are space, tab, and line break) */
-HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff, int bufflen)
+HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
 {
    char c;
    size_t i;
@@ -411,17 +411,13 @@ HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff, int bufflen)
          return FALSE;
    }
 
-   for (i = 0; c != ' ' && c != '\n' && c != '\t'  && (i<bufflen);) {
+   for (i = 0; c != ' ' && c != '\n' && c != '\t';) {
       buff[i++] = c;
       if (HTS_feof(fp))
          break;
       c = HTS_fgetc(fp);
       if (c == EOF)
          break;
-   }
-
-   if (i == bufflen) {
-      HTS_error(2,"HTS_get_token: Buffer overflow.\n");
    }
 
    buff[i] = '\0';
@@ -459,7 +455,7 @@ HTS_Boolean HTS_get_token_from_fp_with_separator(HTS_File * fp, char *buff, char
 }
 
 /* HTS_get_token_from_string: get token from string (separators are space, tab, and line break) */
-HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff, int bufflen)
+HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff)
 {
    char c;
    size_t i;
@@ -475,13 +471,9 @@ HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *
          return FALSE;
       c = string[(*index)++];
    }
-   for (i = 0; c != ' ' && c != '\n' && c != '\t' && c != '\0' && (i<bufflen); i++) {
+   for (i = 0; c != ' ' && c != '\n' && c != '\t' && c != '\0'; i++) {
       buff[i] = c;
       c = string[(*index)++];
-   }
-
-   if (i == bufflen) {
-      HTS_error(2,"HTS_get_token_from_string: Buffer overflow.\n");
    }
 
    buff[i] = '\0';
@@ -526,10 +518,15 @@ HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * i
 void *HTS_calloc(const size_t num, const size_t size)
 {
    size_t n = num * size;
+   void *mem;
+
+   if (n == 0)
+      return NULL;
+
 #ifdef FESTIVAL
-   void *mem = (void *) safe_wcalloc(n);
+   mem = (void *) safe_wcalloc(n);
 #else
-   void *mem = (void *) malloc(n);
+   mem = (void *) malloc(n);
 #endif                          /* FESTIVAL */
 
    memset(mem, 0, n);
@@ -566,7 +563,12 @@ char *HTS_strdup(const char *string)
 double **HTS_alloc_matrix(size_t x, size_t y)
 {
    size_t i;
-   double **p = (double **) HTS_calloc(x, sizeof(double *));
+   double **p;
+
+   if (x == 0 || y == 0)
+      return NULL;
+
+   p = (double **) HTS_calloc(x, sizeof(double *));
 
    for (i = 0; i < x; i++)
       p[i] = (double *) HTS_calloc(y, sizeof(double));

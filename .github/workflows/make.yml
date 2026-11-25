@@ -17,7 +17,7 @@ jobs:
         path: festival
     - run: |
        cd speech_tools
-       ./configure
+       ./configure CC="gcc -std=gnu17" CFLAGS="-std=gnu17 -O2 -g"
        make
        make test
     - run: |
